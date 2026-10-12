@@ -73,7 +73,7 @@ export const site = {
         description:
           "A security layer that controls which tools an AI agent may call, with instant revocation and a full audit trail.",
         readout: "5 agent tools gated / live token revocation",
-        href: null, // TODO: add GitHub URL for Tool Access Controller
+        href: "https://github.com/Ezeh8/Tool-access-controller",
       },
       {
         id: "scan-invoice",
@@ -81,7 +81,7 @@ export const site = {
         description:
           "An agent that checks vendor invoices against purchase orders and flags price gaps, duplicates, and missing POs.",
         readout: "peak-week capacity 50 → 200+ invoices",
-        href: null, // TODO: add GitHub URL for Invoice Exception Handler
+        href: "https://github.com/Ezeh8/Invoice-exception-handler-eval",
       },
       {
         id: "scan-command-centre",
@@ -89,7 +89,7 @@ export const site = {
         description:
           "A scheduled agent that researches, verifies, and republishes a daily briefing to one stable page, with no one watching.",
         readout: "runs unattended every morning / one stable URL",
-        href: null, // TODO: add GitHub URL for Command Centre
+        href: "https://github.com/Ezeh8/command-centre",
       },
     ] satisfies Project[],
   },

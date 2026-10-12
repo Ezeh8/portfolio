@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Fragment_Mono } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -8,10 +8,11 @@ const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
 });
 
-const fragmentMono = Fragment_Mono({
+// Full (unsubsetted) Fragment Mono from google/fonts, self-hosted so glyphs
+// outside Google's latin subsets (e.g. →) render in the mono font.
+const fragmentMono = localFont({
   variable: "--font-mono",
-  weight: "400",
-  subsets: ["latin"],
+  src: [{ path: "./fonts/FragmentMono-Regular.ttf", weight: "400", style: "normal" }],
 });
 
 const generalSans = localFont({

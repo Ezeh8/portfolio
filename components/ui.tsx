@@ -22,6 +22,19 @@ export function SectionLabel({
 
 export const isExternal = (href: string) => href.startsWith("http");
 
+// General Sans has no ₦ glyph, so render just that character in the display font.
+export function WithNaira({ text }: { text: string }) {
+  return text.split(/(₦)/).map((part, i) =>
+    part === "₦" ? (
+      <span key={i} className="font-display">
+        ₦
+      </span>
+    ) : (
+      part
+    ),
+  );
+}
+
 // Links whose URL is still TODO (null) are dropped instead of rendered.
 export const hasHref = <T extends { href: string | null }>(
   link: T,

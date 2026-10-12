@@ -1,5 +1,5 @@
 import { site } from "@/content/site";
-import { Container, SectionLabel } from "./ui";
+import { Container, SectionLabel, WithNaira } from "./ui";
 
 export default function Experience() {
   const { label, roles } = site.experience;
@@ -22,7 +22,9 @@ export default function Experience() {
               </div>
               <ul className="list-disc space-y-3 pl-5 leading-relaxed marker:text-accent">
                 {entry.bullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
+                  <li key={bullet}>
+                    <WithNaira text={bullet} />
+                  </li>
                 ))}
               </ul>
             </li>
