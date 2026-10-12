@@ -8,16 +8,20 @@ import * as THREE from "three";
 // Built entirely from three.js primitives: no model files.
 
 const COLORS = {
-  body: "#2A2C31",
-  arm: "#3A3D44",
+  body: "#4A4E57", // body and canopy
+  arm: "#33363D", // arms and motor pods
   rotor: "#111214",
   accent: "#1F3C8C",
   outline: "#111214",
 };
 
-// drei Outlines with screenspace={false} (its default) measures thickness in screen
-// pixels, so the outline stays the same width at any zoom.
-const OUTLINE_PX = 3;
+// drei's Outlines with screenspace={false} (its default, despite the name) offsets the
+// hull in clip space, so `thickness` is in screen pixels and stays constant when
+// zooming. 2px matches the site's 2px card borders.
+const OUTLINE_PX = 2;
+
+// Model units are scaled so the drone is about 2 units wide, rotor tip to rotor tip.
+const SCALE = 0.66;
 
 const ARM_REACH = 1.45; // centre of the drone to the centre of each motor pod
 const ARM_ANGLES = [1, 3, 5, 7].map((k) => (k * Math.PI) / 4); // X layout
@@ -58,7 +62,7 @@ function useToonGradient() {
 }
 
 function Outline() {
-  return <Outlines thickness={OUTLINE_PX} color={COLORS.outline} />;
+  return <Outlines thickness={OUTLINE_PX} screenspace={false} color={COLORS.outline} />;
 }
 
 export default function Drone({ position = [0, 0, 0], rotation = [0, 0, 0], scanning = false }: DroneProps) {
@@ -87,7 +91,7 @@ export default function Drone({ position = [0, 0, 0], rotation = [0, 0, 0], scan
     g.rotation.z = Math.cos(t * 0.9) * 0.04;
   });
 
-  const glow = scanning ? 2.2 : 0.35;
+  const glow = scanning ? 2.6 : 0.9; // readable against the dark body even at rest
   const toon = (color: string) => <meshToonMaterial color={color} gradientMap={gradientMap} />;
   const accent = (
     <meshToonMaterial
@@ -99,7 +103,7 @@ export default function Drone({ position = [0, 0, 0], rotation = [0, 0, 0], scan
   );
 
   return (
-    <group position={position} rotation={rotation}>
+    <group position={position} rotation={rotation} scale={SCALE}>
       <group ref={hover}>
         {/* body */}
         <RoundedBox args={[1.4, 0.45, 1]} radius={0.14} smoothness={4}>
@@ -110,7 +114,7 @@ export default function Drone({ position = [0, 0, 0], rotation = [0, 0, 0], scan
         {/* canopy */}
         <mesh position={[0, 0.22, -0.05]} scale={[1, 0.55, 1.15]}>
           <sphereGeometry args={[0.36, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          {toon(COLORS.arm)}
+          {toon(COLORS.body)}
           <Outline />
         </mesh>
 

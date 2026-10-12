@@ -1,3 +1,4 @@
+// TODO: remove before launch
 import type { Metadata } from "next";
 import DroneTest from "./DroneTest";
 

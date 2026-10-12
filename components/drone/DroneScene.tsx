@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { BackSide, Mesh, type Group } from "three";
+import { BackSide, Box3, Mesh, Vector3, type Group } from "three";
 import Drone from "./Drone";
 
 // Vertex totals for the drone's own geometry, and separately for the inverted-hull
@@ -18,12 +18,13 @@ function countVertices(root: Group) {
     if (material.side === BackSide) outlines += n;
     else drone += n;
   });
-  return { drone, outlines };
+  const size = new Box3().setFromObject(root).getSize(new Vector3());
+  return { drone, outlines, size: [size.x, size.y, size.z].map((n) => n.toFixed(2)).join(" × ") };
 }
 
 export default function DroneScene({ scanning }: { scanning: boolean }) {
   const root = useRef<Group>(null);
-  const [counts, setCounts] = useState<{ drone: number; outlines: number } | null>(null);
+  const [counts, setCounts] = useState<ReturnType<typeof countVertices> | null>(null);
 
   useEffect(() => {
     // outlines are attached a frame after mount
@@ -33,10 +34,10 @@ export default function DroneScene({ scanning }: { scanning: boolean }) {
 
   return (
     <>
-      <Canvas flat dpr={[1, 2]} camera={{ position: [3.2, 2.2, 3.8], fov: 40 }}>
-        <ambientLight intensity={0.9} />
-        <directionalLight position={[4, 6, 3]} intensity={2.2} />
-        <directionalLight position={[-3, 2, -4]} intensity={0.6} />
+      {/* camera in front of the drone (+Z), slightly above */}
+      <Canvas flat dpr={[1, 2]} camera={{ position: [0, 1.3, 4.2], fov: 40 }}>
+        <ambientLight intensity={1} />
+        <directionalLight position={[3, 5, 4]} intensity={2.2} />
         <group ref={root}>
           <Drone scanning={scanning} />
         </group>
@@ -47,7 +48,7 @@ export default function DroneScene({ scanning }: { scanning: boolean }) {
           data-testid="vertex-count"
           className="pointer-events-none absolute top-4 left-4 font-mono text-xs text-text/60"
         >
-          vertices: {counts.drone} (+{counts.outlines} outline)
+          vertices: {counts.drone} (+{counts.outlines} outline) · size {counts.size}
         </p>
       )}
     </>
