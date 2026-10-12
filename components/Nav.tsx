@@ -53,25 +53,23 @@ export default function Nav() {
         </nav>
       </Container>
 
-      {open && (
-        <div id="mobile-menu" className="border-t border-text/10 md:hidden">
-          <Container>
-            <ul className="flex flex-col py-4">
-              {[...links, cta].map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="block py-3 font-display text-2xl"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </Container>
-        </div>
-      )}
+      <div id="mobile-menu" hidden={!open} className="border-t border-text/10 md:hidden">
+        <Container>
+          <ul className="flex flex-col py-4">
+            {[...links, cta].map((link) => (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  className="block py-3 font-display text-2xl"
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </div>
     </header>
   );
 }

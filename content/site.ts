@@ -1,8 +1,10 @@
-// All site copy lives here. Edit text in this file only; components read from it.
+// All site copy and links live here. Edit text in this file only; components read from it.
+// A link whose URL is still TODO is set to null and is not rendered on the page.
+// It appears automatically once a real URL is added.
 
 export type Link = {
   label: string;
-  href: string;
+  href: string | null;
 };
 
 export type Project = {
@@ -10,7 +12,7 @@ export type Project = {
   name: string;
   description: string;
   readout: string;
-  href: string;
+  href: string | null;
 };
 
 export type Role = {
@@ -71,7 +73,7 @@ export const site = {
         description:
           "A security layer that controls which tools an AI agent may call, with instant revocation and a full audit trail.",
         readout: "5 agent tools gated / live token revocation",
-        href: "#", // TODO: add GitHub URL for Tool Access Controller
+        href: null, // TODO: add GitHub URL for Tool Access Controller
       },
       {
         id: "scan-invoice",
@@ -79,7 +81,7 @@ export const site = {
         description:
           "An agent that checks vendor invoices against purchase orders and flags price gaps, duplicates, and missing POs.",
         readout: "peak-week capacity 50 → 200+ invoices",
-        href: "#", // TODO: add GitHub URL for Invoice Exception Handler
+        href: null, // TODO: add GitHub URL for Invoice Exception Handler
       },
       {
         id: "scan-command-centre",
@@ -87,7 +89,7 @@ export const site = {
         description:
           "A scheduled agent that researches, verifies, and republishes a daily briefing to one stable page, with no one watching.",
         readout: "runs unattended every morning / one stable URL",
-        href: "#", // TODO: add GitHub URL for Command Centre
+        href: null, // TODO: add GitHub URL for Command Centre
       },
     ] satisfies Project[],
   },
@@ -101,7 +103,7 @@ export const site = {
         dates: "Sept 2024 – Present",
         bullets: [
           "Cut admin overhead by 85% for a logistics firm with an n8n pipeline that routes CRM and deal data to billing and project tools, with a guardrail step for edge cases.",
-          "Deployed the Invoice Exception Handler for a construction firm, raising invoice processing capacity during peak weeks.",
+          "Deployed the Invoice Exception Handler for a global construction firm, raising invoice processing capacity during peak weeks.",
           "Won back ₦17M+ in revenue in two months for a Nigerian SaaS company with a prompt-engineered churn-reduction system.",
           "Delivered an integration blueprint for an energy multinational across SAP ERP, SLB Lumi, Avocet, AVEVA PI, and SCADA.",
         ],
@@ -113,7 +115,7 @@ export const site = {
         bullets: [
           "Monitored in-app automation for real-time customer engagement and support.",
           "Rolled out a digital KYC verification platform aligned with Central Bank of Nigeria requirements.",
-          "Operationalised an AI-driven credit-scoring model with the data science team.",
+          "Operationalized an AI-driven credit-scoring model with the data science team.",
         ],
       },
       {
@@ -135,11 +137,11 @@ export const site = {
 
   contact: {
     label: "04 / Contact",
-    headline: "Say hello",
+    headline: "Get in touch",
     text: "Based in Nigeria, working remotely across time zones. My inbox is open to anyone building where AI meets operations ~ say hello.",
     buttons: [
-      { label: "Email", href: "#" }, // TODO: add email address (mailto:)
-      { label: "LinkedIn", href: "#" }, // TODO: add LinkedIn profile URL
+      { label: "Email", href: null }, // TODO: add email address as "mailto:..."
+      { label: "LinkedIn", href: null }, // TODO: add LinkedIn profile URL
       { label: "GitHub", href: "https://github.com/Ezeh8" },
     ] satisfies Link[],
   },

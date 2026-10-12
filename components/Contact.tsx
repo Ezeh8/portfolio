@@ -1,5 +1,5 @@
 import { site } from "@/content/site";
-import { ButtonLink, Container, SectionLabel } from "./ui";
+import { ButtonLink, Container, SectionLabel, hasHref } from "./ui";
 
 export default function Contact() {
   const { label, headline, text, buttons } = site.contact;
@@ -12,7 +12,7 @@ export default function Contact() {
         </h2>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-text/75">{text}</p>
         <div className="mt-10 flex flex-wrap gap-3">
-          {buttons.map((button, i) => (
+          {buttons.filter(hasHref).map((button, i) => (
             <ButtonLink
               key={button.label}
               href={button.href}

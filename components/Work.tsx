@@ -23,17 +23,19 @@ export default function Work() {
                 <p className="mt-8 border-t border-accent pt-3 font-mono text-sm text-accent-text">
                   {project.readout}
                 </p>
-                <a
-                  href={project.href}
-                  {...(isExternal(project.href) && {
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                  })}
-                  className="mt-6 self-start text-sm font-medium underline decoration-text/30 underline-offset-4 hover:decoration-text"
-                >
-                  {linkLabel}
-                  <span className="sr-only">: {project.name}</span>
-                </a>
+                {project.href && (
+                  <a
+                    href={project.href}
+                    {...(isExternal(project.href) && {
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                    })}
+                    className="mt-6 self-start text-sm font-medium underline decoration-text/30 underline-offset-4 hover:decoration-text"
+                  >
+                    {linkLabel}
+                    <span className="sr-only">: {project.name}</span>
+                  </a>
+                )}
               </article>
             </li>
           ))}

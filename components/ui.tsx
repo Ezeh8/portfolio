@@ -22,6 +22,11 @@ export function SectionLabel({
 
 export const isExternal = (href: string) => href.startsWith("http");
 
+// Links whose URL is still TODO (null) are dropped instead of rendered.
+export const hasHref = <T extends { href: string | null }>(
+  link: T,
+): link is T & { href: string } => link.href !== null;
+
 export function ButtonLink({
   href,
   children,
