@@ -106,7 +106,7 @@ export const site = {
         name: "Tool Access Controller",
         description:
           "A security layer that controls which tools an AI agent may call, with instant revocation and a full audit trail.",
-        readout: "5 agent tools gated / live token revocation",
+        readout: "12 MCP tools behind token auth / live revocation",
         chips: ["FastAPI", "FastMCP", "PostgreSQL", "Docker"],
         href: "https://github.com/Ezeh8/Tool-access-controller",
       },
@@ -125,9 +125,7 @@ export const site = {
         description:
           "A scheduled agent that researches, verifies, and republishes a daily briefing to one stable page, with no one watching.",
         readout: "runs unattended every morning / one stable URL",
-        // TODO: add tech chips. `gh repo view` shows no README (the repo's file is README_1.md),
-        // so no technologies could be confirmed.
-        chips: [],
+        chips: ["Scheduled agent", "Live web search", "Persistent memory", "HTML/CSS/JS"],
         href: "https://github.com/Ezeh8/command-centre",
       },
     ] satisfies Project[],

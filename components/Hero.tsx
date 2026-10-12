@@ -9,15 +9,15 @@ export default function Hero() {
   return (
     <section id="hero" className="scroll-mt-16 pt-12 pb-16 sm:pt-20 sm:pb-24">
       <Container>
-        <div className="grid items-center gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
+        <div className="grid items-center gap-12 lg:grid-cols-[3fr_2fr] lg:gap-14">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-text/60">
               {label}
             </p>
-            <p className="mt-6 font-display text-2xl font-semibold sm:text-3xl">{name}</p>
+            <p className="mt-6 font-display text-2xl font-semibold sm:text-3xl lg:mt-3">{name}</p>
             <p className="mt-1 text-text/70">{tagline}</p>
 
-            <p className="mt-8 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-card px-3 py-1.5 font-mono text-xs">
+            <p className="mt-8 inline-flex items-center gap-2 rounded-full lg:mt-5 border-2 border-ink bg-card px-3 py-1.5 font-mono text-xs">
               <StatusDot />
               {status}
             </p>
@@ -25,7 +25,7 @@ export default function Hero() {
             <Headline
               as="h1"
               copy={headline}
-              className="mt-6 text-[clamp(2.25rem,6vw,4.5rem)]"
+              className="mt-6 text-[clamp(2.25rem,6vw,4.5rem)] lg:mt-5 lg:text-[clamp(2.25rem,4.2vw,3.5rem)]"
             />
 
             <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
