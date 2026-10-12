@@ -1,56 +1,114 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useEffect, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { BackSide, Box3, Mesh, Vector3, type Group } from "three";
-import Drone from "./Drone";
+import {
+  BackSide,
+  Box3,
+  Mesh,
+  MeshToonMaterial,
+  NearestFilter,
+  Vector3,
+  type Group,
+  type Material,
+} from "three";
+import Drone, { type DronePalette } from "./Drone";
 
-// Vertex totals for the drone's own geometry, and separately for the inverted-hull
-// meshes drei's Outlines adds (those use a BackSide material).
-function countVertices(root: Group) {
-  let drone = 0;
-  let outlines = 0;
+export type DroneStats = {
+  vertices: number;
+  outlineVertices: number;
+  size: string;
+  toonMaterials: number;
+  toonWithGradient: number;
+};
+
+function collectStats(root: Group): DroneStats {
+  const stats = { vertices: 0, outlineVertices: 0, toonMaterials: 0, toonWithGradient: 0 };
   root.traverse((obj) => {
     if (!(obj instanceof Mesh)) return;
     const n = obj.geometry.attributes.position?.count ?? 0;
-    const material = Array.isArray(obj.material) ? obj.material[0] : obj.material;
-    if (material.side === BackSide) outlines += n;
-    else drone += n;
+    const materials: Material[] = Array.isArray(obj.material) ? obj.material : [obj.material];
+    // drei's Outlines adds inverted-hull meshes, which use a BackSide material
+    if (materials[0].side === BackSide) stats.outlineVertices += n;
+    else stats.vertices += n;
+    for (const m of materials) {
+      if (!(m instanceof MeshToonMaterial)) continue;
+      stats.toonMaterials++;
+      const g = m.gradientMap;
+      if (g && g.minFilter === NearestFilter && g.magFilter === NearestFilter && !g.generateMipmaps)
+        stats.toonWithGradient++;
+    }
   });
   const size = new Box3().setFromObject(root).getSize(new Vector3());
-  return { drone, outlines, size: [size.x, size.y, size.z].map((n) => n.toFixed(2)).join(" × ") };
+  return { ...stats, size: [size.x, size.y, size.z].map((v) => v.toFixed(2)).join(" × ") };
 }
 
-export default function DroneScene({ scanning }: { scanning: boolean }) {
-  const root = useRef<Group>(null);
-  const [counts, setCounts] = useState<ReturnType<typeof countVertices> | null>(null);
+// Reports stats from inside the canvas once the scene has actually rendered (Outlines
+// attach their hull meshes after mount), and again whenever `version` changes.
+function StatsProbe({
+  target,
+  version,
+  onStats,
+}: {
+  target: React.RefObject<Group | null>;
+  version: string;
+  onStats: (s: DroneStats) => void;
+}) {
+  const last = useRef<{ version: string; frames: number }>({ version: "", frames: 0 });
+  useFrame(() => {
+    if (last.current.version !== version) last.current = { version, frames: 0 };
+    if (++last.current.frames === 10 && target.current) onStats(collectStats(target.current));
+  });
+  return null;
+}
 
+const CAMERA_DIRECTION = new Vector3(0, 1.3, 4.2).normalize(); // in front (+Z), slightly above
+const MIN_DISTANCE = 4.4;
+const HALF_WIDTH_TO_FIT = 1.35; // drone half-width (~1) plus a margin
+
+// Keeps the whole drone in view on narrow (portrait) screens by backing the camera off
+// until the drone's width fits the horizontal field of view. Runs on resize only, so
+// OrbitControls stay free in between.
+function FitCamera() {
+  const camera = useThree((s) => s.camera);
+  const aspect = useThree((s) => s.size.width / s.size.height);
   useEffect(() => {
-    // outlines are attached a frame after mount
-    const id = setTimeout(() => root.current && setCounts(countVertices(root.current)), 500);
-    return () => clearTimeout(id);
-  }, []);
+    if (!("fov" in camera)) return;
+    const halfV = ((camera.fov as number) * Math.PI) / 360;
+    const fitWidth = HALF_WIDTH_TO_FIT / (Math.tan(halfV) * aspect);
+    camera.position.copy(CAMERA_DIRECTION).multiplyScalar(Math.max(MIN_DISTANCE, fitWidth));
+    camera.lookAt(0, 0, 0);
+  }, [camera, aspect]);
+  return null;
+}
 
+export default function DroneScene({
+  scanning,
+  palette,
+  onStats,
+}: {
+  scanning: boolean;
+  palette: DronePalette;
+  onStats: (s: DroneStats) => void;
+}) {
+  const root = useRef<Group>(null);
   return (
-    <>
-      {/* camera in front of the drone (+Z), slightly above */}
-      <Canvas flat dpr={[1, 2]} camera={{ position: [0, 1.3, 4.2], fov: 40 }}>
-        <ambientLight intensity={1} />
-        <directionalLight position={[3, 5, 4]} intensity={2.2} />
-        <group ref={root}>
-          <Drone scanning={scanning} />
-        </group>
-        <OrbitControls makeDefault enablePan={false} minDistance={2.5} maxDistance={12} />
-      </Canvas>
-      {counts && (
-        <p
-          data-testid="vertex-count"
-          className="pointer-events-none absolute top-4 left-4 font-mono text-xs text-text/60"
-        >
-          vertices: {counts.drone} (+{counts.outlines} outline) · size {counts.size}
-        </p>
-      )}
-    </>
+    <Canvas
+      flat
+      dpr={[1, 2]}
+      camera={{ position: [0, 1.3, 4.2], fov: 40 }}
+      style={{ width: "100%", height: "100%" }}
+    >
+      {/* low ambient + one key light above, left and in front, so all three toon bands show */}
+      <ambientLight intensity={0.35} />
+      <directionalLight position={[-2.5, 4, 1.5]} intensity={2.4} />
+      <group ref={root}>
+        <Drone scanning={scanning} palette={palette} />
+      </group>
+      <FitCamera />
+      <StatsProbe target={root} version={`${scanning}-${palette}`} onStats={onStats} />
+      <OrbitControls makeDefault enablePan={false} minDistance={2.5} maxDistance={12} />
+    </Canvas>
   );
 }
