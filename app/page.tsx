@@ -1,9 +1,25 @@
+import About from "./components/About";
+import Contact from "./components/Contact";
+import Experience from "./components/Experience";
+import Footer from "./components/Footer";
+import Hero from "./components/Hero";
+import Nav from "./components/Nav";
+import Quote from "./components/Quote";
+import Work from "./components/Work";
+
 export default function Home() {
   return (
-    <main className="flex flex-1 items-center justify-center p-6">
-      <p className="font-display text-center text-3xl">
-        Ezeh Ikenna ~ portfolio skeleton
-      </p>
-    </main>
+    <>
+      <Nav />
+      <main className="flex-1">
+        <Hero />
+        <About />
+        <Work />
+        <Experience />
+        <Quote />
+        <Contact />
+      </main>
+      <Footer />
+    </>
   );
 }

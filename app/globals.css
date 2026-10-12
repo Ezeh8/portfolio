@@ -5,10 +5,6 @@
   --text: #111214;
   --accent: #3e6fe8;
   --accent-text: #2f5bc9;
-
-  /* TODO: replace with General Sans from Fontshare once it is added. */
-  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
 }
 
 @theme inline {
@@ -24,5 +20,5 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-body);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
