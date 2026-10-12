@@ -3,12 +3,12 @@
 :root {
   --bg: #e6e7ea;
   --text: #111214;
-  --accent: #3e6fe8;
-  --accent-text: #2f5bc9;
+  --accent: #1f3c8c;
+  --accent-text: #1f3c8c;
 
   --card: #f4f5f7;
   --ink: #111214;
-  --accent-soft: #c9d7fa;
+  --accent-soft: #d0d8ef;
 }
 
 @theme inline {
@@ -59,12 +59,12 @@ body {
   }
 
   /* Headline highlight: a repeating squiggle background on an inline span, so the
-     underline follows the text across line breaks. The stroke is --accent (#3E6FE8);
+     underline follows the text across line breaks. The stroke is --accent (#1F3C8C);
      CSS variables can't be used inside a data URI. */
   .squiggle {
     color: var(--accent);
     padding-bottom: 0.14em;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%233E6FE8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%231F3C8C' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: repeat-x;
     background-position: 0 100%;
     background-size: 0.5em 0.2em;
