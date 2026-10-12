@@ -2,12 +2,12 @@ import { site } from "@/content/site";
 import { Container } from "./ui";
 
 export default function Footer() {
-  const { education, certificates, tools, line, copyright } = site.footer;
-  const groups = [education, certificates, tools];
+  const { education, certificates, line, copyright } = site.footer;
+  const groups = [education, certificates];
   return (
-    <footer className="border-t border-text/10 py-16 text-sm">
+    <footer className="border-t-2 border-ink py-16 text-sm">
       <Container>
-        <div className="grid gap-10 md:grid-cols-3">
+        <div className="grid gap-10 md:grid-cols-2">
           {groups.map((group) => (
             <div key={group.label}>
               <h2 className="font-mono text-xs uppercase tracking-[0.12em] text-text/60">

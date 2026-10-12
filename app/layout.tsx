@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque } from "next/font/google";
+import { Bricolage_Grotesque, Kalam } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
   variable: "--font-display",
+  subsets: ["latin"],
+});
+
+const kalam = Kalam({
+  variable: "--font-hand",
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -33,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${generalSans.variable} ${bricolage.variable} ${fragmentMono.variable} h-full antialiased`}
+      className={`${generalSans.variable} ${bricolage.variable} ${fragmentMono.variable} ${kalam.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

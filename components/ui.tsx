@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Headline as HeadlineCopy } from "@/content/site";
 
 export function Container({ children }: { children: ReactNode }) {
   return (
@@ -6,28 +7,114 @@ export function Container({ children }: { children: ReactNode }) {
   );
 }
 
-export function SectionLabel({
-  children,
+export function SectionLabel({ children }: { children: ReactNode }) {
+  return (
+    <p className="font-mono text-xs uppercase tracking-[0.12em] text-text/60">
+      {children}
+    </p>
+  );
+}
+
+// h1 and section h2 headlines: heavy display type, lowercased in CSS only,
+// with the `highlight` phrase drawn in the accent color with a squiggle underline.
+export function Headline({
   as: Tag = "h2",
+  copy,
+  className = "",
+}: {
+  as?: "h1" | "h2";
+  copy: HeadlineCopy;
+  className?: string;
+}) {
+  const { text, highlight } = copy;
+  const at = text.indexOf(highlight);
+  return (
+    <Tag
+      className={`font-display font-extrabold lowercase leading-[1.02] tracking-tight ${className}`}
+    >
+      {at === -1 ? (
+        text
+      ) : (
+        <>
+          {text.slice(0, at)}
+          <span className="squiggle">{highlight}</span>
+          {text.slice(at + highlight.length)}
+        </>
+      )}
+    </Tag>
+  );
+}
+
+// Small rotated handwritten note with a hand-drawn arrow.
+export function HandNote({
+  children,
+  arrow = "down",
+  className = "",
 }: {
   children: ReactNode;
-  as?: "h2" | "p";
+  arrow?: "down" | "left";
+  className?: string;
 }) {
   return (
-    <Tag className="font-mono text-xs uppercase tracking-[0.12em] text-text/60">
+    <p
+      className={`inline-flex items-center gap-2 font-hand text-lg leading-tight text-text/80 ${className}`}
+    >
+      {arrow === "left" && <HandArrow className="h-6 w-10 -scale-x-100" />}
+      <span>{children}</span>
+      {arrow === "down" && <HandArrow className="h-8 w-8 rotate-[70deg]" />}
+    </p>
+  );
+}
+
+export function HandArrow({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 48 28"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`shrink-0 ${className}`}
+    >
+      <path d="M3 20c9-11 22-15 38-9" />
+      <path d="M33 5.5l8.5 5.5-7 6.5" />
+    </svg>
+  );
+}
+
+export function StatusDot({ className = "" }: { className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`inline-block h-2 w-2 shrink-0 rounded-full bg-accent ${className}`}
+    />
+  );
+}
+
+// Mono header bar on top of a panel.
+export function PanelBar({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-3 border-b-2 border-ink px-4 py-2.5 font-mono text-xs">
       {children}
-    </Tag>
+    </div>
   );
 }
 
 export const isExternal = (href: string) => href.startsWith("http");
 
-// General Sans has no ₦ glyph, so render just that character in the display font.
-export function WithNaira({ text }: { text: string }) {
-  return text.split(/(₦)/).map((part, i) =>
+// Characters General Sans lacks: ₦ renders in the display font, → in the
+// (self-hosted, full) mono font. The copy itself is unchanged.
+export function Glyphs({ text }: { text: string }) {
+  return text.split(/([₦→])/).map((part, i) =>
     part === "₦" ? (
       <span key={i} className="font-display">
         ₦
+      </span>
+    ) : part === "→" ? (
+      <span key={i} className="font-mono">
+        →
       </span>
     ) : (
       part
@@ -51,15 +138,16 @@ export function ButtonLink({
 }) {
   const styles =
     variant === "primary"
-      ? "bg-text text-bg hover:bg-accent-text"
-      : "border border-text/20 text-text hover:border-text";
+      ? "border-ink bg-ink text-bg hover:bg-accent-text hover:border-accent-text"
+      : "border-ink bg-card text-text hover:bg-bg";
   return (
     <a
       href={href}
       {...(isExternal(href) && { target: "_blank", rel: "noopener noreferrer" })}
-      className={`inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-medium ${styles}`}
+      className={`inline-flex h-11 items-center justify-center rounded-full border-2 px-5 text-sm font-medium ${styles}`}
     >
-      {children}
+      {/* wrapped so the flex container keeps the space before a trailing → */}
+      <span>{typeof children === "string" ? <Glyphs text={children} /> : children}</span>
     </a>
   );
 }

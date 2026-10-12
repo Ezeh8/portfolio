@@ -1,10 +1,12 @@
 import About from "@/components/About";
+import Banner from "@/components/Banner";
 import Contact from "@/components/Contact";
 import Experience from "@/components/Experience";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Nav from "@/components/Nav";
 import Quote from "@/components/Quote";
+import Toolkit from "@/components/Toolkit";
 import Work from "@/components/Work";
 
 export default function Home() {
@@ -13,9 +15,11 @@ export default function Home() {
       <Nav />
       <main className="flex-1">
         <Hero />
+        <Banner />
         <About />
         <Work />
         <Experience />
+        <Toolkit />
         <Quote />
         <Contact />
       </main>

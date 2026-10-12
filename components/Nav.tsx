@@ -6,7 +6,7 @@ import { Container } from "./ui";
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
-  const { links, cta } = site.nav;
+  const { wordmark, links, cta } = site.nav;
 
   useEffect(() => {
     if (!open) return;
@@ -16,15 +16,20 @@ export default function Nav() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-text/10 bg-bg/90 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b-2 border-ink bg-bg/95 backdrop-blur">
       <Container>
-        <nav aria-label="Main" className="flex h-16 items-center justify-between">
-          <a href="#hero" className="font-display text-lg font-semibold">
-            {site.name}
+        <nav aria-label="Main" className="flex h-16 items-center justify-between gap-4">
+          <a
+            href="#hero"
+            aria-label={site.name}
+            className="font-display text-2xl font-extrabold tracking-tight"
+          >
+            {wordmark.text}
+            <span className="text-accent">{wordmark.dot}</span>
           </a>
 
           <div className="hidden items-center gap-8 md:flex">
-            <ul className="flex gap-6 text-sm">
+            <ul className="flex gap-6 font-mono text-xs uppercase tracking-[0.12em]">
               {links.map((link) => (
                 <li key={link.href}>
                   <a href={link.href} className="hover:text-accent-text">
@@ -35,7 +40,7 @@ export default function Nav() {
             </ul>
             <a
               href={cta.href}
-              className="inline-flex h-9 items-center rounded-full bg-text px-4 text-sm font-medium text-bg hover:bg-accent-text"
+              className="inline-flex h-9 items-center rounded-full border-2 border-ink px-4 font-mono text-xs hover:bg-ink hover:text-bg"
             >
               {cta.label}
             </a>
@@ -43,7 +48,7 @@ export default function Nav() {
 
           <button
             type="button"
-            className="inline-flex h-10 items-center rounded-full border border-text/20 px-4 font-mono text-xs uppercase tracking-[0.12em] md:hidden"
+            className="inline-flex h-10 items-center rounded-full border-2 border-ink px-4 font-mono text-xs uppercase tracking-[0.12em] md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen((v) => !v)}
@@ -53,20 +58,29 @@ export default function Nav() {
         </nav>
       </Container>
 
-      <div id="mobile-menu" hidden={!open} className="border-t border-text/10 md:hidden">
+      <div id="mobile-menu" hidden={!open} className="border-t-2 border-ink md:hidden">
         <Container>
           <ul className="flex flex-col py-4">
-            {[...links, cta].map((link) => (
-              <li key={link.label}>
+            {links.map((link) => (
+              <li key={link.href}>
                 <a
                   href={link.href}
-                  className="block py-3 font-display text-2xl"
+                  className="block py-3 font-mono text-sm uppercase tracking-[0.12em]"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
                 </a>
               </li>
             ))}
+            <li className="pt-3">
+              <a
+                href={cta.href}
+                className="inline-flex h-11 items-center rounded-full border-2 border-ink px-5 font-mono text-sm"
+                onClick={() => setOpen(false)}
+              >
+                {cta.label}
+              </a>
+            </li>
           </ul>
         </Container>
       </div>

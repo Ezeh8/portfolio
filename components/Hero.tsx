@@ -1,29 +1,66 @@
 import { site } from "@/content/site";
-import { ButtonLink, Container } from "./ui";
+import { ButtonLink, Container, HandNote, Headline, PanelBar, StatusDot } from "./ui";
 
 export default function Hero() {
-  const { label, name, tagline, headline, buttons } = site.hero;
+  const { label, name, tagline, status, headline, primary, secondary, flightLog, note } =
+    site.hero;
+  const { projects } = site.work;
+
   return (
-    <section id="hero" className="scroll-mt-16 pt-16 pb-24 sm:pt-28 sm:pb-36">
+    <section id="hero" className="scroll-mt-16 pt-12 pb-16 sm:pt-20 sm:pb-24">
       <Container>
-        <p className="font-mono text-xs uppercase tracking-[0.12em] text-text/60">
-          {label}
-        </p>
-        <p className="mt-8 font-display text-2xl font-semibold sm:text-3xl">{name}</p>
-        <p className="mt-1 text-text/70">{tagline}</p>
-        <h1 className="mt-8 max-w-[18ch] font-display text-[clamp(2.25rem,6.5vw,4.75rem)] font-semibold leading-[1.02] tracking-tight">
-          {headline}
-        </h1>
-        <div className="mt-10 flex flex-wrap gap-3">
-          {buttons.map((button, i) => (
-            <ButtonLink
-              key={button.label}
-              href={button.href}
-              variant={i === 0 ? "primary" : "secondary"}
-            >
-              {button.label}
-            </ButtonLink>
-          ))}
+        <div className="grid items-center gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-[0.12em] text-text/60">
+              {label}
+            </p>
+            <p className="mt-6 font-display text-2xl font-semibold sm:text-3xl">{name}</p>
+            <p className="mt-1 text-text/70">{tagline}</p>
+
+            <p className="mt-8 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-card px-3 py-1.5 font-mono text-xs">
+              <StatusDot />
+              {status}
+            </p>
+
+            <Headline
+              as="h1"
+              copy={headline}
+              className="mt-6 text-[clamp(2.25rem,6vw,4.5rem)]"
+            />
+
+            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+              <ButtonLink href={primary.href}>{primary.label}</ButtonLink>
+              <a
+                href={secondary.href}
+                className="text-sm font-medium underline decoration-2 underline-offset-4 hover:text-accent-text"
+              >
+                {secondary.label}
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <HandNote className="mb-3 ml-4 -rotate-3">{note}</HandNote>
+            <div className="panel overflow-hidden">
+              <PanelBar>
+                <span className="flex items-center gap-2">
+                  <StatusDot />
+                  {flightLog.header}
+                </span>
+              </PanelBar>
+              <div className="space-y-2 p-4 font-mono text-[13px] leading-relaxed sm:p-5">
+                <p>{flightLog.command}</p>
+                <p className="text-accent-text">{flightLog.status(projects.length)}</p>
+                <ul className="space-y-2 pt-1">
+                  {projects.map((p) => (
+                    <li key={p.id}>
+                      ✓ {p.name.toLowerCase()} · {p.readout}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     </section>
