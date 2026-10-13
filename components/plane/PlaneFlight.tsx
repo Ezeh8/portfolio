@@ -8,287 +8,351 @@ import { useGSAP } from "@gsap/react";
 import Lenis from "lenis";
 import { site } from "@/content/site";
 import PaperPlane from "./PaperPlane";
-import { clamp, heading, spaceOut } from "./flightPath";
+import { clamp, heading, inOrder, nearestClear } from "./flightPath";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const CARD_IDS = site.work.projects.map((p) => p.id);
-const HERO_OPACITY = 0.35;
+const TRAIL_COLOR = "#111214";
 
 // Document coordinates of a box.
 function docRect(el: Element | Range) {
   const r = el.getBoundingClientRect();
   const left = r.left + window.scrollX;
   const top = r.top + window.scrollY;
-  return { left, top, right: left + r.width, bottom: top + r.height, cy: top + r.height / 2 };
-}
-
-// The box of an element's text, not its (often full-width) block.
-function textRect(el: Element) {
-  const range = document.createRange();
-  range.selectNodeContents(el);
-  return docRect(range);
+  return { left, top, right: left + r.width, bottom: top + r.height, height: r.height };
 }
 
 const $ = (selector: string) => document.querySelector(selector);
 const navBottom = () => Math.max(0, $("header")?.getBoundingClientRect().bottom ?? 0);
 const maxScroll = () => ScrollTrigger.maxScroll(window);
 
-type Bounds = { left: number; right: number; top: number; bottom: number };
+// A keyframe: at scroll position `s` the plane's centre is at x% of the screen width and
+// y% of its height, at `scale`. `tilt` and `facing` override the heading the plane would
+// otherwise take from its direction of travel on the leg that ends here; `slowTurn`
+// turns it over the whole leg instead of the first third. The eases shape the leg.
+type Key = {
+  s: number;
+  x: number;
+  y: number;
+  scale: number;
+  tilt?: number;
+  facing?: 1 | -1;
+  slowTurn?: boolean;
+  xEase?: string;
+  yEase?: string;
+};
 
-// Where the plane's centre may go: clear of the sticky nav, and inset by the plane's
-// half-diagonal so no tilt can push it off screen.
-function screenBounds(plane: HTMLElement): Bounds {
-  const half = Math.hypot(plane.offsetWidth, plane.offsetHeight) / 2 + 4;
-  return {
-    left: half,
-    right: window.innerWidth - half,
-    top: navBottom() + half,
-    bottom: window.innerHeight - half,
-  };
+type Size = { w: number; h: number; vw: number; vh: number };
+
+// Text lines, cards and the banner, as document boxes: what a resting plane must avoid.
+function obstacles(layer: HTMLElement) {
+  const boxes: ReturnType<typeof docRect>[] = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.textContent?.trim() || layer.contains(node)) continue;
+    range.selectNodeContents(node);
+    for (const r of range.getClientRects()) {
+      if (!r.width || !r.height) continue;
+      boxes.push({
+        left: r.left + window.scrollX,
+        top: r.top + window.scrollY,
+        right: r.right + window.scrollX,
+        bottom: r.bottom + window.scrollY,
+        height: r.height,
+      });
+    }
+  }
+  document.querySelectorAll(".panel, [data-plane-cover]").forEach((el) => boxes.push(docRect(el)));
+  return boxes;
 }
 
-// The text-free spot the plane starts from (and rests at under reduced motion): just
-// above the flight log's top-right corner, level with the "follow the plane" note, which
-// sits at the panel's left.
-function heroSpot(plane: HTMLElement) {
-  const log = $("#hero .panel");
-  if (!log) return null;
-  const r = docRect(log);
-  return { x: r.right - plane.offsetWidth / 2 - 4, y: r.top - plane.offsetHeight / 2 - 6 };
-}
-
-// A waypoint: where the plane's centre is on screen (x, y) when the page is scrolled to
-// `s`. `level` holds the plane flat (used once it has landed and rides with the page).
-type Point = { x: number; y: number; s: number; level?: boolean };
-
-// Desktop waypoints, all measured from the live layout. None of them sits on text:
-// they use the side margins, the empty padding between sections, the gaps around the
-// project cards, and the empty space right of the Contact headline.
-function desktopPoints(plane: HTMLElement) {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const max = maxScroll();
-  const bounds = screenBounds(plane);
-  const w = plane.offsetWidth;
-  const h = plane.offsetHeight;
-
-  const start = heroSpot(plane);
-  const about = $("#about");
-  const work = $("#work");
-  const experience = $("#experience");
-  const toolkit = $("#toolkit");
-  const contactHeadline = $("#contact h2");
-  const cards = CARD_IDS.map((id) => document.getElementById(id));
-  if (!start || !about || !work || !experience || !toolkit || !contactHeadline) return null;
-  if (cards.some((c) => !c)) return null;
-
-  // Content column edges (the Container inside a section, minus its 32px padding).
-  const column = docRect(work.firstElementChild ?? work);
-  const contentLeft = column.left + 32;
-  const contentRight = column.right - 32;
-  const columnMiddle = (contentLeft + contentRight) / 2;
-  // Side margins wide enough to hold the plane clear of the content?
-  const roomy = contentLeft >= w + 20;
-  const sideX = roomy ? (contentRight + vw) / 2 : bounds.right;
-
-  type Stop = { x: number; docY: number; s: number; level?: boolean };
-  const stops: Stop[] = [{ x: start.x, docY: start.y, s: 0 }];
-
-  // The empty padding where a section meets the next one, at the right margin.
-  const gapAfter = (section: Element) => {
-    const docY = docRect(section).bottom;
-    return { x: sideX, docY, s: docY - vh * 0.5 };
-  };
-  stops.push(gapAfter(about));
-
-  cards.forEach((card) => {
-    const r = docRect(card!);
-    const left = (r.left + r.right) / 2 < columnMiddle;
-    // Just outside the card's outer edge near its top corner: beside it in the margin
-    // when there's room, otherwise in the gap just above that corner.
-    const x = roomy
-      ? left
-        ? r.left - w / 2 - 10
-        : r.right + w / 2 + 10
-      : left
-        ? r.left + w / 2 - 8
-        : r.right - w / 2 + 8;
-    const docY = roomy ? r.top + 28 : r.top - h / 2 - 4;
-    stops.push({ x, docY, s: docY - vh * 0.3 });
-  });
-
-  stops.push(gapAfter(experience), gapAfter(toolkit));
-
-  // Touch down just after the headline's last letter, after a level approach. Land at the
-  // bottom of the page if the headline is still on screen there; otherwise land with it
-  // at 40% height and ride up with the page.
-  const landing = textRect(contactHeadline);
-  const landX = landing.right + 28 + w / 2;
-  const landS = landing.cy - max >= bounds.top ? max : clamp(landing.cy - vh * 0.4, 0, max);
-  stops.push(
-    { x: landX + 160, docY: landing.cy, s: landS - vh * 0.2 },
-    { x: landX, docY: landing.cy, s: landS },
+// Moves a resting spot (in screen %) into the nearest empty space at scroll position s.
+function clearSpot(
+  name: string,
+  spot: { x: number; y: number },
+  s: number,
+  scale: number,
+  tilt: number,
+  size: Size,
+  layer: HTMLElement,
+) {
+  const { w, h, vw, vh } = size;
+  const rad = (Math.abs(tilt) * Math.PI) / 180;
+  const bw = (w * Math.cos(rad) + h * Math.sin(rad)) * scale + 12;
+  const bh = (w * Math.sin(rad) + h * Math.cos(rad)) * scale + 12;
+  const onScreen = obstacles(layer).map((o) => ({
+    left: o.left,
+    right: o.right,
+    top: o.top - s,
+    bottom: o.bottom - s,
+  }));
+  const area = { left: 0, right: vw, top: navBottom(), bottom: vh };
+  const found = nearestClear(
+    (spot.x / 100) * vw,
+    (spot.y / 100) * vh,
+    bw,
+    bh,
+    onScreen,
+    area,
+    Math.round(Math.min(vw, vh) * 0.4),
   );
-  if (landS < max) stops.push({ x: landX, docY: landing.cy, s: max, level: true });
+  const result = { x: (found.x / vw) * 100, y: (found.y / vh) * 100 };
+  if (found.moved && process.env.NODE_ENV !== "production") {
+    console.info(
+      `[plane] ${name} nudged from (${spot.x.toFixed(1)}, ${spot.y.toFixed(1)}) to (${result.x.toFixed(1)}, ${result.y.toFixed(1)}) to keep it off text`,
+    );
+  }
+  return result;
+}
 
-  const s = spaceOut(
-    stops.map((p) => p.s),
-    vh * 0.2,
+// The hero resting spot, in screen % at scroll 0. Desktop: just above the flight log's
+// top-right corner (the "follow the plane" note sits at its left). Phones: x 74, y 55.
+function heroRest(desktop: boolean, size: Size, layer: HTMLElement) {
+  const { w, h, vw, vh } = size;
+  const log = $("#hero .panel");
+  let spot = { x: 74, y: 55 };
+  if (desktop && log) {
+    const r = docRect(log);
+    spot = { x: ((r.right - w / 2 - 4) / vw) * 100, y: ((r.top - h / 2 - 16) / vh) * 100 };
+  }
+  return clearSpot("hero rest", spot, 0, 1, -6, size, layer);
+}
+
+// The whole flight, in screen units, timed against the sections' scroll positions.
+function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] | null {
+  const { vw, vh } = size;
+  const max = maxScroll();
+  const hero = $("#hero");
+  const about = $("#about");
+  const experience = $("#experience");
+  const quote = $("#quote");
+  const contactLabel = $("#contact p");
+  const cards = CARD_IDS.map((id) => document.getElementById(id));
+  if (!hero || !about || !experience || !quote || !contactLabel || cards.some((c) => !c))
+    return null;
+  const [firstCard] = cards as HTMLElement[];
+
+  // Scroll position at which the point `frac` of the way down `el` sits `screen` of the
+  // way down the screen.
+  const at = (el: Element, frac: number, screen: number) => {
+    const r = docRect(el);
+    return r.top + frac * r.height - screen * vh;
+  };
+
+  const rest = heroRest(desktop, size, layer);
+  const restY = rest.y;
+
+  // 3. behind the first project card, measured where that card is at that moment
+  const behindS = at(firstCard, 0.5, 0.6);
+  const first = docRect(firstCard);
+  const behind = { x: (((first.left + first.right) / 2) / vw) * 100, y: 60 };
+
+  // 4. the invoice leg ends behind a card covering (55, 52); time it so the next card
+  // in that column (or the invoice card itself on one-column layouts) is centred there
+  const cover =
+    (cards.slice(2) as HTMLElement[]).find((c) => {
+      const r = docRect(c);
+      return r.left <= 0.55 * vw && r.right >= 0.55 * vw;
+    }) ?? (cards[2] as HTMLElement);
+  const invoiceS = Math.max(at(cover, 0.5, 0.52), behindS + vh * 0.5);
+  const work = (f: number) => behindS + (invoiceS - behindS) * f;
+
+  const landing = clearSpot(
+    "contact landing",
+    { x: 80, y: 62 },
+    max,
+    0.45,
+    45,
+    size,
+    layer,
+  );
+
+  const keys: Key[] = [
+    // 1. hero rest, then a slight drift up and right
+    { s: 0, x: rest.x, y: restY, scale: 1, tilt: -6, facing: 1 },
+    { s: at(hero, 1, 0.5), x: rest.x + 3, y: restY - 3, scale: 1, tilt: -8, facing: 1 },
+    // 2. banner and about: near the right edge, easing slowly down, shrinking
+    {
+      s: at(about, 1, 0.5),
+      x: 80,
+      y: clamp(restY + 15, 45, 70),
+      scale: 0.6,
+      tilt: 14,
+      facing: 1,
+      slowTurn: true,
+    },
+    // 3. entering work: slip behind the first card
+    { s: behindS, ...behind, scale: 0.45 },
+    // 4. LLM Wiki: re-emerge on the right, steep dive, sweep left and out
+    { s: work(0.14), x: 87, y: 26, scale: 0.65 },
+    { s: work(0.26), x: 84, y: 52, scale: 0.65 },
+    { s: work(0.44), x: -14, y: 75, scale: 0.6, yEase: "sine.out" },
+    // Tool Access Controller: re-enter low on the left, climb to the upper right
+    { s: work(0.47), x: -14, y: 84, scale: 0.5, tilt: 0, facing: 1 },
+    { s: work(0.52), x: 10, y: 84, scale: 0.5 },
+    { s: work(0.76), x: 90, y: 43, scale: 0.5 },
+    // Invoice Exception Handler: right to left, slightly down, behind a card
+    { s: invoiceS, x: 55, y: 52, scale: 0.45 },
+    // Command Centre: re-appear at the left edge
+    { s: invoiceS + vh * 0.3, x: 8, y: 68, scale: 0.35 },
+    // 5. experience, toolkit, quote: parked at the left edge, nose up, drifting up
+    { s: at(experience, 0, 0.5), x: 5, y: 68, scale: 0.35, tilt: -90, facing: 1 },
+    { s: at(quote, 0.5, 0.5), x: 5, y: 52, scale: 0.15, tilt: -90, facing: 1, xEase: "none", yEase: "none" },
+    // 6. contact: out of view to the upper left, in near the label, glide to land
+    { s: at(quote, 0.5, 0.5) + vh * 0.1, x: -10, y: 18, scale: 0.4, tilt: 20, facing: 1 },
+    { s: at(contactLabel, 0.5, 0.48), x: 20, y: 48, scale: 0.4 },
+    {
+      s: max,
+      x: landing.x,
+      y: landing.y,
+      scale: 0.45,
+      tilt: 45,
+      facing: 1,
+      slowTurn: true,
+      xEase: "sine.out",
+      yEase: "sine.inOut",
+    },
+  ];
+  const s = inOrder(
+    keys.map((k) => k.s),
     max,
   );
-  s[0] = 0;
-  if (landS < max) s[s.length - 1] = max;
-
-  const points: Point[] = stops.map((p, i) => ({
-    x: clamp(p.x, bounds.left, bounds.right),
-    y: clamp(p.docY - s[i], bounds.top, bounds.bottom),
-    s: s[i],
-    level: p.level,
-  }));
-  return { points, bounds, max, workAt: Math.max(1, docRect(work).top - vh / 2) };
+  return keys.map((k, i) => ({ ...k, s: s[i] }));
 }
 
-// Phones: one short flight across the hero, from just off the left edge to a parking
-// spot at the hero's right edge (above the flight log), finished by the time that spot
-// is 45% down the screen. Positions here are document coordinates: once parked, the
-// plane stays with the hero and scrolls away with it.
-function phonePoints(plane: HTMLElement) {
-  const park = heroSpot(plane);
-  const h1 = $("#hero h1");
-  if (!park || !h1) return null;
-  const vh = window.innerHeight;
-  const max = maxScroll();
-  const end = clamp(park.y - vh * 0.45, 120, max);
-  const points: Point[] = [
-    { x: -plane.offsetWidth, y: docRect(h1).top, s: 0 },
-    { x: park.x, y: park.y, s: end },
-  ];
-  return { points, max };
-}
+// Index of the leg whose dotted trail is drawn: the final glide into Contact.
+const trailLeg = (keys: Key[]) => keys.length - 2;
 
-type Layout = { points: Point[]; max: number; workAt?: number; bounds?: Bounds };
+type Parts = {
+  layer: HTMLElement;
+  plane: HTMLElement;
+  body: HTMLElement;
+  shadow: HTMLElement;
+  trail: SVGGElement;
+};
 
-// Draws the plane: position, facing (mirrored on right-to-left legs, never upside down)
-// and a tilt of at most 35 degrees that eases in at the start of each leg.
-function makeRenderer(plane: HTMLElement, body: HTMLElement) {
+// One timeline scrubbed against the page scroll. Its time is the scroll position in
+// pixels; each leg tweens a proxy from one keyframe to the next.
+function buildFlight(parts: Parts, keys: Key[], size: Size) {
+  const { plane, body, shadow, trail } = parts;
+  const { w, h, vw, vh } = size;
+
+  // Facing and tilt for each leg, from its direction of travel unless overridden.
+  const legs = keys.slice(1).map((b, i) => ({ a: keys[i], b }));
+  let facing: 1 | -1 = keys[0].facing ?? 1;
+  const turns = legs.map(({ a, b }) => {
+    const dir = heading(((b.x - a.x) / 100) * vw, ((b.y - a.y) / 100) * vh, facing);
+    facing = b.facing ?? dir.facing;
+    return { facing, tilt: b.tilt ?? dir.tilt };
+  });
+
+  const proxy = {
+    x: keys[0].x,
+    y: keys[0].y,
+    scale: keys[0].scale,
+    tilt: keys[0].tilt ?? 0,
+    facing: keys[0].facing ?? 1,
+  };
+
+  // Trail dots along the last leg's real path, about every 9px (6px on phones).
+  const t = trailLeg(keys);
+  const { a: ta, b: tb } = legs[t];
+  const ex = gsap.parseEase(tb.xEase ?? "sine.inOut");
+  const ey = gsap.parseEase(tb.yEase ?? "sine.inOut");
+  const path = Array.from({ length: 201 }, (_, i) => {
+    const u = i / 200;
+    return {
+      u,
+      x: ((ta.x + (tb.x - ta.x) * ex(u)) / 100) * vw,
+      y: ((ta.y + (tb.y - ta.y) * ey(u)) / 100) * vh,
+    };
+  });
+  const gap = w > 100 ? 9 : 6;
+  const dots: { u: number; el: SVGCircleElement }[] = [];
+  let run = gap;
+  for (let i = 1; i < path.length; i++) {
+    run += Math.hypot(path[i].x - path[i - 1].x, path[i].y - path[i - 1].y);
+    if (run < gap) continue;
+    run = 0;
+    const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    dot.setAttribute("cx", path[i].x.toFixed(1));
+    dot.setAttribute("cy", path[i].y.toFixed(1));
+    dot.setAttribute("r", w > 100 ? "1.6" : "1.2");
+    dot.setAttribute("visibility", "hidden");
+    trail.appendChild(dot);
+    dots.push({ u: path[i].u, el: dot });
+  }
+  let shown = 0;
+
   const setX = gsap.quickSetter(plane, "x", "px");
   const setY = gsap.quickSetter(plane, "y", "px");
+  const setScale = gsap.quickSetter(plane, "scale");
   const setRotation = gsap.quickSetter(plane, "rotation", "deg");
   const setFacing = gsap.quickSetter(body, "scaleX");
-  return (x: number, y: number, points: Point[], time: number) => {
-    let i = 0;
-    while (i < points.length - 2 && time >= points[i + 1].s) i++;
-    const legs = points.slice(0, i + 2);
-    let facing: 1 | -1 = 1;
-    let previousTilt = 0;
-    let tilt = 0;
-    for (let k = 0; k + 1 < legs.length; k++) {
-      const a = legs[k];
-      const b = legs[k + 1];
-      const leg: { facing: 1 | -1; tilt: number } = b.level
-        ? { facing, tilt: 0 }
-        : heading(b.x - a.x, b.y - a.y, facing);
-      previousTilt = tilt;
-      facing = leg.facing;
-      tilt = leg.tilt;
-    }
-    const a = points[i];
-    const b = points[i + 1];
-    const u = clamp((time - a.s) / (b.s - a.s || 1), 0, 1);
-    const blend = clamp(u / 0.25, 0, 1);
-    const t = previousTilt + (tilt - previousTilt) * (0.5 - 0.5 * Math.cos(Math.PI * blend));
-    setX(x);
-    setY(y);
-    setFacing(facing);
-    setRotation(facing * t);
-  };
-}
+  const setShadowX = gsap.quickSetter(shadow, "x", "px");
+  const setShadowY = gsap.quickSetter(shadow, "y", "px");
+  const setShadowScale = gsap.quickSetter(shadow, "scale");
 
-// One scrubbed timeline whose time is the scroll position in pixels (it runs to the
-// bottom of the page, so in document mode the parked plane keeps following the hero). Each leg tweens a
-// proxy between two waypoints with function-based values that read the latest layout, so
-// invalidateOnRefresh re-measures them; the legs' timing is updated on every refresh.
-function buildFlight(
-  plane: HTMLElement,
-  body: HTMLElement,
-  measure: () => Layout | null,
-  mode: "screen" | "document",
-) {
-  let layout = measure();
-  if (!layout) return null;
-  const legCount = layout.points.length - 1;
-  const proxy = { x: layout.points[0].x, y: layout.points[0].y };
-  const render = makeRenderer(plane, body);
   const draw = () => {
-    if (!layout) return;
-    const time = tl.time();
-    let y = mode === "document" ? proxy.y - window.scrollY : proxy.y;
-    if (layout.bounds) y = clamp(y, layout.bounds.top, layout.bounds.bottom);
-    render(proxy.x, y, layout.points, time);
+    const px = (proxy.x / 100) * vw;
+    const py = (proxy.y / 100) * vh;
+    setX(px);
+    setY(py);
+    setScale(proxy.scale);
+    setFacing(proxy.facing);
+    setRotation(proxy.facing * proxy.tilt);
+    // the shadow follows position and scale only
+    setShadowX(px);
+    setShadowY(py + h * 0.62 * proxy.scale);
+    setShadowScale(proxy.scale);
+
+    const u = clamp((tl.time() - ta.s) / (tb.s - ta.s || 1), 0, 1);
+    let n = 0;
+    while (n < dots.length && dots[n].u <= u) n++;
+    for (let i = Math.min(n, shown); i < Math.max(n, shown); i++)
+      dots[i].el.setAttribute("visibility", i < n ? "visible" : "hidden");
+    shown = n;
   };
 
   const tl = gsap.timeline({
-    defaults: { ease: "sine.inOut" },
     onUpdate: draw,
-    scrollTrigger: { start: 0, end: "max", scrub: true, invalidateOnRefresh: true },
+    scrollTrigger: { start: 0, end: "max", scrub: 0.3 },
   });
-  const p = (i: number) => () => layout!.points[i];
-  const legs = Array.from({ length: legCount }, (_, i) =>
-    tl.fromTo(
-      proxy,
-      { x: () => p(i)().x, y: () => p(i)().y },
-      {
-        x: () => p(i + 1)().x,
-        y: () => p(i + 1)().y,
-        ease: layout!.points[i + 1].level ? "none" : "sine.inOut",
-        immediateRender: false,
-      },
-    ).recent() as gsap.core.Tween,
-  );
-  const fade = layout.workAt
-    ? (tl
-        .fromTo(plane, { opacity: HERO_OPACITY }, { opacity: 1, ease: "none" }, 0)
-        .recent() as gsap.core.Tween)
-    : null;
-  if (!fade) gsap.set(plane, { opacity: 1 });
-  const end = tl.set({}, {}, 0).recent() as gsap.core.Tween;
+  let tilt = proxy.tilt;
+  legs.forEach(({ a, b }, i) => {
+    const d = b.s - a.s;
+    const turn = turns[i];
+    const from = { immediateRender: false };
+    tl.fromTo(proxy, { x: a.x }, { x: b.x, duration: d, ease: b.xEase ?? "sine.inOut", ...from }, a.s)
+      .fromTo(proxy, { y: a.y }, { y: b.y, duration: d, ease: b.yEase ?? "sine.inOut", ...from }, a.s)
+      .fromTo(proxy, { scale: a.scale }, { scale: b.scale, duration: d, ease: "sine.inOut", ...from }, a.s)
+      .set(proxy, { facing: turn.facing }, a.s)
+      .fromTo(
+        proxy,
+        { tilt },
+        { tilt: turn.tilt, duration: b.slowTurn ? d : d / 3, ease: "sine.inOut", ...from },
+        a.s,
+      );
+    tilt = turn.tilt;
+  });
+  tl.set({}, {}, keys[keys.length - 1].s);
 
-  // Place every leg at its waypoint's scroll position.
-  const retime = () => {
-    if (!layout) return;
-    const pts = layout.points;
-    legs.forEach((leg, i) => {
-      leg.startTime(pts[i].s);
-      leg.duration(Math.max(1, pts[i + 1].s - pts[i].s));
-    });
-    fade?.startTime(0).duration(layout.workAt ?? 1);
-    end.startTime(layout.max);
-  };
-  retime();
-
-  // Re-measure before ScrollTrigger recalculates; the point count stays fixed so the
-  // legs line up (a missing element keeps the previous layout).
-  const onRefreshInit = () => {
-    const next = measure();
-    if (next && next.points.length === legCount + 1) layout = next;
-    retime();
-  };
-  ScrollTrigger.addEventListener("refreshInit", onRefreshInit);
-
-  tl.progress(clamp(window.scrollY / Math.max(1, layout.max), 0, 1));
+  tl.progress(clamp(window.scrollY / Math.max(1, maxScroll()), 0, 1));
   draw();
-  return () => ScrollTrigger.removeEventListener("refreshInit", onRefreshInit);
 }
 
-// Reduced motion: no flight. The plane rests at the hero spot and scrolls with the page
-// like any other content.
-function placeStill(layer: HTMLElement, plane: HTMLElement) {
-  const spot = heroSpot(plane);
-  if (!spot) return false;
+// Reduced motion: no flight and no trail. The plane rests at its hero spot and scrolls
+// with the page like any other content.
+function placeStill(parts: Parts, desktop: boolean, size: Size) {
+  const { layer, plane, shadow } = parts;
+  const rest = heroRest(desktop, size, layer);
+  const x = (rest.x / 100) * size.vw;
+  const y = (rest.y / 100) * size.vh;
   gsap.set(layer, { position: "absolute", height: 0, overflow: "visible" });
-  gsap.set(plane, { x: spot.x, y: spot.y, rotation: 0, opacity: HERO_OPACITY });
-  return true;
+  gsap.set(plane, { x, y, rotation: -6, scale: 1 });
+  gsap.set(shadow, { x, y: y + size.h * 0.62, scale: 1 });
 }
 
 // Smooth scrolling for mice and trackpads, driven from GSAP's ticker so ScrollTrigger and
@@ -330,6 +394,8 @@ export default function PlaneFlight() {
   const layer = useRef<HTMLDivElement>(null);
   const plane = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
+  const shadow = useRef<HTMLDivElement>(null);
+  const trail = useRef<SVGGElement>(null);
 
   useGSAP(
     () => {
@@ -342,34 +408,52 @@ export default function PlaneFlight() {
         },
         (context) => {
           const { desktop, reduce, fine } = context.conditions as Record<string, boolean>;
-          const cleanups: (() => void)[] = [];
-          if (fine && !reduce) cleanups.push(startLenis());
+          const stopLenis = fine && !reduce ? startLenis() : null;
 
-          // Waypoints are measured only once the web fonts have loaded, since they move
-          // the text the waypoints are placed around.
-          let alive = true;
-          const fonts = document.fonts?.ready ?? Promise.resolve();
-          fonts.then(() => {
-            if (!alive || !layer.current || !plane.current || !body.current) return;
-            const l = layer.current;
-            const p = plane.current;
-            const b = body.current;
-            const ctx = gsap.context(() => {
-              gsap.set(p, { xPercent: -50, yPercent: -50 }); // x/y are the plane's centre
-              const ready = reduce
-                ? placeStill(l, p)
-                : desktop
-                  ? buildFlight(p, b, () => desktopPoints(p), "screen")
-                  : buildFlight(p, b, () => phonePoints(p), "document");
-              if (typeof ready === "function") cleanups.push(ready);
-              if (ready) gsap.set(p, { visibility: "visible" });
+          let built: gsap.Context | null = null;
+          const build = () => {
+            built?.revert();
+            built = null;
+            const parts = {
+              layer: layer.current,
+              plane: plane.current,
+              body: body.current,
+              shadow: shadow.current,
+              trail: trail.current,
+            };
+            if (!parts.layer || !parts.plane || !parts.body || !parts.shadow || !parts.trail)
+              return;
+            const p = parts as Parts;
+            p.trail.replaceChildren();
+            const size: Size = {
+              w: p.plane.offsetWidth,
+              h: p.plane.offsetHeight,
+              vw: window.innerWidth,
+              vh: window.innerHeight,
+            };
+            built = gsap.context(() => {
+              // x/y are the centres of the plane and its shadow
+              gsap.set([p.plane, p.shadow], { xPercent: -50, yPercent: -50 });
+              if (reduce) placeStill(p, desktop, size);
+              else {
+                const keys = choreography(desktop, size, p.layer);
+                if (!keys) return;
+                buildFlight(p, keys, size);
+              }
+              gsap.set([p.plane, p.shadow], { visibility: "visible" });
             });
-            cleanups.push(() => ctx.revert());
             ScrollTrigger.refresh();
+          };
+
+          // Measured only once the web fonts have loaded, since they move the layout.
+          let ready = false;
+          (document.fonts?.ready ?? Promise.resolve()).then(() => {
+            ready = true;
+            build();
           });
 
-          // Re-measure on resize and whenever the page's height changes. Phones ignore
-          // height-only resizes: the browser bar sliding in and out causes those.
+          // Rebuild when the width changes (or, on desktop, the height) and when the page
+          // length changes. Phones ignore height-only resizes from the address bar.
           const size = () =>
             [
               window.innerWidth,
@@ -381,9 +465,9 @@ export default function PlaneFlight() {
           const onResize = () => {
             window.clearTimeout(timer);
             timer = window.setTimeout(() => {
-              if (size() === last) return;
+              if (!ready || size() === last) return;
               last = size();
-              ScrollTrigger.refresh();
+              build();
             }, 150);
           };
           const observer = new ResizeObserver(onResize);
@@ -391,11 +475,13 @@ export default function PlaneFlight() {
           window.addEventListener("resize", onResize);
 
           return () => {
-            alive = false;
+            ready = false;
             window.clearTimeout(timer);
             observer.disconnect();
             window.removeEventListener("resize", onResize);
-            cleanups.reverse().forEach((fn) => fn());
+            built?.revert();
+            trail.current?.replaceChildren();
+            stopLenis?.();
           };
         },
       );
@@ -404,12 +490,21 @@ export default function PlaneFlight() {
     { scope: layer },
   );
 
+  // Fixed over the screen, under the sticky nav (z-50) and under the cards, banner and
+  // flight log (z-index 2), but over plain text.
   return (
     <div
       ref={layer}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-x-0 top-0 z-40 h-screen overflow-hidden supports-[height:100dvh]:h-dvh"
+      className="pointer-events-none fixed inset-x-0 top-0 z-[1] h-screen overflow-hidden supports-[height:100dvh]:h-dvh"
     >
+      <svg className="absolute inset-0 h-full w-full overflow-visible">
+        <g ref={trail} fill={TRAIL_COLOR} fillOpacity="0.25" />
+      </svg>
+      <div
+        ref={shadow}
+        className="invisible absolute top-0 left-0 h-[10px] w-[54px] rounded-full bg-[#111214] opacity-[0.16] blur-[6px] lg:h-4 lg:w-[90px]"
+      />
       <div ref={plane} className="invisible absolute top-0 left-0 will-change-transform">
         <div ref={body}>
           <PaperPlane />

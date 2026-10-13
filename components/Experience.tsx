@@ -34,7 +34,7 @@ export default function Experience() {
 
         <ol className="mt-10 space-y-8">
           {roles.map((entry) => (
-            <li key={entry.company} className="panel overflow-hidden">
+            <li key={entry.company} className="panel relative z-[2] overflow-hidden">
               <PanelBar>
                 <span className="flex min-w-0 items-center gap-2">
                   <StatusDot />

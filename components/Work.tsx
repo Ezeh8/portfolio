@@ -26,7 +26,7 @@ export default function Work() {
         <ul className="mt-10 grid gap-6 md:grid-cols-2 md:gap-8">
           {projects.map((project, i) => (
             <li key={project.id}>
-              <article id={project.id} className="panel flex h-full flex-col overflow-hidden">
+              <article id={project.id} className="panel relative z-[2] flex h-full flex-col overflow-hidden">
                 <PanelBar>
                   <span className="flex items-center gap-2">
                     <StatusDot />

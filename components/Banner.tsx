@@ -31,7 +31,7 @@ export default function Banner() {
   return (
     // The wrapper clips the oversized, tilted band; its vertical padding leaves room
     // for the tilt so the band's corners are never cut off at the top or bottom.
-    <div className="overflow-hidden py-[max(2rem,3vw)]">
+    <div className="relative z-[2] overflow-hidden py-[max(2rem,3vw)]">
       <div className="-mx-[10vw] -rotate-2 bg-ink py-4 text-bg">
         <div className="banner-track flex w-max font-mono text-sm uppercase tracking-[0.18em] sm:text-base">
           {Array.from({ length: COPIES * 2 }, (_, i) => (
