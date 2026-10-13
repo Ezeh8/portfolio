@@ -54,69 +54,54 @@ const onScreen = (k: Key) => k.x >= 0 && k.x <= 100 && k.y >= 0 && k.y <= 100;
 
 export type Size = { w: number; h: number; vw: number; vh: number };
 
-// Text lines, links and buttons, and cards, as document boxes: what a resting plane must
-// avoid.
-function obstacles(layer: HTMLElement) {
-  const boxes: ReturnType<typeof docRect>[] = [];
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  const range = document.createRange();
-  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-    if (!node.textContent?.trim() || layer.contains(node)) continue;
-    range.selectNodeContents(node);
-    for (const r of range.getClientRects()) {
-      if (!r.width || !r.height) continue;
-      boxes.push({
-        left: r.left + window.scrollX,
-        top: r.top + window.scrollY,
-        right: r.right + window.scrollX,
-        bottom: r.bottom + window.scrollY,
-        height: r.height,
-      });
+// Overlap between the landed plane's lowest point and the top of the letters, in px.
+const LANDING_OVERLAP = 4;
+// The landed plane: nose left, tilted gently down.
+const LANDING_TILT = 10;
+const LANDING_SCALE = 0.45;
+
+// How far the plane's lowest point sits below its centre, in px, when drawn facing
+// `facing` at `tilt` and `scale`. Read from the plane's own SVG shapes.
+function lowestPoint(plane: HTMLElement, size: Size, facing: 1 | -1, tilt: number, scale: number) {
+  const svg = plane.querySelector("svg");
+  const box = svg?.viewBox.baseVal;
+  if (!svg || !box?.width || !box.height) return (size.h / 2) * scale;
+  const rad = ((facing < 0 ? -1 : 1) * tilt * Math.PI) / 180;
+  let lowest = -Infinity;
+  svg.querySelectorAll("polygon").forEach((polygon) => {
+    for (const point of Array.from(polygon.points)) {
+      const x = facing * ((point.x / box.width) * size.w - size.w / 2);
+      const y = (point.y / box.height) * size.h - size.h / 2;
+      lowest = Math.max(lowest, (x * Math.sin(rad) + y * Math.cos(rad)) * scale);
     }
-  }
-  document
-    .querySelectorAll("main a, main button, footer a, .panel")
-    .forEach((el) => boxes.push(docRect(el)));
-  return boxes;
+  });
+  return Number.isFinite(lowest) ? lowest : (size.h / 2) * scale;
 }
 
-// Moves a resting spot (in screen %) into the nearest empty space at scroll position s.
-function clearSpot(
-  name: string,
-  spot: { x: number; y: number },
-  s: number,
-  scale: number,
-  tilt: number,
-  size: Size,
-  layer: HTMLElement,
-) {
-  const { w, h, vw, vh } = size;
-  const rad = (Math.abs(tilt) * Math.PI) / 180;
-  const bw = (w * Math.cos(rad) + h * Math.sin(rad)) * scale + 12;
-  const bh = (w * Math.sin(rad) + h * Math.cos(rad)) * scale + 12;
-  const onScreen = obstacles(layer).map((o) => ({
-    left: o.left,
-    right: o.right,
-    top: o.top - s,
-    bottom: o.bottom - s,
-  }));
-  const area = { left: 0, right: vw, top: navBottom(), bottom: vh };
-  const found = nearestClear(
-    (spot.x / 100) * vw,
-    (spot.y / 100) * vh,
-    bw,
-    bh,
-    onScreen,
-    area,
-    Math.round(Math.min(vw, vh) * 0.4),
-  );
-  const result = { x: (found.x / vw) * 100, y: (found.y / vh) * 100 };
-  if (found.moved && process.env.NODE_ENV !== "production") {
-    console.info(
-      `[plane] ${name} nudged from (${spot.x.toFixed(1)}, ${spot.y.toFixed(1)}) to (${result.x.toFixed(1)}, ${result.y.toFixed(1)}) to keep it off text`,
-    );
+// The landing spot (last keyframe), in screen % at the bottom of the scroll: the plane
+// sits on top of the highlighted word of the closing headline ("touch"), centred on it,
+// its lowest point LANDING_OVERLAP px into the tops of the letters. The letters' top
+// comes from the font's own glyph metrics, not the line box.
+function headlineLanding(word: HTMLElement, plane: HTMLElement, size: Size, max: number) {
+  const { vw, vh } = size;
+  const r = docRect(word);
+  const style = getComputedStyle(word);
+  let glyphTop = r.top + r.height * 0.2;
+  const ctx = document.createElement("canvas").getContext("2d");
+  if (ctx) {
+    ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const m = ctx.measureText((word.textContent ?? "").toLowerCase());
+    if (m.fontBoundingBoxAscent) glyphTop = r.top + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
   }
-  return result;
+  const below = lowestPoint(plane, size, -1, LANDING_TILT, LANDING_SCALE);
+  const x = (r.left + r.right) / 2;
+  const y = glyphTop - max + LANDING_OVERLAP - below;
+  if (process.env.NODE_ENV !== "production") {
+    // the plane's top edge (roughly) must clear the nav, the headline's bottom the screen
+    if (y - (size.h * LANDING_SCALE) / 2 < navBottom() || r.bottom - max > vh)
+      console.warn("[plane] the closing headline is not fully on screen, with room above it, at the bottom of the scroll");
+  }
+  return { x: (x / vw) * 100, y: (y / vh) * 100 };
 }
 
 // The hero resting spot (leg 0), in screen % at scroll 0, measured from the "follow the
@@ -190,7 +175,7 @@ function heroRest(size: Size) {
 }
 
 // The whole flight, in screen units, timed against the sections' scroll positions.
-function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] | null {
+function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] | null {
   const { vw, vh } = size;
   const max = maxScroll();
   const hero = $("#hero");
@@ -198,9 +183,9 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
   const work = $("#work");
   const toolkit = $("#toolkit");
   const quote = $("#quote");
-  const contactLabel = $("#contact p");
+  const touch = $("#contact .squiggle") as HTMLElement | null;
   const firstCard = document.getElementById(CARD_IDS[0]);
-  if (!hero || !about || !work || !toolkit || !quote || !contactLabel || !firstCard) return null;
+  if (!hero || !about || !work || !toolkit || !quote || !touch || !firstCard) return null;
 
   // Scroll position at which the point `frac` of the way down `el` sits `screen` of the
   // way down the screen.
@@ -217,15 +202,8 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
   const first = docRect(firstCard);
   const behind = { x: (((first.left + first.right) / 2) / vw) * 100, y: 60 };
 
-  const landing = clearSpot(
-    "contact landing",
-    { x: 20, y: 62 },
-    max,
-    0.45,
-    45,
-    size,
-    layer,
-  );
+  // 9. on top of "touch" in the closing headline, at the bottom of the scroll
+  const landing = headlineLanding(touch, plane, size, max);
 
   // The whole path runs mirrored: the plane faces left for most of it.
   // Leg N runs from keyframe N-1 to keyframe N; keyframe 0 is the start. The numbers
@@ -283,7 +261,8 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
     // 6. Pull quote: one glide right, rising, into the off-screen upper-right leg
     // leg 6
     { name: "quote glide right", s: at(quote, 0.5, 0.5), x: 85, y: 28, scale: 0.4, maxTilt: 20 },
-    // 6. contact: out of view to the upper right, in on the right, glide down-left to land
+    // 7. closing block: out of view to the upper right, back in from the upper right,
+    // glide down-left onto the headline
     // leg 7
     {
       name: "off-screen upper right",
@@ -294,16 +273,22 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
       tilt: 20,
       facing: -1,
     },
-    // leg 8
-    { name: "contact entry", s: at(contactLabel, 0.5, 0.48), x: 80, y: 48, scale: 0.4 },
-    // leg 9
+    // leg 8: in from the upper right, on the way to the landing spot
     {
-      name: "contact landing",
+      name: "closing entry from upper right",
+      s: at(touch, 0.5, 0.6),
+      x: 80,
+      y: Math.min(landing.y - 6, 48),
+      scale: 0.4,
+    },
+    // leg 9: completes exactly at the bottom of the scroll
+    {
+      name: "landing on headline",
       s: max,
       x: landing.x,
       y: landing.y,
-      scale: 0.45,
-      tilt: 45,
+      scale: LANDING_SCALE,
+      tilt: LANDING_TILT,
       facing: -1,
       slowTurn: true,
       xEase: "sine.out",
@@ -317,7 +302,8 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
   return keys.map((k, i) => ({ ...k, s: s[i] }));
 }
 
-// Index of the leg whose dotted trail is drawn: the final glide into Contact.
+// Index of the leg whose dotted trail is drawn: the final glide onto the headline. It
+// ends at the landing spot, under the plane.
 const trailLeg = (keys: Key[]) => keys.length - 2;
 
 type Parts = {
@@ -562,7 +548,7 @@ export default function PlaneFlight() {
               gsap.set([p.plane, p.shadow], { xPercent: -50, yPercent: -50 });
               if (reduce) placeStill(p, desktop, size);
               else {
-                const keys = choreography(desktop, size, p.layer);
+                const keys = choreography(desktop, size, p.plane);
                 if (!keys) return;
                 const flight = buildFlight(p, keys, size);
                 // Dev-only debug overlay. The NODE_ENV check is replaced at build time,

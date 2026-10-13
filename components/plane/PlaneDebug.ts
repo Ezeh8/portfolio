@@ -84,7 +84,7 @@ export function attachPlaneDebug({ keys, size, tl, proxy }: Flight) {
 
   document.body.append(svg, panel);
 
-  const sections = Array.from(document.querySelectorAll<HTMLElement>("main section[id]"));
+  const sections = Array.from(document.querySelectorAll<HTMLElement>("main section[id], footer[id]"));
   const update = () => {
     const middle = window.innerHeight / 2;
     const section =

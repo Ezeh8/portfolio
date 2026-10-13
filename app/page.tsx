@@ -3,7 +3,6 @@ import Banner from "@/components/Banner";
 import CardHighlights from "@/components/CardHighlights";
 import Contact from "@/components/Contact";
 import Experience from "@/components/Experience";
-import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Nav from "@/components/Nav";
 import PlaneLayer from "@/components/plane/PlaneLayer";
@@ -24,9 +23,8 @@ export default function Home() {
         <Experience />
         <Toolkit />
         <Quote />
-        <Contact />
       </main>
-      <Footer />
+      <Contact />
       <CardHighlights />
     </>
   );

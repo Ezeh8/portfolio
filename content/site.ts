@@ -33,8 +33,7 @@ export type Role = {
   bullets: string[];
 };
 
-// TODO: add email address (e.g. "name@domain.com"). While null, the Email button,
-// the large email link, note 3 and the transmission panel are all hidden.
+// TODO: add email address (e.g. "name@domain.com"). While null, the Email button is hidden.
 const email: string | null = null;
 
 export const site = {
@@ -196,7 +195,6 @@ export const site = {
   },
 
   contact: {
-    label: "05 / Contact",
     headline: { text: "get in touch.", highlight: "touch" } satisfies Headline,
     text: "Based in Nigeria, working remotely across time zones. My inbox is open to anyone building where AI meets operations ~ say hello.",
     email: email as string | null,
@@ -205,24 +203,14 @@ export const site = {
       { label: "LinkedIn", href: null }, // TODO: add LinkedIn profile URL
       { label: "GitHub", href: "https://github.com/Ezeh8" },
     ] satisfies Link[],
-    note: "a real person reads every message", // FILLER
-    transmission: {
-      header: "transmission · new message",
-      subject: "working together",
-      body: "Hi Ezeh, I'm building something where AI meets operations and want to talk.",
-      button: "send →",
-    },
     replies: "replies within 24 hours", // TODO: confirm before launch
   },
 
   footer: {
-    education: {
-      label: "Education",
-      items: ["B.Sc. Business Administration, University of Lagos"],
-    },
-    certificates: {
-      label: "Certificates",
+    credentials: {
+      label: "Education and certifications",
       items: [
+        "B.Sc. Business Administration, University of Lagos",
         "Introduction to Model Context Protocol (Anthropic)",
         "Introduction to Agent Skills (Anthropic)",
         "Deploy Multi-Agent Systems with Gemini Enterprise Agent Platform (Google)",
