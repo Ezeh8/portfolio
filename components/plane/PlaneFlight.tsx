@@ -45,7 +45,8 @@ type Key = {
 
 type Size = { w: number; h: number; vw: number; vh: number };
 
-// Text lines, cards and the banner, as document boxes: what a resting plane must avoid.
+// Text lines, links and buttons, and cards, as document boxes: what a resting plane must
+// avoid.
 function obstacles(layer: HTMLElement) {
   const boxes: ReturnType<typeof docRect>[] = [];
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -64,7 +65,9 @@ function obstacles(layer: HTMLElement) {
       });
     }
   }
-  document.querySelectorAll(".panel, [data-plane-cover]").forEach((el) => boxes.push(docRect(el)));
+  document
+    .querySelectorAll("main a, main button, footer a, .panel")
+    .forEach((el) => boxes.push(docRect(el)));
   return boxes;
 }
 
@@ -108,14 +111,15 @@ function clearSpot(
 }
 
 // The hero resting spot, in screen % at scroll 0. Desktop: just above the flight log's
-// top-right corner (the "follow the plane" note sits at its left). Phones: x 74, y 55.
+// top-left corner, over the gap between the headline and the flight log. Phones: x 26,
+// y 55.
 function heroRest(desktop: boolean, size: Size, layer: HTMLElement) {
-  const { w, h, vw, vh } = size;
+  const { h, vw, vh } = size;
   const log = $("#hero .panel");
-  let spot = { x: 74, y: 55 };
+  let spot = { x: 26, y: 55 };
   if (desktop && log) {
     const r = docRect(log);
-    spot = { x: ((r.right - w / 2 - 4) / vw) * 100, y: ((r.top - h / 2 - 16) / vh) * 100 };
+    spot = { x: ((r.left - 4) / vw) * 100, y: ((r.top - h / 2 - 16) / vh) * 100 };
   }
   return clearSpot("hero rest", spot, 0, 1, -6, size, layer);
 }
@@ -149,19 +153,19 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
   const first = docRect(firstCard);
   const behind = { x: (((first.left + first.right) / 2) / vw) * 100, y: 60 };
 
-  // 4. the invoice leg ends behind a card covering (55, 52); time it so the next card
+  // 4. the invoice leg ends behind a card covering (45, 52); time it so the next card
   // in that column (or the invoice card itself on one-column layouts) is centred there
   const cover =
     (cards.slice(2) as HTMLElement[]).find((c) => {
       const r = docRect(c);
-      return r.left <= 0.55 * vw && r.right >= 0.55 * vw;
+      return r.left <= 0.45 * vw && r.right >= 0.45 * vw;
     }) ?? (cards[2] as HTMLElement);
   const invoiceS = Math.max(at(cover, 0.5, 0.52), behindS + vh * 0.5);
   const work = (f: number) => behindS + (invoiceS - behindS) * f;
 
   const landing = clearSpot(
     "contact landing",
-    { x: 80, y: 62 },
+    { x: 20, y: 62 },
     max,
     0.45,
     45,
@@ -169,47 +173,48 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
     layer,
   );
 
+  // The whole path runs mirrored: the plane faces left for most of it.
   const keys: Key[] = [
-    // 1. hero rest, then a slight drift up and right
-    { s: 0, x: rest.x, y: restY, scale: 1, tilt: -6, facing: 1 },
-    { s: at(hero, 1, 0.5), x: rest.x + 3, y: restY - 3, scale: 1, tilt: -8, facing: 1 },
-    // 2. banner and about: near the right edge, easing slowly down, shrinking
+    // 1. hero rest, then a slight drift up and left
+    { s: 0, x: rest.x, y: restY, scale: 1, tilt: -6, facing: -1 },
+    { s: at(hero, 1, 0.5), x: rest.x - 3, y: restY - 3, scale: 1, tilt: -8, facing: -1 },
+    // 2. banner and about: near the left edge, easing slowly down, shrinking
     {
       s: at(about, 1, 0.5),
-      x: 80,
+      x: 20,
       y: clamp(restY + 15, 45, 70),
       scale: 0.6,
       tilt: 14,
-      facing: 1,
+      facing: -1,
       slowTurn: true,
     },
     // 3. entering work: slip behind the first card
     { s: behindS, ...behind, scale: 0.45 },
-    // 4. LLM Wiki: re-emerge on the right, steep dive, sweep left and out
-    { s: work(0.14), x: 87, y: 26, scale: 0.65 },
-    { s: work(0.26), x: 84, y: 52, scale: 0.65 },
-    { s: work(0.44), x: -14, y: 75, scale: 0.6, yEase: "sine.out" },
-    // Tool Access Controller: re-enter low on the left, climb to the upper right
-    { s: work(0.47), x: -14, y: 84, scale: 0.5, tilt: 0, facing: 1 },
-    { s: work(0.52), x: 10, y: 84, scale: 0.5 },
-    { s: work(0.76), x: 90, y: 43, scale: 0.5 },
-    // Invoice Exception Handler: right to left, slightly down, behind a card
-    { s: invoiceS, x: 55, y: 52, scale: 0.45 },
-    // Command Centre: re-appear at the left edge
-    { s: invoiceS + vh * 0.3, x: 8, y: 68, scale: 0.35 },
-    // 5. experience, toolkit, quote: parked at the left edge, nose up, drifting up
-    { s: at(experience, 0, 0.5), x: 5, y: 68, scale: 0.35, tilt: -90, facing: 1 },
-    { s: at(quote, 0.5, 0.5), x: 5, y: 52, scale: 0.15, tilt: -90, facing: 1, xEase: "none", yEase: "none" },
-    // 6. contact: out of view to the upper left, in near the label, glide to land
-    { s: at(quote, 0.5, 0.5) + vh * 0.1, x: -10, y: 18, scale: 0.4, tilt: 20, facing: 1 },
-    { s: at(contactLabel, 0.5, 0.48), x: 20, y: 48, scale: 0.4 },
+    // 4. LLM Wiki: re-emerge on the left, steep dive, sweep right and out
+    { s: work(0.14), x: 13, y: 26, scale: 0.65 },
+    { s: work(0.26), x: 16, y: 52, scale: 0.65 },
+    { s: work(0.44), x: 114, y: 75, scale: 0.6, yEase: "sine.out" },
+    // Tool Access Controller: re-enter low on the right, climb to the upper left
+    { s: work(0.47), x: 114, y: 84, scale: 0.5, tilt: 0, facing: -1 },
+    { s: work(0.52), x: 90, y: 84, scale: 0.5 },
+    { s: work(0.76), x: 10, y: 43, scale: 0.5 },
+    // Invoice Exception Handler: left to right, slightly down, behind a card
+    { s: invoiceS, x: 45, y: 52, scale: 0.45 },
+    // Command Centre: re-appear at the right edge
+    { s: invoiceS + vh * 0.3, x: 92, y: 68, scale: 0.35 },
+    // 5. experience, toolkit, quote: parked at the right edge, nose up, drifting up
+    { s: at(experience, 0, 0.5), x: 95, y: 68, scale: 0.35, tilt: -90, facing: -1 },
+    { s: at(quote, 0.5, 0.5), x: 95, y: 52, scale: 0.15, tilt: -90, facing: -1, xEase: "none", yEase: "none" },
+    // 6. contact: out of view to the upper right, in on the right, glide down-left to land
+    { s: at(quote, 0.5, 0.5) + vh * 0.1, x: 110, y: 18, scale: 0.4, tilt: 20, facing: -1 },
+    { s: at(contactLabel, 0.5, 0.48), x: 80, y: 48, scale: 0.4 },
     {
       s: max,
       x: landing.x,
       y: landing.y,
       scale: 0.45,
       tilt: 45,
-      facing: 1,
+      facing: -1,
       slowTurn: true,
       xEase: "sine.out",
       yEase: "sine.inOut",
@@ -351,7 +356,9 @@ function placeStill(parts: Parts, desktop: boolean, size: Size) {
   const x = (rest.x / 100) * size.vw;
   const y = (rest.y / 100) * size.vh;
   gsap.set(layer, { position: "absolute", height: 0, overflow: "visible" });
-  gsap.set(plane, { x, y, rotation: -6, scale: 1 });
+  // facing left (mirrored), nose slightly up
+  gsap.set(plane, { x, y, rotation: 6, scale: 1 });
+  gsap.set(parts.body, { scaleX: -1 });
   gsap.set(shadow, { x, y: y + size.h * 0.62, scale: 1 });
 }
 
