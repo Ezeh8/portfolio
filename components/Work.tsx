@@ -32,7 +32,7 @@ export default function Work() {
                     <StatusDot />
                     {panelStatus}
                   </span>
-                  <span className="text-text/60">scan-{String(i + 1).padStart(2, "0")}</span>
+                  <span className="text-text-muted">scan-{String(i + 1).padStart(2, "0")}</span>
                 </PanelBar>
 
                 <div className="flex flex-1 flex-col p-5 sm:p-7">
@@ -44,7 +44,7 @@ export default function Work() {
                       {project.chips.map((chip) => (
                         <li
                           key={chip}
-                          className="rounded-full border-2 border-ink px-2.5 py-0.5 font-mono text-[11px]"
+                          className="rounded-full border-(length:--border-width) border-line px-2.5 py-0.5 font-mono text-[11px]"
                         >
                           {chip}
                         </li>
@@ -56,7 +56,7 @@ export default function Work() {
                     {/* dashed until the card reaches mid-screen; CardHighlights sets data-lit */}
                     <p
                       data-readout
-                      className="border-t-2 border-dashed border-accent pt-3 font-mono text-sm text-accent-text transition-colors duration-300 data-[lit]:border-solid data-[lit]:bg-accent-soft"
+                      className="border-t-(length:--border-width) border-dashed border-accent-text pt-3 font-mono text-sm text-accent-text transition-colors duration-300 data-[lit]:border-solid data-[lit]:bg-accent-soft dark:data-[lit]:text-text"
                     >
                       {project.readout}
                     </p>

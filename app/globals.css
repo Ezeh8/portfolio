@@ -1,24 +1,89 @@
 @import "tailwindcss";
 
+/* `dark:` utilities follow the data-theme attribute on <html>, not the system setting
+   (the head script in app/layout.tsx resolves the system setting into data-theme). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Theme tokens. Light is the original look; every color on the site comes from here. */
 :root {
   --bg: #e6e7ea;
-  --text: #111214;
-  --accent: #1f3c8c;
-  --accent-text: #1f3c8c;
-
   --card: #f4f5f7;
-  --ink: #111214;
+  --text: #111214;
+  /* the original muted grey: --text at 60% (4.57:1 on --bg, 4.75:1 on --card) */
+  --text-muted: color-mix(in oklab, var(--text) 60%, transparent);
+  /* the original handwritten-note color: --text at 80% */
+  --note: color-mix(in oklab, var(--text) 80%, transparent);
+  --line: #111214; /* card, chip, pill and header-bar borders */
+  --shadow: #111214; /* hard offset card shadows */
+  --btn-bg: #111214;
+  --btn-text: #e6e7ea;
+  --accent: #1f3c8c; /* filled shapes only */
+  --accent-text: #1f3c8c; /* highlighted words, readouts, lines, status dots, links */
   --accent-soft: #d0d8ef;
+  --banner-bg: #111214;
+  --banner-text: #e6e7ea;
+  --trail: #111214; /* drawn at 25% opacity */
+  --border-width: 2px;
+
+  /* paper plane */
+  --plane-near-from: #2e4fa8;
+  --plane-near-to: #1f3c8c;
+  --plane-underside: #14295f;
+  --plane-top-from: #4f6fc4;
+  --plane-top-to: #2e4fa8;
+  --plane-inner: #3a5bb6;
+  --plane-crease-light: #8098d8;
+  --plane-crease-dark: #0f1f4a;
+  --plane-shadow: #111214;
+  --plane-shadow-opacity: 0.16;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0c0e;
+  --card: #15171b;
+  --text: #edeef0;
+  --text-muted: #9a9ea6;
+  --note: #9a9ea6;
+  --line: #3a3d44;
+  --shadow: #1f3c8c;
+  --btn-bg: #1f3c8c;
+  --btn-text: #edeef0;
+  --accent: #1f3c8c;
+  --accent-text: #7b95e8;
+  --accent-soft: #1a2a57;
+  --banner-bg: #1f3c8c;
+  --banner-text: #edeef0;
+  --trail: #edeef0;
+  --border-width: 1.5px;
+
+  --plane-near-from: #3a5bb6;
+  --plane-near-to: #2e4fa8;
+  --plane-underside: #1f3c8c;
+  --plane-top-from: #6a86d6;
+  --plane-top-to: #3a5bb6;
+  --plane-inner: #4f6fc4;
+  --plane-crease-light: #9db1e6;
+  /* a soft glow instead of a dark shadow */
+  --plane-shadow: #7b95e8;
+  --plane-shadow-opacity: 0.18;
 }
 
 @theme inline {
   --color-bg: var(--bg);
+  --color-card: var(--card);
   --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-note: var(--note);
+  --color-line: var(--line);
+  --color-shadow: var(--shadow);
+  --color-btn-bg: var(--btn-bg);
+  --color-btn-text: var(--btn-text);
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
-  --color-card: var(--card);
-  --color-ink: var(--ink);
   --color-accent-soft: var(--accent-soft);
+  --color-banner-bg: var(--banner-bg);
+  --color-banner-text: var(--banner-text);
+  --color-trail: var(--trail);
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
   --font-mono: var(--font-mono);
@@ -32,13 +97,13 @@ body {
 }
 
 @layer components {
-  /* Cards and panels: ink border, hard shadow, hover lift. `--tilt` lets a card keep
+  /* Cards and panels: border, hard shadow, hover lift. `--tilt` lets a card keep
      its rotation while lifting. */
   .panel {
     background: var(--card);
-    border: 2px solid var(--ink);
+    border: var(--border-width) solid var(--line);
     border-radius: 14px;
-    box-shadow: 2px 2px 0 var(--ink);
+    box-shadow: 2px 2px 0 var(--shadow);
     transform: rotate(var(--tilt, 0deg));
     transition:
       transform 150ms ease,
@@ -47,22 +112,23 @@ body {
 
   @media (min-width: 768px) {
     .panel {
-      box-shadow: 4px 4px 0 var(--ink);
+      box-shadow: 4px 4px 0 var(--shadow);
     }
   }
 
   @media (hover: hover) {
     .panel:hover {
       transform: translate(-2px, -2px) rotate(var(--tilt, 0deg));
-      box-shadow: 6px 6px 0 var(--ink);
+      box-shadow: 6px 6px 0 var(--shadow);
     }
   }
 
   /* Headline highlight: a repeating squiggle background on an inline span, so the
-     underline follows the text across line breaks. The stroke is --accent (#1F3C8C);
-     CSS variables can't be used inside a data URI. */
+     underline follows the text across line breaks. CSS variables can't be used inside
+     a data URI, so each theme has its own image, kept together here:
+     light strokes #1F3C8C (light --accent-text), dark strokes #7B95E8 (dark --accent-text). */
   .squiggle {
-    color: var(--accent);
+    color: var(--accent-text);
     padding-bottom: 0.14em;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%231F3C8C' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: repeat-x;
@@ -70,6 +136,24 @@ body {
     background-size: 0.5em 0.2em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
+  }
+
+  [data-theme="dark"] .squiggle {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%237B95E8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+}
+
+/* Theme switch: only while the toggle's switch is running (the class is added on click,
+   never on page load), colors fade over 200ms. Transforms are never transitioned. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-switching,
+  html.theme-switching *,
+  html.theme-switching *::before,
+  html.theme-switching *::after {
+    transition-property: color, background-color, border-color, box-shadow, fill, stroke !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease !important;
+    transition-delay: 0s !important;
   }
 }
 

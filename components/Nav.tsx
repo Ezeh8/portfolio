@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { site } from "@/content/site";
+import ThemeToggle from "./ThemeToggle";
 import { Container } from "./ui";
 
 export default function Nav() {
@@ -16,7 +17,7 @@ export default function Nav() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-ink bg-bg/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b-(length:--border-width) border-line bg-bg/95 backdrop-blur">
       <Container>
         <nav aria-label="Main" className="flex h-16 items-center justify-between gap-4">
           <a
@@ -25,7 +26,7 @@ export default function Nav() {
             className="font-display text-2xl font-extrabold tracking-tight"
           >
             {wordmark.text}
-            <span className="text-accent">{wordmark.dot}</span>
+            <span className="text-accent-text">{wordmark.dot}</span>
           </a>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -38,27 +39,33 @@ export default function Nav() {
                 </li>
               ))}
             </ul>
-            <a
-              href={cta.href}
-              className="inline-flex h-9 items-center rounded-full border-2 border-ink px-4 font-mono text-xs hover:bg-ink hover:text-bg"
-            >
-              {cta.label}
-            </a>
+            <div className="flex items-center gap-2">
+              <a
+                href={cta.href}
+                className="inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs hover:bg-btn-bg hover:text-btn-text"
+              >
+                {cta.label}
+              </a>
+              <ThemeToggle className="h-9 w-9" />
+            </div>
           </div>
 
-          <button
-            type="button"
-            className="inline-flex h-10 items-center rounded-full border-2 border-ink px-4 font-mono text-xs uppercase tracking-[0.12em] md:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? "Close" : "Menu"}
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle className="h-10 w-10" />
+            <button
+              type="button"
+              className="inline-flex h-10 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs uppercase tracking-[0.12em]"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? "Close" : "Menu"}
+            </button>
+          </div>
         </nav>
       </Container>
 
-      <div id="mobile-menu" hidden={!open} className="border-t-2 border-ink md:hidden">
+      <div id="mobile-menu" hidden={!open} className="border-t-(length:--border-width) border-line md:hidden">
         <Container>
           <ul className="flex flex-col py-4">
             {links.map((link) => (
@@ -75,7 +82,7 @@ export default function Nav() {
             <li className="pt-3">
               <a
                 href={cta.href}
-                className="inline-flex h-11 items-center rounded-full border-2 border-ink px-5 font-mono text-sm"
+                className="inline-flex h-11 items-center rounded-full border-(length:--border-width) border-line px-5 font-mono text-sm"
                 onClick={() => setOpen(false)}
               >
                 {cta.label}

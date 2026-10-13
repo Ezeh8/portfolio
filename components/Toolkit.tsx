@@ -15,11 +15,11 @@ export default function Toolkit() {
         <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {groups.map((group, i) => (
             <li key={group.title} className={`panel relative z-[2] p-5 ${tilts[i % tilts.length]}`}>
-              <h3 className="flex items-center justify-between border-b-2 border-dashed border-ink/40 pb-3 font-mono text-xs uppercase tracking-[0.12em]">
+              <h3 className="flex items-center justify-between border-b-(length:--border-width) border-dashed border-line/40 pb-3 font-mono text-xs uppercase tracking-[0.12em]">
                 {group.title}
                 <span
                   aria-hidden="true"
-                  className="h-3 w-3 rounded-full border-2 border-ink bg-bg"
+                  className="h-3 w-3 rounded-full border-(length:--border-width) border-line bg-bg"
                 />
               </h3>
               <ul className="mt-4 space-y-2">

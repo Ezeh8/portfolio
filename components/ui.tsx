@@ -9,7 +9,7 @@ export function Container({ children }: { children: ReactNode }) {
 
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="font-mono text-xs uppercase tracking-[0.12em] text-text/60">
+    <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
       {children}
     </p>
   );
@@ -57,7 +57,7 @@ export function HandNote({
 }) {
   return (
     <p
-      className={`inline-flex items-center gap-2 font-hand text-lg leading-tight text-text/80 ${className}`}
+      className={`inline-flex items-center gap-2 font-hand text-lg leading-tight text-note ${className}`}
     >
       {arrow === "left" && <HandArrow className="h-6 w-10 -scale-x-100" />}
       <span>{children}</span>
@@ -88,7 +88,7 @@ export function StatusDot({ className = "" }: { className?: string }) {
   return (
     <span
       aria-hidden="true"
-      className={`inline-block h-2 w-2 shrink-0 rounded-full bg-accent ${className}`}
+      className={`inline-block h-2 w-2 shrink-0 rounded-full bg-accent-text ${className}`}
     />
   );
 }
@@ -96,7 +96,7 @@ export function StatusDot({ className = "" }: { className?: string }) {
 // Mono header bar on top of a panel.
 export function PanelBar({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b-2 border-ink px-4 py-2.5 font-mono text-xs">
+    <div className="flex items-center justify-between gap-3 border-b-(length:--border-width) border-line px-4 py-2.5 font-mono text-xs">
       {children}
     </div>
   );
@@ -138,13 +138,13 @@ export function ButtonLink({
 }) {
   const styles =
     variant === "primary"
-      ? "border-ink bg-ink text-bg hover:bg-accent-text hover:border-accent-text"
-      : "border-ink bg-card text-text hover:bg-bg";
+      ? "border-btn-bg bg-btn-bg text-btn-text hover:bg-accent hover:border-accent"
+      : "border-line bg-card text-text hover:bg-bg";
   return (
     <a
       href={href}
       {...(isExternal(href) && { target: "_blank", rel: "noopener noreferrer" })}
-      className={`inline-flex h-11 items-center justify-center rounded-full border-2 px-5 text-sm font-medium ${styles}`}
+      className={`inline-flex h-11 items-center justify-center rounded-full border-(length:--border-width) px-5 text-sm font-medium ${styles}`}
     >
       {/* wrapped so the flex container keeps the space before a trailing → */}
       <span>{typeof children === "string" ? <Glyphs text={children} /> : children}</span>

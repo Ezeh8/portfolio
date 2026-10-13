@@ -45,11 +45,11 @@ export default function Experience() {
                 <div>
                   <h3 className="font-display text-2xl font-bold">{entry.role}</h3>
                   <p className="mt-1 text-text/75">{entry.company}</p>
-                  <p className="mt-3 font-mono text-xs uppercase tracking-[0.12em] text-text/60">
+                  <p className="mt-3 font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
                     {entry.dates}
                   </p>
                 </div>
-                <ul className="list-disc space-y-3 pl-5 leading-relaxed marker:text-accent">
+                <ul className="list-disc space-y-3 pl-5 leading-relaxed marker:text-accent-text">
                   {entry.bullets.map((bullet) => (
                     <li key={bullet}>
                       <Marked text={bullet} />

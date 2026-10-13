@@ -13,7 +13,6 @@ import { clamp, heading, inOrder, isClear, nearestClear } from "./flightPath";
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const CARD_IDS = site.work.projects.map((p) => p.id);
-const TRAIL_COLOR = "#111214";
 
 // Document coordinates of a box.
 function docRect(el: Element | Range) {
@@ -640,11 +639,11 @@ export default function PlaneFlight() {
       className="pointer-events-none fixed inset-x-0 top-0 z-[1] h-screen overflow-hidden supports-[height:100dvh]:h-dvh"
     >
       <svg className="absolute inset-0 h-full w-full overflow-visible">
-        <g ref={trail} fill={TRAIL_COLOR} fillOpacity="0.25" />
+        <g ref={trail} fill="var(--trail)" fillOpacity="0.25" />
       </svg>
       <div
         ref={shadow}
-        className="invisible absolute top-0 left-0 h-[10px] w-[54px] rounded-full bg-[#111214] opacity-[0.16] blur-[6px] lg:h-4 lg:w-[90px]"
+        className="invisible absolute top-0 left-0 h-[10px] w-[54px] rounded-full bg-(--plane-shadow) opacity-(--plane-shadow-opacity) blur-[6px] lg:h-4 lg:w-[90px]"
       />
       <div ref={plane} className="invisible absolute top-0 left-0 will-change-transform">
         <div ref={body}>

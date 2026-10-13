@@ -43,7 +43,7 @@ export function attachPlaneDebug({ keys, size, tl, proxy }: Flight) {
     const line = document.createElementNS(SVG, "polyline");
     line.setAttribute("points", points.join(" "));
     line.setAttribute("fill", "none");
-    line.setAttribute("stroke", "#111214");
+    line.setAttribute("stroke", "var(--text)");
     line.setAttribute("stroke-opacity", "0.35");
     line.setAttribute("stroke-width", "1");
     line.setAttribute("stroke-dasharray", "4 4");
@@ -54,13 +54,13 @@ export function attachPlaneDebug({ keys, size, tl, proxy }: Flight) {
     dot.setAttribute("cx", px(k.x).toFixed(1));
     dot.setAttribute("cy", py(k.y).toFixed(1));
     dot.setAttribute("r", "3");
-    dot.setAttribute("fill", "#1F3C8C");
+    dot.setAttribute("fill", "var(--accent-text)");
     const label = document.createElementNS(SVG, "text");
     label.setAttribute("x", (px(k.x) + 6).toFixed(1));
     label.setAttribute("y", (py(k.y) - 6).toFixed(1));
     label.setAttribute("font-size", "11");
     label.setAttribute("font-family", "var(--font-mono), monospace");
-    label.setAttribute("fill", "#111214");
+    label.setAttribute("fill", "var(--text)");
     label.textContent = String(i);
     svg.append(dot, label);
   });
@@ -75,9 +75,9 @@ export function attachPlaneDebug({ keys, size, tl, proxy }: Flight) {
     margin: "0",
     padding: "8px 10px",
     font: "11px/1.5 var(--font-mono), monospace",
-    color: "#111214",
-    background: "rgba(244, 245, 247, 0.92)",
-    border: "1px solid #111214",
+    color: "var(--text)",
+    background: "color-mix(in srgb, var(--card) 92%, transparent)",
+    border: "1px solid var(--line)",
     borderRadius: "6px",
     pointerEvents: "none",
   });

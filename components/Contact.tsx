@@ -35,7 +35,7 @@ export default function Contact() {
                   >
                     {email}
                   </a>
-                  <HandArrow className="h-8 w-12 -scale-x-100 text-accent" />
+                  <HandArrow className="h-8 w-12 -scale-x-100 text-accent-text" />
                 </p>
                 <HandNote arrow="left" className="mt-2 rotate-2">
                   {note}
@@ -55,7 +55,7 @@ export default function Contact() {
               ))}
             </div>
 
-            <p className="mt-8 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-card px-3 py-1.5 font-mono text-xs">
+            <p className="mt-8 inline-flex items-center gap-2 rounded-full border-(length:--border-width) border-line bg-card px-3 py-1.5 font-mono text-xs">
               <StatusDot />
               {replies}
             </p>
@@ -70,12 +70,12 @@ export default function Contact() {
                 </span>
               </PanelBar>
               <dl className="font-mono text-[13px]">
-                <div className="flex gap-2 border-b-2 border-ink/15 px-4 py-3">
-                  <dt className="text-text/60">to:</dt>
+                <div className="flex gap-2 border-b-(length:--border-width) border-line/15 px-4 py-3">
+                  <dt className="text-text-muted">to:</dt>
                   <dd className="min-w-0 [overflow-wrap:anywhere]">{email}</dd>
                 </div>
-                <div className="flex gap-2 border-b-2 border-ink/15 px-4 py-3">
-                  <dt className="text-text/60">subject:</dt>
+                <div className="flex gap-2 border-b-(length:--border-width) border-line/15 px-4 py-3">
+                  <dt className="text-text-muted">subject:</dt>
                   <dd>{transmission.subject}</dd>
                 </div>
               </dl>
@@ -83,7 +83,7 @@ export default function Contact() {
               <div className="p-4">
                 <a
                   href={mailto}
-                  className="inline-flex h-11 items-center rounded-full border-2 border-ink bg-ink px-5 font-mono text-sm text-bg hover:border-accent-text hover:bg-accent-text"
+                  className="inline-flex h-11 items-center rounded-full border-(length:--border-width) border-btn-bg bg-btn-bg px-5 font-mono text-sm text-btn-text hover:border-accent hover:bg-accent"
                 >
                   {transmission.button}
                 </a>
