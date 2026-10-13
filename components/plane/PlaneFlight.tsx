@@ -31,7 +31,9 @@ const maxScroll = () => ScrollTrigger.maxScroll(window);
 // y% of its height, at `scale`. `tilt` and `facing` override the heading the plane would
 // otherwise take from its direction of travel on the leg that ends here; `slowTurn`
 // turns it over the whole leg instead of the first third. The eases shape the leg.
-type Key = {
+export type Key = {
+  /** Name of the leg that ends at this keyframe (shown by the debug overlay). */
+  name: string;
   s: number;
   x: number;
   y: number;
@@ -43,7 +45,7 @@ type Key = {
   yEase?: string;
 };
 
-type Size = { w: number; h: number; vw: number; vh: number };
+export type Size = { w: number; h: number; vw: number; vh: number };
 
 // Text lines, links and buttons, and cards, as document boxes: what a resting plane must
 // avoid.
@@ -174,12 +176,26 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
   );
 
   // The whole path runs mirrored: the plane faces left for most of it.
+  // Leg N runs from keyframe N-1 to keyframe N; keyframe 0 is the start. The numbers
+  // match the debug overlay (?plane=debug in development).
   const keys: Key[] = [
     // 1. hero rest, then a slight drift up and left
-    { s: 0, x: rest.x, y: restY, scale: 1, tilt: -6, facing: -1 },
-    { s: at(hero, 1, 0.5), x: rest.x - 3, y: restY - 3, scale: 1, tilt: -8, facing: -1 },
-    // 2. banner and about: near the left edge, easing slowly down, shrinking
+    // keyframe 0: start
+    { name: "hero rest", s: 0, x: rest.x, y: restY, scale: 1, tilt: -6, facing: -1 },
+    // leg 1
     {
+      name: "hero drift",
+      s: at(hero, 1, 0.5),
+      x: rest.x - 3,
+      y: restY - 3,
+      scale: 1,
+      tilt: -8,
+      facing: -1,
+    },
+    // 2. banner and about: near the left edge, easing slowly down, shrinking
+    // leg 2
+    {
+      name: "banner and about",
       s: at(about, 1, 0.5),
       x: 20,
       y: clamp(restY + 15, 45, 70),
@@ -189,26 +205,75 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
       slowTurn: true,
     },
     // 3. entering work: slip behind the first card
-    { s: behindS, ...behind, scale: 0.45 },
+    // leg 3
+    { name: "behind first card", s: behindS, ...behind, scale: 0.45 },
     // 4. LLM Wiki: re-emerge on the left, steep dive, sweep right and out
-    { s: work(0.14), x: 13, y: 26, scale: 0.65 },
-    { s: work(0.26), x: 16, y: 52, scale: 0.65 },
-    { s: work(0.44), x: 114, y: 75, scale: 0.6, yEase: "sine.out" },
+    // leg 4
+    { name: "LLM Wiki re-emerge", s: work(0.14), x: 13, y: 26, scale: 0.65 },
+    // leg 5
+    { name: "LLM Wiki dive", s: work(0.26), x: 16, y: 52, scale: 0.65 },
+    // leg 6
+    { name: "LLM Wiki exit right", s: work(0.44), x: 114, y: 75, scale: 0.6, yEase: "sine.out" },
     // Tool Access Controller: re-enter low on the right, climb to the upper left
-    { s: work(0.47), x: 114, y: 84, scale: 0.5, tilt: 0, facing: -1 },
-    { s: work(0.52), x: 90, y: 84, scale: 0.5 },
-    { s: work(0.76), x: 10, y: 43, scale: 0.5 },
-    // Invoice Exception Handler: left to right, slightly down, behind a card
-    { s: invoiceS, x: 45, y: 52, scale: 0.45 },
-    // Command Centre: re-appear at the right edge
-    { s: invoiceS + vh * 0.3, x: 92, y: 68, scale: 0.35 },
-    // 5. experience, toolkit, quote: parked at the right edge, nose up, drifting up
-    { s: at(experience, 0, 0.5), x: 95, y: 68, scale: 0.35, tilt: -90, facing: -1 },
-    { s: at(quote, 0.5, 0.5), x: 95, y: 52, scale: 0.15, tilt: -90, facing: -1, xEase: "none", yEase: "none" },
-    // 6. contact: out of view to the upper right, in on the right, glide down-left to land
-    { s: at(quote, 0.5, 0.5) + vh * 0.1, x: 110, y: 18, scale: 0.4, tilt: 20, facing: -1 },
-    { s: at(contactLabel, 0.5, 0.48), x: 80, y: 48, scale: 0.4 },
+    // leg 7
     {
+      name: "off-screen reposition",
+      s: work(0.47),
+      x: 114,
+      y: 84,
+      scale: 0.5,
+      tilt: 0,
+      facing: -1,
+    },
+    // leg 8
+    { name: "Tool Access re-enter", s: work(0.52), x: 90, y: 84, scale: 0.5 },
+    // leg 9
+    { name: "Tool Access climb", s: work(0.76), x: 10, y: 43, scale: 0.5 },
+    // Invoice Exception Handler: left to right, slightly down, behind a card
+    // leg 10
+    { name: "Invoice behind card", s: invoiceS, x: 45, y: 52, scale: 0.45 },
+    // Command Centre: re-appear at the right edge
+    // leg 11
+    { name: "Command Centre", s: invoiceS + vh * 0.3, x: 92, y: 68, scale: 0.35 },
+    // 5. experience, toolkit, quote: parked at the right edge, nose up, drifting up
+    // leg 12
+    {
+      name: "park at right edge",
+      s: at(experience, 0, 0.5),
+      x: 95,
+      y: 68,
+      scale: 0.35,
+      tilt: -90,
+      facing: -1,
+    },
+    // leg 13
+    {
+      name: "drift up to quote",
+      s: at(quote, 0.5, 0.5),
+      x: 95,
+      y: 52,
+      scale: 0.15,
+      tilt: -90,
+      facing: -1,
+      xEase: "none",
+      yEase: "none",
+    },
+    // 6. contact: out of view to the upper right, in on the right, glide down-left to land
+    // leg 14
+    {
+      name: "off-screen upper right",
+      s: at(quote, 0.5, 0.5) + vh * 0.1,
+      x: 110,
+      y: 18,
+      scale: 0.4,
+      tilt: 20,
+      facing: -1,
+    },
+    // leg 15
+    { name: "contact entry", s: at(contactLabel, 0.5, 0.48), x: 80, y: 48, scale: 0.4 },
+    // leg 16
+    {
+      name: "contact landing",
       s: max,
       x: landing.x,
       y: landing.y,
@@ -346,6 +411,7 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
 
   tl.progress(clamp(window.scrollY / Math.max(1, maxScroll()), 0, 1));
   draw();
+  return { tl, proxy };
 }
 
 // Reduced motion: no flight and no trail. The plane rests at its hero spot and scrolls
@@ -418,7 +484,12 @@ export default function PlaneFlight() {
           const stopLenis = fine && !reduce ? startLenis() : null;
 
           let built: gsap.Context | null = null;
+          let stopDebug: (() => void) | null = null;
+          let debugToken = 0;
           const build = () => {
+            debugToken++;
+            stopDebug?.();
+            stopDebug = null;
             built?.revert();
             built = null;
             const parts = {
@@ -445,7 +516,19 @@ export default function PlaneFlight() {
               else {
                 const keys = choreography(desktop, size, p.layer);
                 if (!keys) return;
-                buildFlight(p, keys, size);
+                const flight = buildFlight(p, keys, size);
+                // Dev-only debug overlay. The NODE_ENV check is replaced at build time,
+                // so production bundles drop this branch and the overlay module.
+                if (
+                  process.env.NODE_ENV === "development" &&
+                  new URLSearchParams(window.location.search).get("plane") === "debug"
+                ) {
+                  const token = ++debugToken;
+                  import("./PlaneDebug").then(({ attachPlaneDebug }) => {
+                    if (token !== debugToken) return;
+                    stopDebug = attachPlaneDebug({ keys, size, ...flight });
+                  });
+                }
               }
               gsap.set([p.plane, p.shadow], { visibility: "visible" });
             });
@@ -486,6 +569,8 @@ export default function PlaneFlight() {
             window.clearTimeout(timer);
             observer.disconnect();
             window.removeEventListener("resize", onResize);
+            debugToken++;
+            stopDebug?.();
             built?.revert();
             trail.current?.replaceChildren();
             stopLenis?.();
