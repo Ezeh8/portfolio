@@ -643,7 +643,7 @@ export default function PlaneFlight() {
       </svg>
       <div
         ref={shadow}
-        className="invisible absolute top-0 left-0 h-[10px] w-[54px] rounded-full bg-(--plane-shadow) opacity-(--plane-shadow-opacity) blur-[6px] lg:h-4 lg:w-[90px]"
+        className="invisible absolute top-0 left-0 h-[10px] w-[54px] rounded-full bg-[#111214] opacity-[0.16] blur-[6px] lg:h-4 lg:w-[90px]"
       />
       <div ref={plane} className="invisible absolute top-0 left-0 will-change-transform">
         <div ref={body}>

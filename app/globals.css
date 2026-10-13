@@ -4,7 +4,8 @@
    (the head script in app/layout.tsx resolves the system setting into data-theme). */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* Theme tokens. Light is the original look; every color on the site comes from here. */
+/* Theme tokens. Light is the original look; every color on the site comes from here,
+   except the paper plane and its shadow, which look the same in both themes. */
 :root {
   --bg: #e6e7ea;
   --card: #f4f5f7;
@@ -24,18 +25,6 @@
   --banner-text: #e6e7ea;
   --trail: #111214; /* drawn at 25% opacity */
   --border-width: 2px;
-
-  /* paper plane */
-  --plane-near-from: #2e4fa8;
-  --plane-near-to: #1f3c8c;
-  --plane-underside: #14295f;
-  --plane-top-from: #4f6fc4;
-  --plane-top-to: #2e4fa8;
-  --plane-inner: #3a5bb6;
-  --plane-crease-light: #8098d8;
-  --plane-crease-dark: #0f1f4a;
-  --plane-shadow: #111214;
-  --plane-shadow-opacity: 0.16;
 }
 
 [data-theme="dark"] {
@@ -55,17 +44,6 @@
   --banner-text: #edeef0;
   --trail: #edeef0;
   --border-width: 1.5px;
-
-  --plane-near-from: #3a5bb6;
-  --plane-near-to: #2e4fa8;
-  --plane-underside: #1f3c8c;
-  --plane-top-from: #6a86d6;
-  --plane-top-to: #3a5bb6;
-  --plane-inner: #4f6fc4;
-  --plane-crease-light: #9db1e6;
-  /* a soft glow instead of a dark shadow */
-  --plane-shadow: #7b95e8;
-  --plane-shadow-opacity: 0.18;
 }
 
 @theme inline {
