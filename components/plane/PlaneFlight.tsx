@@ -41,9 +41,17 @@ export type Key = {
   tilt?: number;
   facing?: 1 | -1;
   slowTurn?: boolean;
+  /** Cap on the travel-direction tilt for this leg, in degrees up or down (default 70). */
+  maxTilt?: number;
+  /** Bows the leg's path downward by this many % of the screen height at its middle. */
+  sag?: number;
   xEase?: string;
   yEase?: string;
 };
+
+// A bank turn (facing flipping through scaleX 0) takes this share of a leg's scroll.
+const BANK = 0.08;
+const onScreen = (k: Key) => k.x >= 0 && k.x <= 100 && k.y >= 0 && k.y <= 100;
 
 export type Size = { w: number; h: number; vw: number; vh: number };
 
@@ -132,13 +140,12 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
   const max = maxScroll();
   const hero = $("#hero");
   const about = $("#about");
-  const experience = $("#experience");
+  const work = $("#work");
+  const toolkit = $("#toolkit");
   const quote = $("#quote");
   const contactLabel = $("#contact p");
-  const cards = CARD_IDS.map((id) => document.getElementById(id));
-  if (!hero || !about || !experience || !quote || !contactLabel || cards.some((c) => !c))
-    return null;
-  const [firstCard] = cards as HTMLElement[];
+  const firstCard = document.getElementById(CARD_IDS[0]);
+  if (!hero || !about || !work || !toolkit || !quote || !contactLabel || !firstCard) return null;
 
   // Scroll position at which the point `frac` of the way down `el` sits `screen` of the
   // way down the screen.
@@ -154,16 +161,6 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
   const behindS = at(firstCard, 0.5, 0.6);
   const first = docRect(firstCard);
   const behind = { x: (((first.left + first.right) / 2) / vw) * 100, y: 60 };
-
-  // 4. the invoice leg ends behind a card covering (45, 52); time it so the next card
-  // in that column (or the invoice card itself on one-column layouts) is centred there
-  const cover =
-    (cards.slice(2) as HTMLElement[]).find((c) => {
-      const r = docRect(c);
-      return r.left <= 0.45 * vw && r.right >= 0.45 * vw;
-    }) ?? (cards[2] as HTMLElement);
-  const invoiceS = Math.max(at(cover, 0.5, 0.52), behindS + vh * 0.5);
-  const work = (f: number) => behindS + (invoiceS - behindS) * f;
 
   const landing = clearSpot(
     "contact landing",
@@ -207,59 +204,32 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
     // 3. entering work: slip behind the first card
     // leg 3
     { name: "behind first card", s: behindS, ...behind, scale: 0.45 },
-    // 4. LLM Wiki: re-emerge on the left, steep dive, sweep right and out
+    // 4. Work: one glide right with a gentle downward bow, behind the project cards
     // leg 4
-    { name: "LLM Wiki re-emerge", s: work(0.14), x: 13, y: 26, scale: 0.65 },
-    // leg 5
-    { name: "LLM Wiki dive", s: work(0.26), x: 16, y: 52, scale: 0.65 },
-    // leg 6
-    { name: "LLM Wiki exit right", s: work(0.44), x: 114, y: 75, scale: 0.6, yEase: "sine.out" },
-    // Tool Access Controller: re-enter low on the right, climb to the upper left
-    // leg 7
     {
-      name: "off-screen reposition",
-      s: work(0.47),
-      x: 114,
-      y: 84,
+      name: "work glide right",
+      s: at(work, 1, 0.5),
+      x: 88,
+      y: 58,
       scale: 0.5,
-      tilt: 0,
-      facing: -1,
+      maxTilt: 20,
+      sag: 4,
     },
-    // leg 8
-    { name: "Tool Access re-enter", s: work(0.52), x: 90, y: 84, scale: 0.5 },
-    // leg 9
-    { name: "Tool Access climb", s: work(0.76), x: 10, y: 43, scale: 0.5 },
-    // Invoice Exception Handler: left to right, slightly down, behind a card
-    // leg 10
-    { name: "Invoice behind card", s: invoiceS, x: 45, y: 52, scale: 0.45 },
-    // Command Centre: re-appear at the right edge
-    // leg 11
-    { name: "Command Centre", s: invoiceS + vh * 0.3, x: 92, y: 68, scale: 0.35 },
-    // 5. experience, toolkit, quote: parked at the right edge, nose up, drifting up
-    // leg 12
+    // 5. Experience and Toolkit: one slow glide left, rising slightly, behind the cards
+    // leg 5
     {
-      name: "park at right edge",
-      s: at(experience, 0, 0.5),
-      x: 95,
-      y: 68,
-      scale: 0.35,
-      tilt: -90,
-      facing: -1,
+      name: "experience + toolkit glide left",
+      s: at(toolkit, 1, 0.5),
+      x: 12,
+      y: 48,
+      scale: 0.45,
+      maxTilt: 20,
     },
-    // leg 13
-    {
-      name: "drift up to quote",
-      s: at(quote, 0.5, 0.5),
-      x: 95,
-      y: 52,
-      scale: 0.15,
-      tilt: -90,
-      facing: -1,
-      xEase: "none",
-      yEase: "none",
-    },
+    // 6. Pull quote: one glide right, rising, into the off-screen upper-right leg
+    // leg 6
+    { name: "quote glide right", s: at(quote, 0.5, 0.5), x: 85, y: 28, scale: 0.4, maxTilt: 20 },
     // 6. contact: out of view to the upper right, in on the right, glide down-left to land
-    // leg 14
+    // leg 7
     {
       name: "off-screen upper right",
       s: at(quote, 0.5, 0.5) + vh * 0.1,
@@ -269,9 +239,9 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
       tilt: 20,
       facing: -1,
     },
-    // leg 15
+    // leg 8
     { name: "contact entry", s: at(contactLabel, 0.5, 0.48), x: 80, y: 48, scale: 0.4 },
-    // leg 16
+    // leg 9
     {
       name: "contact landing",
       s: max,
@@ -315,7 +285,8 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
   const turns = legs.map(({ a, b }) => {
     const dir = heading(((b.x - a.x) / 100) * vw, ((b.y - a.y) / 100) * vh, facing);
     facing = b.facing ?? dir.facing;
-    return { facing, tilt: b.tilt ?? dir.tilt };
+    const cap = b.maxTilt ?? 70;
+    return { facing, tilt: b.tilt ?? clamp(dir.tilt, -cap, cap) };
   });
 
   const proxy = {
@@ -324,6 +295,7 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
     scale: keys[0].scale,
     tilt: keys[0].tilt ?? 0,
     facing: keys[0].facing ?? 1,
+    bow: 0,
   };
 
   // Trail dots along the last leg's real path, about every 9px (6px on phones).
@@ -367,12 +339,14 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
 
   const draw = () => {
     const px = (proxy.x / 100) * vw;
-    const py = (proxy.y / 100) * vh;
+    const py = ((proxy.y + proxy.bow) / 100) * vh;
     setX(px);
     setY(py);
     setScale(proxy.scale);
+    // facing runs through 0 during a bank turn; the tilt's sign follows the side the
+    // nose is on, flipping at the thinnest point of the turn
     setFacing(proxy.facing);
-    setRotation(proxy.facing * proxy.tilt);
+    setRotation((proxy.facing < 0 ? -1 : 1) * proxy.tilt);
     // the shadow follows position and scale only
     setShadowX(px);
     setShadowY(py + h * 0.62 * proxy.scale);
@@ -391,15 +365,34 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
     scrollTrigger: { start: 0, end: "max", scrub: 0.3 },
   });
   let tilt = proxy.tilt;
+  let current = proxy.facing;
   legs.forEach(({ a, b }, i) => {
     const d = b.s - a.s;
     const turn = turns[i];
     const from = { immediateRender: false };
     tl.fromTo(proxy, { x: a.x }, { x: b.x, duration: d, ease: b.xEase ?? "sine.inOut", ...from }, a.s)
       .fromTo(proxy, { y: a.y }, { y: b.y, duration: d, ease: b.yEase ?? "sine.inOut", ...from }, a.s)
-      .fromTo(proxy, { scale: a.scale }, { scale: b.scale, duration: d, ease: "sine.inOut", ...from }, a.s)
-      .set(proxy, { facing: turn.facing }, a.s)
-      .fromTo(
+      .fromTo(proxy, { scale: a.scale }, { scale: b.scale, duration: d, ease: "sine.inOut", ...from }, a.s);
+    if (b.sag) {
+      // 0 at both ends, full sag mid-leg
+      const bow = (u: number) => Math.sin(Math.PI * u);
+      tl.fromTo(proxy, { bow: 0 }, { bow: b.sag, duration: d, ease: bow, ...from }, a.s);
+    }
+    // Facing changes bank through scaleX 0 over the start of the leg; off screen they
+    // snap instead (at the leg's start, or its end if only the end is off screen).
+    if (turn.facing !== current) {
+      if (!onScreen(a)) tl.set(proxy, { facing: turn.facing }, a.s);
+      else if (!onScreen(b)) tl.set(proxy, { facing: turn.facing }, b.s);
+      else
+        tl.fromTo(
+          proxy,
+          { facing: current },
+          { facing: turn.facing, duration: d * BANK, ease: "sine.inOut", ...from },
+          a.s,
+        );
+    }
+    current = turn.facing;
+    tl.fromTo(
         proxy,
         { tilt },
         { tilt: turn.tilt, duration: b.slowTurn ? d : d / 3, ease: "sine.inOut", ...from },

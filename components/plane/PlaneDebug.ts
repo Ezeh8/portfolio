@@ -8,7 +8,7 @@ type Flight = {
   keys: Key[];
   size: Size;
   tl: gsap.core.Timeline;
-  proxy: { x: number; y: number; scale: number; tilt: number; facing: number };
+  proxy: { x: number; y: number; scale: number; tilt: number; facing: number; bow: number };
 };
 
 const SVG = "http://www.w3.org/2000/svg";
@@ -37,7 +37,8 @@ export function attachPlaneDebug({ keys, size, tl, proxy }: Flight) {
     const ey = gsap.parseEase(b.yEase ?? "sine.inOut");
     const points = Array.from({ length: 25 }, (_, k) => {
       const u = k / 24;
-      return `${px(a.x + (b.x - a.x) * ex(u)).toFixed(1)},${py(a.y + (b.y - a.y) * ey(u)).toFixed(1)}`;
+      const y = a.y + (b.y - a.y) * ey(u) + (b.sag ?? 0) * Math.sin(Math.PI * u);
+      return `${px(a.x + (b.x - a.x) * ex(u)).toFixed(1)},${py(y).toFixed(1)}`;
     });
     const line = document.createElementNS(SVG, "polyline");
     line.setAttribute("points", points.join(" "));
@@ -94,12 +95,13 @@ export function attachPlaneDebug({ keys, size, tl, proxy }: Flight) {
     const t = tl.time();
     let leg = 1;
     while (leg < keys.length - 1 && t >= keys[leg].s) leg++;
-    const rotation = proxy.facing * proxy.tilt;
+    const rotation = (proxy.facing < 0 ? -1 : 1) * proxy.tilt;
     panel.textContent = [
       `section  ${section}`,
       `leg ${leg} / ${keys.length - 1}  ${keys[leg].name}`,
-      `x ${proxy.x.toFixed(1)}  y ${proxy.y.toFixed(1)}  scale ${proxy.scale.toFixed(2)}`,
-      `rotation ${rotation.toFixed(1)}°  facing ${proxy.facing < 0 ? "left" : "right"}`,
+      `x ${proxy.x.toFixed(1)}  y ${(proxy.y + proxy.bow).toFixed(1)}  scale ${proxy.scale.toFixed(2)}`,
+      `rotation ${rotation.toFixed(1)}°  facing ${proxy.facing < 0 ? "left" : "right"}` +
+        (Math.abs(proxy.facing) < 1 ? `  (banking ${proxy.facing.toFixed(2)})` : ""),
     ].join("\n");
   };
   gsap.ticker.add(update);
