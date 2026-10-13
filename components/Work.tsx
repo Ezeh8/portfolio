@@ -53,7 +53,11 @@ export default function Work() {
                   )}
 
                   <div className="mt-auto pt-8">
-                    <p className="border-t-2 border-accent pt-3 font-mono text-sm text-accent-text">
+                    {/* dashed until the paper plane reaches this card; the plane sets data-lit */}
+                    <p
+                      data-readout
+                      className="border-t-2 border-dashed border-accent pt-3 font-mono text-sm text-accent-text transition-colors duration-300 data-[lit]:border-solid data-[lit]:bg-accent-soft"
+                    >
                       {project.readout}
                     </p>
                     {project.href && (

@@ -65,11 +65,11 @@ export const site = {
     secondary: { label: "Get in touch", href: "#contact" } satisfies Link,
     // Project lines are generated from work.projects below.
     flightLog: {
-      header: "flight log · drone-01",
-      command: "$ drone status",
+      header: "flight log",
+      command: "$ status",
       status: (count: number) => `> online · ${count} systems in range`,
     },
-    note: "the drone reports live", // FILLER
+    note: "follow the plane", // FILLER
   },
 
   banner: {
