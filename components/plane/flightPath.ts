@@ -27,6 +27,23 @@ export function inOrder(positions: number[], max: number) {
 
 type Box = { left: number; top: number; right: number; bottom: number };
 
+// Whether a w×h box centred on (cx, cy) stays inside `area` and overlaps no obstacle.
+export function isClear(cx: number, cy: number, w: number, h: number, obstacles: Box[], area: Box) {
+  return (
+    cx - w / 2 >= area.left &&
+    cx + w / 2 <= area.right &&
+    cy - h / 2 >= area.top &&
+    cy + h / 2 <= area.bottom &&
+    obstacles.every(
+      (o) =>
+        cx + w / 2 <= o.left ||
+        cx - w / 2 >= o.right ||
+        cy + h / 2 <= o.top ||
+        cy - h / 2 >= o.bottom,
+    )
+  );
+}
+
 // Nearest spot to (x, y) where a w×h box (centred on the spot) overlaps none of the
 // obstacles and stays inside `area`. Searches outwards in 8px steps up to `radius`.
 export function nearestClear(
@@ -38,18 +55,7 @@ export function nearestClear(
   area: Box,
   radius: number,
 ) {
-  const clear = (cx: number, cy: number) =>
-    cx - w / 2 >= area.left &&
-    cx + w / 2 <= area.right &&
-    cy - h / 2 >= area.top &&
-    cy + h / 2 <= area.bottom &&
-    obstacles.every(
-      (o) =>
-        cx + w / 2 <= o.left ||
-        cx - w / 2 >= o.right ||
-        cy + h / 2 <= o.top ||
-        cy - h / 2 >= o.bottom,
-    );
+  const clear = (cx: number, cy: number) => isClear(cx, cy, w, h, obstacles, area);
   if (clear(x, y)) return { x, y, moved: false };
   const offsets: [number, number][] = [];
   for (let dx = -radius; dx <= radius; dx += 8)

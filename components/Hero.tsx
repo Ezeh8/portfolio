@@ -40,7 +40,7 @@ export default function Hero() {
           </div>
 
           <div>
-            <HandNote className="mb-3 ml-4 -rotate-3">{note}</HandNote>
+            <HandNote className="relative z-[2] mb-3 ml-4 -rotate-3">{note}</HandNote>
             <div className="panel relative z-[2] overflow-hidden">
               <PanelBar>
                 <span className="flex items-center gap-2">

@@ -8,7 +8,7 @@ import { useGSAP } from "@gsap/react";
 import Lenis from "lenis";
 import { site } from "@/content/site";
 import PaperPlane from "./PaperPlane";
-import { clamp, heading, inOrder, nearestClear } from "./flightPath";
+import { clamp, heading, inOrder, isClear, nearestClear } from "./flightPath";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -120,18 +120,74 @@ function clearSpot(
   return result;
 }
 
-// The hero resting spot, in screen % at scroll 0. Desktop: just above the flight log's
-// top-left corner, over the gap between the headline and the flight log. Phones: x 26,
-// y 55.
-function heroRest(desktop: boolean, size: Size, layer: HTMLElement) {
-  const { h, vw, vh } = size;
-  const log = $("#hero .panel");
-  let spot = { x: 26, y: 55 };
-  if (desktop && log) {
-    const r = docRect(log);
-    spot = { x: ((r.left - 4) / vw) * 100, y: ((r.top - h / 2 - 16) / vh) * 100 };
+// The hero resting spot (leg 0), in screen % at scroll 0, measured from the "follow the
+// plane" note on every layout: just below the note, overlapping its lower edge by 8px,
+// centred under the tip of the note's arrow. The note draws on top (z-index 2).
+// If that would cover the headline, the hero buttons or the flight log, the plane moves
+// up under the note in 2px steps until it doesn't; failing that, to the nearest clear
+// spot. Falls back to x 26, y 55 if the note is missing.
+function heroRest(size: Size) {
+  const { w, h, vw, vh } = size;
+  const note = $("#hero .font-hand");
+  const tip = note?.querySelector("svg path:last-of-type");
+  if (!note || !tip) return { x: 26, y: 55 };
+
+  // The arrow points down, so its tip is the lowest point of the arrowhead.
+  const head = docRect(tip);
+  const x = (head.left + head.right) / 2;
+  const y = docRect(note).bottom - 8 + h / 2;
+
+  // The plane's box at its resting tilt (-6°), with a little breathing room.
+  const rad = (6 * Math.PI) / 180;
+  const bw = w * Math.cos(rad) + h * Math.sin(rad) + 8;
+  const bh = w * Math.sin(rad) + h * Math.cos(rad) + 8;
+  const avoid: { left: number; top: number; right: number; bottom: number }[] = [];
+  const h1 = $("#hero h1");
+  if (h1) {
+    const range = document.createRange();
+    range.selectNodeContents(h1);
+    for (const r of range.getClientRects())
+      avoid.push({
+        left: r.left + window.scrollX,
+        top: r.top + window.scrollY,
+        right: r.right + window.scrollX,
+        bottom: r.bottom + window.scrollY,
+      });
   }
-  return clearSpot("hero rest", spot, 0, 1, -6, size, layer);
+  document.querySelectorAll("#hero a, #hero .panel").forEach((el) => avoid.push(docRect(el)));
+  // At scroll 0: below the sticky nav. No bottom limit, so the plane stays under the note
+  // even when the note sits low on a tall phone hero.
+  const area = {
+    left: 0,
+    right: vw,
+    top: ($("header") as HTMLElement | null)?.offsetHeight ?? 0,
+    bottom: Infinity,
+  };
+
+  let spot = { x, y };
+  let how = "";
+  if (!isClear(x, y, bw, bh, avoid, area)) {
+    // move up behind the note, at most until the plane's centre reaches the note's top
+    const limit = docRect(note).top;
+    let up = y;
+    while (up > limit && !isClear(x, up, bw, bh, avoid, area)) up -= 2;
+    if (isClear(x, up, bw, bh, avoid, area)) {
+      spot = { x, y: up };
+      how = `moved up ${Math.round(y - up)}px under the note`;
+    } else {
+      const found = nearestClear(x, y, bw, bh, avoid, area, Math.round(Math.min(vw, vh) * 0.4));
+      spot = { x: found.x, y: found.y };
+      how = `moved to the nearest clear spot (${Math.round(found.x - x)}, ${Math.round(found.y - y)})px`;
+    }
+  }
+  const result = { x: (spot.x / vw) * 100, y: (spot.y / vh) * 100 };
+  if (process.env.NODE_ENV !== "production") {
+    console.info(
+      `[plane] hero rest at (${result.x.toFixed(1)}, ${result.y.toFixed(1)})` +
+        (how ? `: ${how} to keep clear of the headline, buttons and flight log` : ", under the note"),
+    );
+  }
+  return result;
 }
 
 // The whole flight, in screen units, timed against the sections' scroll positions.
@@ -154,7 +210,7 @@ function choreography(desktop: boolean, size: Size, layer: HTMLElement): Key[] |
     return r.top + frac * r.height - screen * vh;
   };
 
-  const rest = heroRest(desktop, size, layer);
+  const rest = heroRest(size);
   const restY = rest.y;
 
   // 3. behind the first project card, measured where that card is at that moment
@@ -411,7 +467,7 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
 // with the page like any other content.
 function placeStill(parts: Parts, desktop: boolean, size: Size) {
   const { layer, plane, shadow } = parts;
-  const rest = heroRest(desktop, size, layer);
+  const rest = heroRest(size);
   const x = (rest.x / 100) * size.vw;
   const y = (rest.y / 100) * size.vh;
   gsap.set(layer, { position: "absolute", height: 0, overflow: "visible" });
