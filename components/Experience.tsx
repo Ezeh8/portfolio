@@ -6,12 +6,13 @@ const tilts = ["lg:[--tilt:-0.5deg]", "lg:[--tilt:0.4deg]", "lg:[--tilt:-0.3deg]
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-// Matches the marker numbers only as whole numbers ("4" never matches inside "1,400").
+// Matches markers as whole words; a marker may be followed by a comma or full stop, but a
+// number never matches inside a larger one ("4" never matches in "1,400", "4,000" or "4.5").
 const markerPattern = new RegExp(
   `(?<![\\w,.₦])(${[...site.experience.markers]
     .sort((a, b) => b.length - a.length)
     .map(escape)
-    .join("|")})(?![\\w,])`,
+    .join("|")})(?![\\w]|[,.]\\d)`,
 );
 
 // A marker split into an optional "₦", the number, and the rest ("%", "M+", "+").
@@ -43,7 +44,7 @@ function Marked({ text }: { text: string }) {
   return text.split(markerPattern).map((part, i) =>
     // split() with one capture group puts matches at odd indexes
     i % 2 === 1 ? (
-      <mark key={i} className="rounded-sm bg-accent-soft px-1 text-text">
+      <mark key={i} className="rounded-sm bg-marker px-1 text-marker-ink">
         <Marker text={part} />
       </mark>
     ) : (

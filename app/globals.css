@@ -30,6 +30,8 @@
   --accent: #1f3c8c; /* filled shapes only */
   --accent-text: #1f3c8c; /* highlighted words, readouts, lines, status dots, links */
   --accent-soft: #d0d8ef;
+  --marker: #f2c14e; /* highlight behind key phrases in Experience */
+  --marker-ink: #0b0c0e; /* text on the highlight */
   --banner-bg: #111214;
   --banner-text: #e6e7ea;
   --banner-star: #f2c14e; /* gold star between banner phrases */
@@ -59,6 +61,8 @@
   --accent: #1f3c8c;
   --accent-text: #7b95e8;
   --accent-soft: #1a2a57;
+  --marker: #f2c14e; /* highlight behind key phrases in Experience */
+  --marker-ink: #0b0c0e; /* text on the highlight */
   --banner-bg: #1f3c8c;
   --banner-text: #edeef0;
   --banner-star: #edeef0; /* same as the banner text, so the dark banner looks as before */
@@ -86,6 +90,8 @@
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
+  --color-marker: var(--marker);
+  --color-marker-ink: var(--marker-ink);
   --color-banner-bg: var(--banner-bg);
   --color-banner-text: var(--banner-text);
   --color-banner-star: var(--banner-star);
