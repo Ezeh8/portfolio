@@ -10,7 +10,7 @@ export default function Toolkit() {
     <section id="toolkit" className="scroll-mt-16 py-20 sm:py-28">
       <Container>
         <SectionLabel>{label}</SectionLabel>
-        <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5.5vw,4rem)]" />
+        <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.5rem)]" />
 
         <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {groups.map((group, i) => (
@@ -22,7 +22,7 @@ export default function Toolkit() {
                   className="h-3 w-3 rounded-full border-(length:--border-width) border-line bg-bg"
                 />
               </h3>
-              <ul className="mt-4 space-y-2">
+              <ul className="mt-4 space-y-2 text-[1.0625rem]">
                 {group.items.map((item) => (
                   <li key={item}>{item}</li>
                 ))}

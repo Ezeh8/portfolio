@@ -9,9 +9,9 @@ export default function About() {
         <div className="grid gap-8 md:grid-cols-[1fr_1.6fr] md:gap-16">
           <div>
             <SectionLabel>{label}</SectionLabel>
-            <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.75rem)]" />
+            <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.5rem)]" />
           </div>
-          <div className="space-y-6 text-[clamp(1.0625rem,1.8vw,1.25rem)] leading-relaxed md:pt-9">
+          <div className="space-y-8 text-[clamp(1.25rem,2.2vw,1.625rem)] leading-[1.6] md:pt-9">
             {paragraphs.map((p) => (
               <p key={p.slice(0, 24)}>{p}</p>
             ))}

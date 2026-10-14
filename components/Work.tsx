@@ -17,7 +17,7 @@ export default function Work() {
       <Container>
         <SectionLabel>{label}</SectionLabel>
         <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-8">
-          <Headline copy={headline} className="text-[clamp(2.25rem,5.5vw,4rem)]" />
+          <Headline copy={headline} className="text-[clamp(2.25rem,5vw,3.5rem)]" />
           <HandNote arrow="down" className="-rotate-2 self-start md:mb-2 md:self-auto">
             {note}
           </HandNote>
@@ -37,14 +37,14 @@ export default function Work() {
 
                 <div className="flex flex-1 flex-col p-5 sm:p-7">
                   <h3 className="font-display text-2xl font-bold sm:text-3xl">{project.name}</h3>
-                  <p className="mt-3 leading-relaxed text-text/75">{project.description}</p>
+                  <p className="mt-3 text-[1.0625rem] leading-relaxed text-text/75">{project.description}</p>
 
                   {project.chips.length > 0 && (
                     <ul className="mt-5 flex flex-wrap gap-2" aria-label="Technologies">
                       {project.chips.map((chip) => (
                         <li
                           key={chip}
-                          className="rounded-full border-(length:--border-width) border-line px-2.5 py-0.5 font-mono text-[11px]"
+                          className="rounded-full border-(length:--border-width) border-line px-2.5 py-0.5 font-mono text-xs"
                         >
                           {chip}
                         </li>

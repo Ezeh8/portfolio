@@ -57,7 +57,7 @@ export function HandNote({
 }) {
   return (
     <p
-      className={`inline-flex items-center gap-2 font-hand text-lg leading-tight text-note ${className}`}
+      className={`inline-flex items-center gap-2 font-hand text-xl leading-tight text-note ${className}`}
     >
       {arrow === "left" && <HandArrow className="h-6 w-10 -scale-x-100" />}
       <span>{children}</span>

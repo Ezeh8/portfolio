@@ -14,7 +14,7 @@ export default function Hero() {
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
               {label}
             </p>
-            <p className="mt-6 font-display text-2xl font-semibold sm:text-3xl lg:mt-3">{name}</p>
+            <p className="mt-6 font-display text-2xl font-medium lg:mt-3">{name}</p>
             <p className="mt-1 text-text/70">{tagline}</p>
 
             <p className="mt-8 inline-flex items-center gap-2 rounded-full lg:mt-5 border-(length:--border-width) border-line bg-card px-3 py-1.5 font-mono text-xs">
@@ -25,7 +25,7 @@ export default function Hero() {
             <Headline
               as="h1"
               copy={headline}
-              className="mt-6 text-[clamp(2.25rem,6vw,4.5rem)] lg:mt-5 lg:text-[clamp(2.25rem,4.2vw,3.5rem)]"
+              className="mt-6 text-[clamp(3.5rem,17vw,6rem)] lg:mt-5 lg:text-[clamp(4.5rem,5.5vw,5rem)]"
             />
 
             <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">

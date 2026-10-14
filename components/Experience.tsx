@@ -30,7 +30,7 @@ export default function Experience() {
     <section id="experience" className="scroll-mt-16 py-20 sm:py-28">
       <Container>
         <SectionLabel>{label}</SectionLabel>
-        <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5.5vw,4rem)]" />
+        <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.5rem)]" />
 
         <ol className="mt-10 space-y-8">
           {roles.map((entry) => (
@@ -49,7 +49,7 @@ export default function Experience() {
                     {entry.dates}
                   </p>
                 </div>
-                <ul className="list-disc space-y-3 pl-5 leading-relaxed marker:text-accent-text">
+                <ul className="list-disc space-y-3 text-[1.0625rem] pl-5 leading-relaxed marker:text-accent-text">
                   {entry.bullets.map((bullet) => (
                     <li key={bullet}>
                       <Marked text={bullet} />
