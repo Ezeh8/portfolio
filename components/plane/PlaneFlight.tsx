@@ -258,29 +258,41 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
       scale: 0.45,
       maxTilt: 20,
     },
-    // 6. Second banner: one glide right, rising, behind the banner, into the off-screen
-    // upper-right leg
+    // 6. Second banner: one glide right, rising, behind the banner, into the upper-right
+    // leg. Desktop: flatter (tilt at most 8°), shorter, on screen and slower (see below);
+    // phones keep the original legs 6-7 values, since their flight reuses legs 7-9.
     // leg 6
     {
       name: "second banner glide right",
       s: at(secondBanner, 0.5, 0.5),
-      x: 85,
-      y: 28,
+      ...(desktop
+        ? { x: 70, y: 32, maxTilt: 8, xEase: "sine.in", yEase: "sine.in" }
+        : { x: 85, y: 28, maxTilt: 20 }),
       scale: 0.4,
-      maxTilt: 20,
     },
-    // 7. closing block: out of view to the upper right, back in from the upper right,
-    // glide down-left onto the headline
+    // 7. closing block: toward the upper right (desktop: on screen; phones: out of view),
+    // back in from the upper right, glide down-left onto the headline
     // leg 7
-    {
-      name: "off-screen upper right",
-      s: at(secondBanner, 0.5, 0.5) + vh * 0.1,
-      x: 110,
-      y: 18,
-      scale: 0.4,
-      tilt: 20,
-      facing: -1,
-    },
+    desktop
+      ? {
+          name: "toward upper right",
+          s: at(secondBanner, 0.5, 0.5) + vh * 0.1,
+          x: 86,
+          y: 22,
+          scale: 0.4,
+          maxTilt: 8,
+          xEase: "sine.out",
+          yEase: "sine.out",
+        }
+      : {
+          name: "off-screen upper right",
+          s: at(secondBanner, 0.5, 0.5) + vh * 0.1,
+          x: 110,
+          y: 18,
+          scale: 0.4,
+          tilt: 20,
+          facing: -1,
+        },
     // leg 8: in from the upper right, on the way to the landing spot
     {
       name: "closing entry from upper right",
@@ -303,11 +315,34 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
       yEase: "sine.inOut",
     },
   ];
+  if (desktop) slowLegs6And7(keys);
   const s = inOrder(
     keys.map((k) => k.s),
     max,
   );
   return keys.map((k, i) => ({ ...k, s: s[i] }));
+}
+
+// Desktop only: legs 6 and 7 together get 1.5 times their scroll distance, each stretched
+// by the same factor from leg 6's unchanged start. The extra comes only from leg 8 (the
+// glide in toward the closing block), which may shrink to 1px if it has to; leg 9, the
+// landing, keeps its start and still ends at the bottom of the scroll.
+const SLOW_6_7 = 1.5;
+
+function slowLegs6And7(keys: Key[]) {
+  const [k5, k6, k7, k8] = [keys[5], keys[6], keys[7], keys[8]];
+  const before = k7.s - k5.s;
+  const room = k8.s - k7.s - 1;
+  const extra = clamp(before * (SLOW_6_7 - 1), 0, Math.max(0, room));
+  const factor = before > 0 ? (before + extra) / before : 1;
+  k6.s = k5.s + (k6.s - k5.s) * factor;
+  k7.s = k5.s + before * factor;
+  if (process.env.NODE_ENV !== "production") {
+    const after = k7.s - k5.s;
+    const message = `[plane] legs 6-7: ${Math.round(before)}px -> ${Math.round(after)}px of scroll (x${factor.toFixed(2)}); leg 8 now ${Math.round(k8.s - k7.s)}px`;
+    if (factor < SLOW_6_7 - 0.001) console.warn(`${message}; leg 8 is too short to give the full 1.5x`);
+    else console.info(message);
+  }
 }
 
 // Phones (under 1024px): "hide and seek". Legs 0-1 and the last three legs (off screen
