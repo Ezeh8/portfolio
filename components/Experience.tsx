@@ -15,26 +15,26 @@ const markerPattern = new RegExp(
     .join("|")})(?![\\w]|[,.]\\d)`,
 );
 
-// A marker split into an optional "₦", the number, and the rest ("%", "M+", "+").
-const markerParts = /^(₦?)([\d,]+)(.*)$/;
-
-// The number is drawn in its own span (data-count) so CountUp can count it up; screen
-// readers get the whole marker once, from the sr-only copy.
+// Every number inside a highlight is drawn in its own span (data-count) so CountUp can
+// count it up; the text around the numbers keeps its own spans. Screen readers get the
+// whole highlight once, from the sr-only copy.
 function Marker({ text }: { text: string }) {
-  const parts = text.match(markerParts);
-  if (!parts) return <Glyphs text={text} />;
-  const [, prefix, number, suffix] = parts;
+  // split() with one capture group puts the numbers at odd indexes
+  const parts = text.split(/(\d[\d,]*\d|\d)/);
+  if (parts.length === 1) return <Glyphs text={text} />;
   return (
     <>
-      {prefix && (
-        <span aria-hidden="true">
-          <Glyphs text={prefix} />
-        </span>
+      {parts.map((part, i) =>
+        !part ? null : i % 2 === 1 ? (
+          <span key={i} data-count={part.replace(/,/g, "")} aria-hidden="true">
+            {part}
+          </span>
+        ) : (
+          <span key={i} aria-hidden="true">
+            <Glyphs text={part} />
+          </span>
+        ),
       )}
-      <span data-count={number.replace(/,/g, "")} aria-hidden="true">
-        {number}
-      </span>
-      {suffix && <span aria-hidden="true">{suffix}</span>}
       <span className="sr-only">{text}</span>
     </>
   );
