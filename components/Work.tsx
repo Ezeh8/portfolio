@@ -10,6 +10,9 @@ import {
   isExternal,
 } from "./ui";
 
+// Tinted cards: the Evaluate toolkit card's grey, with muted labels in its title grey.
+const tint = "bg-card-alt [--text-muted:var(--card-alt-title)]";
+
 export default function Work() {
   const { label, headline, note, panelStatus, linkLabel, projects } = site.work;
   return (
@@ -26,8 +29,11 @@ export default function Work() {
         <ul className="mt-10 grid gap-12 md:grid-cols-2 md:gap-x-8 lg:gap-8">
           {projects.map((project, i) => (
             <li key={project.id}>
-              <article id={project.id} className="panel relative z-[2] flex h-full flex-col overflow-hidden">
-                <PanelBar>
+              <article
+                id={project.id}
+                className={`panel relative z-[2] flex h-full flex-col overflow-hidden${project.tinted ? ` ${tint}` : ""}`}
+              >
+                <PanelBar className={project.tinted ? "text-card-alt-title" : ""}>
                   <span className="flex items-center gap-2">
                     <StatusDot />
                     {panelStatus}

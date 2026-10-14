@@ -24,6 +24,7 @@ export type Project = {
   readout: string;
   chips: string[];
   href: string | null;
+  tinted?: boolean;
 };
 
 export type Role = {
@@ -32,6 +33,7 @@ export type Role = {
   dates: string;
   opsLog: string;
   bullets: string[];
+  tinted?: boolean;
 };
 
 // TODO: add email address (e.g. "name@domain.com"). While null, the Email button is hidden.
@@ -130,6 +132,7 @@ export const site = {
         readout: "runs unattended every morning / one stable URL",
         chips: ["Scheduled agent", "Live web search", "Persistent memory", "HTML/CSS/JS"],
         href: "https://github.com/Ezeh8/command-centre",
+        tinted: true,
       },
     ] satisfies Project[],
   },
@@ -162,6 +165,7 @@ export const site = {
           "Rolled out a digital KYC verification platform aligned with Central Bank of Nigeria requirements.",
           "Operationalized an AI-driven credit-scoring model with the data science team.",
         ],
+        tinted: true,
       },
       {
         role: "Co-Founder & COO",

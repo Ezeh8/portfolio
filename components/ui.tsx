@@ -94,9 +94,11 @@ export function StatusDot({ className = "" }: { className?: string }) {
 }
 
 // Mono header bar on top of a panel.
-export function PanelBar({ children }: { children: ReactNode }) {
+export function PanelBar({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b-(length:--border-width) border-line px-4 py-2.5 font-mono text-xs">
+    <div
+      className={`flex items-center justify-between gap-3 border-b-(length:--border-width) border-line px-4 py-2.5 font-mono text-xs${className ? ` ${className}` : ""}`}
+    >
       {children}
     </div>
   );
