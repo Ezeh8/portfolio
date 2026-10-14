@@ -7,7 +7,7 @@ const COPIES = 8;
 function Star() {
   // ✦ is in none of the site's fonts, so it is drawn as an SVG instead.
   return (
-    <svg aria-hidden="true" viewBox="0 0 16 16" className="mx-4 inline-block h-3 w-3 fill-current">
+    <svg aria-hidden="true" viewBox="0 0 16 16" className="mx-4 inline-block h-3 w-3 fill-banner-star">
       <path d="M8 0c.6 4.6 2.4 6.9 8 8-5.6 1.1-7.4 3.4-8 8-.6-4.6-2.4-6.9-8-8 5.6-1.1 7.4-3.4 8-8z" />
     </svg>
   );
