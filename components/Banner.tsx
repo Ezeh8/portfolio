@@ -27,11 +27,17 @@ function Phrase({ hidden }: { hidden?: boolean }) {
   );
 }
 
-export default function Banner() {
+// `decorative` hides the whole banner from assistive tech, for a copy that repeats
+// another banner on the page.
+export default function Banner({ id, decorative = false }: { id?: string; decorative?: boolean }) {
   return (
     // The wrapper clips the oversized, tilted band; its vertical padding leaves room
     // for the tilt so the band's corners are never cut off at the top or bottom.
-    <div className="relative z-[2] overflow-hidden py-[max(2rem,3vw)]">
+    <div
+      id={id}
+      aria-hidden={decorative || undefined}
+      className="relative z-[2] overflow-hidden py-[max(2rem,3vw)]"
+    >
       <div className="-mx-[10vw] -rotate-2 bg-banner-bg py-4 text-banner-text">
         <div className="banner-track flex w-max font-mono text-sm uppercase tracking-[0.18em] sm:text-base">
           {Array.from({ length: COPIES * 2 }, (_, i) => (

@@ -190,10 +190,6 @@ export const site = {
     ],
   },
 
-  quote: {
-    text: "Countries that own their intelligence layer will write the rules of the 4th Industrial Revolution.",
-  },
-
   contact: {
     headline: { text: "get in touch.", highlight: "touch" } satisfies Headline,
     text: "Based in Nigeria, working remotely across time zones. My inbox is open to anyone building where AI meets operations ~ say hello.",

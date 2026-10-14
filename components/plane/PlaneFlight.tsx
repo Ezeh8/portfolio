@@ -182,10 +182,10 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   const about = $("#about");
   const work = $("#work");
   const toolkit = $("#toolkit");
-  const quote = $("#quote");
+  const secondBanner = $("#second-banner");
   const touch = $("#contact .squiggle") as HTMLElement | null;
   const firstCard = document.getElementById(CARD_IDS[0]);
-  if (!hero || !about || !work || !toolkit || !quote || !touch || !firstCard) return null;
+  if (!hero || !about || !work || !toolkit || !secondBanner || !touch || !firstCard) return null;
 
   // Scroll position at which the point `frac` of the way down `el` sits `screen` of the
   // way down the screen.
@@ -258,15 +258,23 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
       scale: 0.45,
       maxTilt: 20,
     },
-    // 6. Pull quote: one glide right, rising, into the off-screen upper-right leg
+    // 6. Second banner: one glide right, rising, behind the banner, into the off-screen
+    // upper-right leg
     // leg 6
-    { name: "quote glide right", s: at(quote, 0.5, 0.5), x: 85, y: 28, scale: 0.4, maxTilt: 20 },
+    {
+      name: "second banner glide right",
+      s: at(secondBanner, 0.5, 0.5),
+      x: 85,
+      y: 28,
+      scale: 0.4,
+      maxTilt: 20,
+    },
     // 7. closing block: out of view to the upper right, back in from the upper right,
     // glide down-left onto the headline
     // leg 7
     {
       name: "off-screen upper right",
-      s: at(quote, 0.5, 0.5) + vh * 0.1,
+      s: at(secondBanner, 0.5, 0.5) + vh * 0.1,
       x: 110,
       y: 18,
       scale: 0.4,

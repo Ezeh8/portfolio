@@ -6,7 +6,6 @@ import Experience from "@/components/Experience";
 import Hero from "@/components/Hero";
 import Nav from "@/components/Nav";
 import PlaneLayer from "@/components/plane/PlaneLayer";
-import Quote from "@/components/Quote";
 import Toolkit from "@/components/Toolkit";
 import Work from "@/components/Work";
 
@@ -22,7 +21,7 @@ export default function Home() {
         <Work />
         <Experience />
         <Toolkit />
-        <Quote />
+        <Banner id="second-banner" decorative />
       </main>
       <Contact />
       <CardHighlights />
