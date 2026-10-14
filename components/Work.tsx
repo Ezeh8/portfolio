@@ -23,7 +23,7 @@ export default function Work() {
           </HandNote>
         </div>
 
-        <ul className="mt-10 grid gap-6 md:grid-cols-2 md:gap-8">
+        <ul className="mt-10 grid gap-12 md:grid-cols-2 md:gap-x-8 lg:gap-8">
           {projects.map((project, i) => (
             <li key={project.id}>
               <article id={project.id} className="panel relative z-[2] flex h-full flex-col overflow-hidden">

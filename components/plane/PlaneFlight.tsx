@@ -310,6 +310,222 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   return keys.map((k, i) => ({ ...k, s: s[i] }));
 }
 
+// Phones (under 1024px): "hide and seek". Legs 0-1 and the last three legs (off screen
+// upper right, closing entry, landing) are the same as choreography()'s; in between, the
+// plane holds near 55% of the screen height and hides behind the cards, showing itself
+// only as the gaps between them scroll through its height.
+const PHONE_Y = 55;
+const PHONE_TILT = 20;
+
+function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
+  const shared = choreography(false, size, plane);
+  if (!shared) return null;
+  const { h, vh } = size;
+  const pct = (px: number) => (px / vh) * 100;
+  const warn = (msg: string) => {
+    if (process.env.NODE_ENV !== "production") console.warn(`[plane] phone: ${msg}`);
+  };
+
+  const box = (el: Element | null | undefined) => (el ? docRect(el) : null);
+  const banner = box($("main .banner-track")?.closest(".overflow-hidden"));
+  const about = box($("#about"));
+  const work = box($("#work"));
+  const experience = box($("#experience"));
+  const toolkit = box($("#toolkit"));
+  const secondBanner = box($("#second-banner"));
+  const cards = CARD_IDS.map((id) => box(document.getElementById(id)));
+  const roles = Array.from(document.querySelectorAll("#experience ol > li")).map(box);
+
+  // Scroll position at which the document y `docY` sits `screen` % down the screen.
+  const when = (docY: number | null | undefined, screen = PHONE_Y) =>
+    docY == null ? NaN : docY - (screen / 100) * vh;
+  // Half the scroll it takes a gap to pass the plane at `scale` (gap plus plane height).
+  const half = (gap: number, scale: number) => (gap + h * scale) / 2 + 4;
+  // The vertical gap between two cards, or null when they are not stacked (side by side).
+  const gap = (a: ReturnType<typeof box>, b: ReturnType<typeof box>) =>
+    a && b && b.top > a.bottom ? { top: a.bottom, bottom: b.top, size: b.top - a.bottom } : null;
+
+  const g12 = gap(cards[0], cards[1]);
+  const g23 = gap(cards[1], cards[2]);
+  const g34 = gap(cards[2], cards[3]);
+  const e12 = gap(roles[0], roles[1]);
+  const mid = (g: ReturnType<typeof gap>) => (g ? (g.top + g.bottom) / 2 : undefined);
+  const peekRide = 40; // px the plane rides with card 3's lower edge, half out
+  const tilt = { maxTilt: PHONE_TILT };
+
+  const middle: Key[] = [
+    // 1. Banner and About: over to the right edge behind the first banner, then a slow
+    // drift down it
+    {
+      name: "phone: right edge, behind first banner",
+      s: when(banner && (banner.top + banner.bottom) / 2, 40),
+      x: 86,
+      y: 40,
+      scale: 0.85,
+      ...tilt,
+    },
+    { name: "phone: about, down the right edge", s: when(about?.bottom, 50), x: 80, y: 48, scale: 0.7, ...tilt },
+    // 2. Work: down and left, behind the first project card
+    {
+      name: "phone: behind project card 1",
+      s: when(cards[0] && cards[0].top + (h * 0.6) / 2 + 8),
+      x: 45,
+      y: PHONE_Y,
+      scale: 0.6,
+      ...tilt,
+    },
+    // 3. gap 1-2: in place at the left edge, then a short hop right as the gap passes
+    {
+      name: "phone: hidden, to the left edge",
+      s: when(g12 && mid(g12)! - half(g12.size, 0.6)),
+      x: 10,
+      y: PHONE_Y,
+      scale: 0.6,
+      ...tilt,
+    },
+    {
+      name: "phone: gap 1-2, short hop right",
+      s: when(g12 && mid(g12)! + half(g12.size, 0.6)),
+      x: 40,
+      y: PHONE_Y - 1,
+      scale: 0.6,
+      ...tilt,
+    },
+    // 4. gap 2-3: from the right edge, a longer glide left, sinking slightly
+    {
+      name: "phone: behind card 2, to the right edge",
+      s: when(g23 && mid(g23)! - half(g23.size, 0.6)),
+      x: 90,
+      y: PHONE_Y + 1,
+      scale: 0.6,
+      ...tilt,
+    },
+    {
+      name: "phone: gap 2-3, long glide left",
+      s: when(g23 && mid(g23)! + half(g23.size, 0.6) * 1.5),
+      x: 30,
+      y: PHONE_Y + 3,
+      scale: 0.6,
+      ...tilt,
+    },
+    // 5. gap 3-4, a peek: waits at x 70 behind card 3, nose down; as card 3's lower edge
+    // reaches its middle it rides along with that edge (front half out), then drops
+    // back so card 4 slides over it. It never crosses the gap.
+    {
+      name: "phone: behind card 3, to the peek spot",
+      s: when(cards[2] && cards[2].bottom - (h * 0.6) / 2 - 4),
+      x: 70,
+      y: PHONE_Y,
+      scale: 0.6,
+      tilt: PHONE_TILT,
+      ...tilt,
+    },
+    {
+      name: "phone: peek, front half out",
+      s: when(g34 && g34.top),
+      x: 70,
+      y: PHONE_Y,
+      scale: 0.6,
+      tilt: PHONE_TILT,
+      ...tilt,
+    },
+    {
+      name: "phone: peek, hold",
+      s: when(g34 && g34.top) + peekRide,
+      x: 70,
+      y: PHONE_Y - pct(peekRide),
+      scale: 0.6,
+      tilt: PHONE_TILT,
+      yEase: "none",
+      ...tilt,
+    },
+    {
+      name: "phone: peek, pull back behind card 4",
+      s: when(g34 && g34.top) + peekRide + (g34 ? half(g34.size, 0.6) : 0),
+      x: 70,
+      y: PHONE_Y - pct(peekRide) + pct(g34 ? half(g34.size, 0.6) : 0),
+      scale: 0.6,
+      tilt: PHONE_TILT,
+      ...tilt,
+    },
+    // 6. below card 4: in place at x 30, then a gentle climb to the right edge
+    {
+      name: "phone: behind card 4, to x 30",
+      s: when(cards[3] && cards[3].bottom - (h * 0.6) / 2 - 4),
+      x: 30,
+      y: PHONE_Y,
+      scale: 0.6,
+      ...tilt,
+    },
+    { name: "phone: below card 4, climb right", s: when(work?.bottom, 35), x: 88, y: 48, scale: 0.55, ...tilt },
+    // 7. Experience: behind card 1, out in gap 1-2 at the left, drift right, behind card
+    // 2 to the right edge, then a slow drift through the rest of the section
+    {
+      name: "phone: behind experience card 1, to the left",
+      s: when(e12 && mid(e12)! - half(e12.size, 0.5)),
+      x: 15,
+      y: PHONE_Y,
+      scale: 0.5,
+      ...tilt,
+    },
+    {
+      name: "phone: experience gap 1-2, drift right",
+      s: when(e12 && mid(e12)! + half(e12.size, 0.5)),
+      x: 45,
+      y: PHONE_Y,
+      scale: 0.5,
+      ...tilt,
+    },
+    {
+      name: "phone: behind experience card 2, to the right edge",
+      s: when(roles[1] && roles[1].bottom - (h * 0.5) / 2 - 4),
+      x: 88,
+      y: PHONE_Y,
+      scale: 0.5,
+      ...tilt,
+    },
+    {
+      name: "phone: rest of experience, slow drift",
+      s: when(experience?.bottom, 50),
+      x: 82,
+      y: 50,
+      scale: 0.5,
+      ...tilt,
+    },
+    // 8. Toolkit: one gentle move to the left edge, sinking slightly
+    { name: "phone: toolkit, to the left edge", s: when(toolkit?.bottom, 50), x: 12, y: 54, scale: 0.5, ...tilt },
+    // 9. second banner: left to right, rising, behind the banner, into the off-screen leg
+    {
+      name: "phone: second banner, rising right",
+      s: when(secondBanner && (secondBanner.top + secondBanner.bottom) / 2, 50),
+      x: 85,
+      y: 28,
+      scale: 0.4,
+      ...tilt,
+    },
+  ];
+
+  // Any keyframe with a missing anchor reuses the previous keyframe.
+  const start = shared.slice(0, 2);
+  const end = shared.slice(-3);
+  const keys = [...start];
+  for (const key of middle) {
+    const prev = keys[keys.length - 1];
+    const values = [key.s, key.x, key.y, key.scale];
+    if (values.every(Number.isFinite)) keys.push(key);
+    else {
+      warn(`"${key.name}" has a missing anchor; reusing the previous keyframe`);
+      keys.push({ ...key, s: prev.s, x: prev.x, y: prev.y, scale: prev.scale });
+    }
+  }
+  keys.push(...end);
+  const s = inOrder(
+    keys.map((k) => k.s),
+    maxScroll(),
+  );
+  return keys.map((k, i) => ({ ...k, s: s[i] }));
+}
+
 // Index of the leg whose dotted trail is drawn: the final glide onto the headline. It
 // ends at the landing spot, under the plane.
 const trailLeg = (keys: Key[]) => keys.length - 2;
@@ -518,11 +734,12 @@ export default function PlaneFlight() {
       mm.add(
         {
           desktop: "(min-width: 1024px)",
+          phone: "(max-width: 1023px)",
           reduce: "(prefers-reduced-motion: reduce)",
           fine: "(pointer: fine)",
         },
         (context) => {
-          const { desktop, reduce, fine } = context.conditions as Record<string, boolean>;
+          const { desktop, phone, reduce, fine } = context.conditions as Record<string, boolean>;
           const stopLenis = fine && !reduce ? startLenis() : null;
 
           let built: gsap.Context | null = null;
@@ -556,7 +773,10 @@ export default function PlaneFlight() {
               gsap.set([p.plane, p.shadow], { xPercent: -50, yPercent: -50 });
               if (reduce) placeStill(p, desktop, size);
               else {
-                const keys = choreography(desktop, size, p.plane);
+                // phones get their own hide-and-seek flight, desktop the original one
+                const keys = phone
+                  ? phoneChoreography(size, p.plane)
+                  : choreography(desktop, size, p.plane);
                 if (!keys) return;
                 const flight = buildFlight(p, keys, size);
                 // Dev-only debug overlay. The NODE_ENV check is replaced at build time,
@@ -568,7 +788,7 @@ export default function PlaneFlight() {
                   const token = ++debugToken;
                   import("./PlaneDebug").then(({ attachPlaneDebug }) => {
                     if (token !== debugToken) return;
-                    stopDebug = attachPlaneDebug({ keys, size, ...flight });
+                    stopDebug = attachPlaneDebug({ keys, size, phone, ...flight });
                   });
                 }
               }

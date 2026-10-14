@@ -7,13 +7,15 @@ import type { Key, Size } from "./PlaneFlight";
 type Flight = {
   keys: Key[];
   size: Size;
+  /** The phone (under 1024px) choreography is running. */
+  phone?: boolean;
   tl: gsap.core.Timeline;
   proxy: { x: number; y: number; scale: number; tilt: number; facing: number; bow: number };
 };
 
 const SVG = "http://www.w3.org/2000/svg";
 
-export function attachPlaneDebug({ keys, size, tl, proxy }: Flight) {
+export function attachPlaneDebug({ keys, size, phone = false, tl, proxy }: Flight) {
   const { vw, vh } = size;
   const px = (x: number) => (x / 100) * vw;
   const py = (y: number) => (y / 100) * vh;
@@ -97,6 +99,7 @@ export function attachPlaneDebug({ keys, size, tl, proxy }: Flight) {
     while (leg < keys.length - 1 && t >= keys[leg].s) leg++;
     const rotation = (proxy.facing < 0 ? -1 : 1) * proxy.tilt;
     panel.textContent = [
+      `flight   ${phone ? "phone (under 1024px)" : "desktop"}`,
       `section  ${section}`,
       `leg ${leg} / ${keys.length - 1}  ${keys[leg].name}`,
       `x ${proxy.x.toFixed(1)}  y ${(proxy.y + proxy.bow).toFixed(1)}  scale ${proxy.scale.toFixed(2)}`,
