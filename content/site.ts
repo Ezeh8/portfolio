@@ -186,6 +186,7 @@ export const site = {
       {
         title: "Evaluate",
         items: ["LangSmith", "Langfuse", "Golden datasets", "Regression suites"],
+        tinted: true,
       },
       {
         title: "Automate",

@@ -9,6 +9,8 @@
 :root {
   --bg: #e6e7ea;
   --card: #f4f5f7;
+  --card-alt: #c9ccd2; /* Evaluate toolkit card background */
+  --card-alt-title: #45484f; /* Evaluate toolkit card title */
   --text: #111214;
   /* the original muted grey: --text at 60% (4.57:1 on --bg, 4.75:1 on --card) */
   --text-muted: color-mix(in oklab, var(--text) 60%, transparent);
@@ -30,6 +32,8 @@
 [data-theme="dark"] {
   --bg: #0b0c0e;
   --card: #15171b;
+  --card-alt: #2a2d33;
+  --card-alt-title: #9a9ea6;
   --text: #edeef0;
   --text-muted: #9a9ea6;
   --note: #9a9ea6;
@@ -49,6 +53,8 @@
 @theme inline {
   --color-bg: var(--bg);
   --color-card: var(--card);
+  --color-card-alt: var(--card-alt);
+  --color-card-alt-title: var(--card-alt-title);
   --color-text: var(--text);
   --color-text-muted: var(--text-muted);
   --color-note: var(--note);
