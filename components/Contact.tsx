@@ -8,7 +8,7 @@ import { ButtonLink, Container, Headline, StatusDot, hasHref } from "./ui";
 export default function Contact() {
   const { headline, text, email, buttons, replies } = site.contact;
   const title = <Headline copy={headline} className="text-[clamp(2.75rem,8vw,6rem)]" />;
-  const { credentials, line, copyright } = site.footer;
+  const { credentials, copyright } = site.footer;
 
   return (
     <footer id="contact" className="scroll-mt-16 pt-20 pb-6 sm:pt-28 sm:pb-8">
@@ -54,10 +54,7 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="mt-6 text-sm text-text-muted sm:mt-8">
-          <p className="leading-relaxed">{line}</p>
-          <p className="mt-2 font-mono text-xs sm:mt-3">{copyright}</p>
-        </div>
+        <p className="mt-6 font-mono text-xs text-text-muted sm:mt-8">{copyright}</p>
       </Container>
     </footer>
   );

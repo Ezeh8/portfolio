@@ -223,7 +223,6 @@ export const site = {
         "Deploy Multi-Agent Systems with Gemini Enterprise Agent Platform (Google)",
       ],
     },
-    line: "Agents and blockchain are the twin rails of the next economy; I've been in Nigeria's crypto community for 4+ years, watching them converge.",
     copyright: "© 2026 Ezeh Ikenna",
   },
 };
