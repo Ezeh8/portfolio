@@ -77,7 +77,7 @@ export const site = {
 
   about: {
     label: "01 / About",
-    headline: { text: "built by an operator.", highlight: "operator" } satisfies Headline,
+    headline: { text: "operator lens.", highlight: "operator" } satisfies Headline,
     paragraphs: [
       "I came to AI from the operator's side, after co-founding a fashion retail brand and running operations systems at Standard Chartered.",
       "Since 2024, through Rithma Labs, I've designed and shipped AI for clients in logistics, construction, SaaS, and energy.",
