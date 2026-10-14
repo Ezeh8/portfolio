@@ -187,7 +187,7 @@ export const site = {
     label: "04 / Toolkit",
     headline: { text: "the kit behind the work.", highlight: "work" } satisfies Headline,
     groups: [
-      { title: "Build", items: ["Python", "FastAPI", "PostgreSQL", "Docker", "Claude Code", "Codex"] },
+      { title: "Build", items: ["Python", "FastAPI", "PostgreSQL", "Docker", "Claude Code / Codex"] },
       { title: "Agents", items: ["LangGraph", "MCP", "RAG pipelines", "LLM APIs"] },
       {
         title: "Evaluate",
