@@ -30,7 +30,7 @@
   --accent: #1f3c8c; /* filled shapes only */
   --accent-text: #1f3c8c; /* highlighted words, readouts, lines, status dots, links */
   --accent-soft: #d0d8ef;
-  --marker: #f2c14e; /* highlight behind key phrases in Experience */
+  --marker: #7b95e8; /* bright blue highlight behind key results in Experience */
   --marker-ink: #0b0c0e; /* text on the highlight */
   --banner-bg: #111214;
   --banner-text: #e6e7ea;
@@ -61,7 +61,7 @@
   --accent: #1f3c8c;
   --accent-text: #7b95e8;
   --accent-soft: #1a2a57;
-  --marker: #f2c14e; /* highlight behind key phrases in Experience */
+  --marker: #7b95e8; /* bright blue highlight behind key results in Experience */
   --marker-ink: #0b0c0e; /* text on the highlight */
   --banner-bg: #1f3c8c;
   --banner-text: #edeef0;
