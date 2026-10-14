@@ -57,7 +57,7 @@ export const site = {
     name: "Ezeh Ikenna",
     tagline: "Founder, Rithma Labs",
     status: "building agentic systems from Nigeria",
-    headline: { text: "build.\nship.\nevaluate.", highlight: "evaluate." } satisfies Headline,
+    headline: { text: "build. ship. evaluate.", highlight: "evaluate." } satisfies Headline,
     intro:
       "10+ years running teams and operations systems taught me where companies lose time, money, and trust. I map how your team works, redesign the slow parts around AI agents, and trace every decision they make so each one can be audited and improved.",
     primary: { label: "view my work →", href: "#work" } satisfies Link,
