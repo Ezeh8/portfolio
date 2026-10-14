@@ -143,7 +143,7 @@ export function ButtonLink({
 }) {
   const styles =
     variant === "primary"
-      ? "border-btn-fill bg-btn-fill text-btn-ink hover:bg-btn-hover hover:border-btn-hover [--offset:var(--btn-shadow)]"
+      ? "border-btn-fill bg-btn-fill text-btn-ink hover:bg-btn-hover hover:border-btn-hover hover:text-btn-hover-ink [--offset:var(--btn-shadow)] hover:[--offset:var(--btn-hover-shadow)]"
       : "border-line bg-card text-text hover:bg-bg";
   return (
     <a

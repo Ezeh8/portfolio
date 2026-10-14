@@ -20,7 +20,9 @@
   --shadow: #111214; /* hard offset card shadows */
   --btn-bg: #111214;
   --btn-text: #e6e7ea;
-  --btn-hover: #2a2c31; /* filled buttons on hover */
+  --btn-hover: #1f3c8c; /* filled buttons on hover */
+  --btn-hover-ink: #ffffff; /* text on filled buttons on hover */
+  --btn-hover-shadow: #6b6f78; /* offset under filled buttons on hover */
   --btn-fill: #111214; /* filled buttons */
   --btn-ink: #e6e7ea; /* text on filled buttons */
   --btn-shadow: #6b6f78; /* grey offset under filled buttons */
@@ -46,7 +48,9 @@
   --shadow: #1f3c8c;
   --btn-bg: #1f3c8c;
   --btn-text: #edeef0;
-  --btn-hover: #d9dbe0;
+  --btn-hover: #1f3c8c;
+  --btn-hover-ink: #ffffff;
+  --btn-hover-shadow: #edeef0;
   --btn-fill: #edeef0;
   --btn-ink: #0b0c0e;
   --btn-shadow: #1f3c8c;
@@ -75,6 +79,7 @@
   --color-btn-fill: var(--btn-fill);
   --color-btn-ink: var(--btn-ink);
   --color-btn-hover: var(--btn-hover);
+  --color-btn-hover-ink: var(--btn-hover-ink);
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
