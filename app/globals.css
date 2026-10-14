@@ -26,6 +26,7 @@
   --btn-fill: #111214; /* filled buttons */
   --btn-ink: #e6e7ea; /* text on filled buttons */
   --btn-shadow: #6b6f78; /* grey offset under filled buttons */
+  --btn-edge: #111214;
   --accent: #1f3c8c; /* filled shapes only */
   --accent-text: #1f3c8c; /* highlighted words, readouts, lines, status dots, links */
   --accent-soft: #d0d8ef;
@@ -50,10 +51,11 @@
   --btn-text: #edeef0;
   --btn-hover: #1f3c8c;
   --btn-hover-ink: #ffffff;
-  --btn-hover-shadow: #edeef0;
-  --btn-fill: #edeef0;
-  --btn-ink: #0b0c0e;
-  --btn-shadow: #1f3c8c;
+  --btn-hover-shadow: #6b6f78;
+  --btn-fill: #111214;
+  --btn-ink: #edeef0;
+  --btn-shadow: #6b6f78;
+  --btn-edge: #3a3d44; /* thin edge on filled buttons at rest */
   --accent: #1f3c8c;
   --accent-text: #7b95e8;
   --accent-soft: #1a2a57;
@@ -78,6 +80,7 @@
   --color-btn-text: var(--btn-text);
   --color-btn-fill: var(--btn-fill);
   --color-btn-ink: var(--btn-ink);
+  --color-btn-edge: var(--btn-edge);
   --color-btn-hover: var(--btn-hover);
   --color-btn-hover-ink: var(--btn-hover-ink);
   --color-accent: var(--accent);
