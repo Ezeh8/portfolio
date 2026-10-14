@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Kalam } from "next/font/google";
 import localFont from "next/font/local";
-import { themeScript } from "@/components/theme";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -36,18 +35,19 @@ export const metadata: Metadata = {
     "I turn messy business operations into agentic systems that run on their own and report back clearly.",
 };
 
+// The site is dark only: dark browser UI and scrollbars, and the --bg color for the
+// browser's theme color.
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#0b0c0e",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // data-theme is set by the head script before React hydrates
     <html
       lang="en"
-      suppressHydrationWarning
       className={`${generalSans.variable} ${bricolage.variable} ${fragmentMono.variable} ${kalam.variable} h-full antialiased`}
     >
-      <head>
-        {/* sets data-theme before the first paint, so the page never flashes the wrong theme */}
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

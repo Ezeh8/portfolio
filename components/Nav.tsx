@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { site } from "@/content/site";
-import ThemeToggle from "./ThemeToggle";
 import { Container, Glyphs } from "./ui";
 
 export default function Nav() {
@@ -49,12 +48,10 @@ export default function Nav() {
                   <Glyphs text={cta.label} />
                 </span>
               </a>
-              <ThemeToggle className="h-9 w-9" />
             </div>
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <ThemeToggle className="h-10 w-10" />
             <button
               type="button"
               className="inline-flex h-10 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs uppercase tracking-[0.12em]"

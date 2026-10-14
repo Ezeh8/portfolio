@@ -65,7 +65,7 @@ export default function Work() {
                     {/* dashed until the card reaches mid-screen; CardHighlights sets data-lit */}
                     <p
                       data-readout
-                      className="border-t-(length:--border-width) border-dashed border-accent-text pt-3 font-mono text-sm text-accent-text transition-colors duration-300 data-[lit]:border-solid data-[lit]:bg-accent-soft dark:data-[lit]:text-text"
+                      className="border-t-(length:--border-width) border-dashed border-accent-text pt-3 font-mono text-sm text-accent-text transition-colors duration-300 data-[lit]:border-solid data-[lit]:bg-accent-soft data-[lit]:text-text"
                     >
                       {project.readout}
                     </p>

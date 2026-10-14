@@ -1,72 +1,36 @@
 @import "tailwindcss";
 
-/* `dark:` utilities follow the data-theme attribute on <html>, not the system setting
-   (the head script in app/layout.tsx resolves the system setting into data-theme). */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-
-/* Theme tokens. Light is the original look; every color on the site comes from here,
-   except the paper plane and its shadow, which look the same in both themes. */
+/* Color tokens. The site is dark only; every color on the site comes from here, except
+   the paper plane and its shadow. */
 :root {
-  --bg: #e6e7ea;
-  --card: #f4f5f7;
-  --card-alt: #c9ccd2; /* Evaluate toolkit card background */
-  --card-alt-title: #45484f; /* Evaluate toolkit card title */
-  --text: #111214;
-  /* the original muted grey: --text at 60% (4.57:1 on --bg, 4.75:1 on --card) */
-  --text-muted: color-mix(in oklab, var(--text) 60%, transparent);
-  /* the original handwritten-note color: --text at 80% */
-  --note: color-mix(in oklab, var(--text) 80%, transparent);
-  --line: #111214; /* card, chip, pill and header-bar borders */
-  --shadow: #111214; /* hard offset card shadows */
-  --btn-bg: #111214;
-  --btn-text: #e6e7ea;
+  color-scheme: dark;
+  --bg: #0b0c0e;
+  --card: #15171b;
+  --card-alt: #2a2d33; /* tinted card background */
+  --card-alt-title: #9a9ea6; /* tinted card title, header bar and muted labels */
+  --text: #edeef0;
+  --text-muted: #9a9ea6;
+  --note: #9a9ea6; /* handwritten notes */
+  --line: #3a3d44; /* card, chip, pill and header-bar borders */
+  --shadow: #1f3c8c; /* hard offset card shadows */
+  --btn-bg: #1f3c8c; /* nav pill on hover */
+  --btn-text: #edeef0;
   --btn-hover: #1f3c8c; /* filled buttons on hover */
   --btn-hover-ink: #ffffff; /* text on filled buttons on hover */
   --btn-hover-shadow: #6b6f78; /* offset under filled buttons on hover */
   --btn-fill: #111214; /* filled buttons */
-  --btn-ink: #e6e7ea; /* text on filled buttons */
+  --btn-ink: #edeef0; /* text on filled buttons */
   --btn-shadow: #6b6f78; /* grey offset under filled buttons */
-  --btn-edge: #111214;
-  --accent: #1f3c8c; /* filled shapes only */
-  --accent-text: #1f3c8c; /* highlighted words, readouts, lines, status dots, links */
-  --accent-soft: #d0d8ef;
-  --marker: #7b95e8; /* bright blue highlight behind key results in Experience */
-  --marker-ink: #0b0c0e; /* text on the highlight */
-  --banner-bg: #111214;
-  --banner-text: #e6e7ea;
-  --banner-star: #f2c14e; /* gold star between banner phrases */
-  --trail: #111214; /* drawn at 25% opacity */
-  --border-width: 2px;
-}
-
-[data-theme="dark"] {
-  --bg: #0b0c0e;
-  --card: #15171b;
-  --card-alt: #2a2d33;
-  --card-alt-title: #9a9ea6;
-  --text: #edeef0;
-  --text-muted: #9a9ea6;
-  --note: #9a9ea6;
-  --line: #3a3d44;
-  --shadow: #1f3c8c;
-  --btn-bg: #1f3c8c;
-  --btn-text: #edeef0;
-  --btn-hover: #1f3c8c;
-  --btn-hover-ink: #ffffff;
-  --btn-hover-shadow: #6b6f78;
-  --btn-fill: #111214;
-  --btn-ink: #edeef0;
-  --btn-shadow: #6b6f78;
   --btn-edge: #3a3d44; /* thin edge on filled buttons at rest */
-  --accent: #1f3c8c;
-  --accent-text: #7b95e8;
+  --accent: #1f3c8c; /* filled shapes only */
+  --accent-text: #7b95e8; /* highlighted words, readouts, lines, status dots, links */
   --accent-soft: #1a2a57;
   --marker: #7b95e8; /* bright blue highlight behind key results in Experience */
   --marker-ink: #0b0c0e; /* text on the highlight */
   --banner-bg: #1f3c8c;
   --banner-text: #edeef0;
-  --banner-star: #edeef0; /* same as the banner text, so the dark banner looks as before */
-  --trail: #edeef0;
+  --banner-star: #edeef0; /* star between banner phrases, same as the banner text */
+  --trail: #edeef0; /* drawn at 25% opacity */
   --border-width: 1.5px;
 }
 
@@ -137,12 +101,11 @@ body {
 
   /* Headline highlight: a repeating squiggle background on an inline span, so the
      underline follows the text across line breaks. CSS variables can't be used inside
-     a data URI, so each theme has its own image, kept together here:
-     light strokes #1F3C8C (light --accent-text), dark strokes #7B95E8 (dark --accent-text). */
+     a data URI, so the stroke repeats --accent-text (#7B95E8) by hand. */
   .squiggle {
     color: var(--accent-text);
     padding-bottom: 0.06em;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%231F3C8C' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%237B95E8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: repeat-x;
     background-position: 0 100%;
     background-size: 0.5em 0.2em;
@@ -157,28 +120,9 @@ body {
     padding-bottom: 0;
     background-position: 0 calc(100% - 0.06em);
   }
-
-  [data-theme="dark"] .squiggle {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%237B95E8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-  }
 }
 
-/* Theme switch: only while the toggle's switch is running (the class is added on click,
-   never on page load), colors fade over 200ms. Transforms are never transitioned. */
-@media (prefers-reduced-motion: no-preference) {
-  html.theme-switching,
-  html.theme-switching *,
-  html.theme-switching *::before,
-  html.theme-switching *::after {
-    transition-property: color, background-color, border-color, box-shadow, fill, stroke !important;
-    transition-duration: 200ms !important;
-    transition-timing-function: ease !important;
-    transition-delay: 0s !important;
-  }
-}
-
-/* Banner: the track never moves on its own; components/BannerScroll.tsx moves it with
-   the page scroll. */
+/* Banner: components/BannerScroll.tsx moves the track. */
 .banner-track {
   will-change: transform;
 }
