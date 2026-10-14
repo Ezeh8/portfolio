@@ -2,7 +2,9 @@ import About from "@/components/About";
 import Banner from "@/components/Banner";
 import BannerScroll from "@/components/BannerScroll";
 import CardHighlights from "@/components/CardHighlights";
+import CardReveal from "@/components/CardReveal";
 import Contact from "@/components/Contact";
+import CountUp from "@/components/CountUp";
 import Experience from "@/components/Experience";
 import Hero from "@/components/Hero";
 import Nav from "@/components/Nav";
@@ -26,6 +28,8 @@ export default function Home() {
       </main>
       <Contact />
       <CardHighlights />
+      <CardReveal />
+      <CountUp />
       <BannerScroll />
     </>
   );

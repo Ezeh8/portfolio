@@ -11,12 +11,37 @@ const markerPattern = new RegExp(
     .join("|")})(?![\\w,])`,
 );
 
+// A marker split into an optional "₦", the number, and the rest ("%", "M+", "+").
+const markerParts = /^(₦?)([\d,]+)(.*)$/;
+
+// The number is drawn in its own span (data-count) so CountUp can count it up; screen
+// readers get the whole marker once, from the sr-only copy.
+function Marker({ text }: { text: string }) {
+  const parts = text.match(markerParts);
+  if (!parts) return <Glyphs text={text} />;
+  const [, prefix, number, suffix] = parts;
+  return (
+    <>
+      {prefix && (
+        <span aria-hidden="true">
+          <Glyphs text={prefix} />
+        </span>
+      )}
+      <span data-count={number.replace(/,/g, "")} aria-hidden="true">
+        {number}
+      </span>
+      {suffix && <span aria-hidden="true">{suffix}</span>}
+      <span className="sr-only">{text}</span>
+    </>
+  );
+}
+
 function Marked({ text }: { text: string }) {
   return text.split(markerPattern).map((part, i) =>
     // split() with one capture group puts matches at odd indexes
     i % 2 === 1 ? (
       <mark key={i} className="rounded-sm bg-accent-soft px-1 text-text">
-        <Glyphs text={part} />
+        <Marker text={part} />
       </mark>
     ) : (
       <Glyphs key={i} text={part} />
