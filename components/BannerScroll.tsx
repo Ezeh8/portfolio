@@ -23,25 +23,29 @@ export default function BannerScroll() {
         (wrapper) => {
           const track = wrapper.querySelector<HTMLElement>(".banner-track");
           if (!track) return [];
-          const banner = {
-            track,
-            x: 0,
-            half: track.scrollWidth / 2,
-            onScreen: false,
-            setX: gsap.quickSetter(track, "x", "px") as (x: number) => void,
-          };
-          const trigger = ScrollTrigger.create({
-            trigger: wrapper,
-            start: "top bottom",
-            end: "bottom top",
-            onToggle: (self) => {
-              banner.onScreen = self.isActive;
+          return [
+            {
+              wrapper,
+              track,
+              x: 0,
+              half: track.scrollWidth / 2,
+              // assumed on screen until the observer says otherwise, so it drifts from the start
+              onScreen: true,
+              setX: gsap.quickSetter(track, "x", "px") as (x: number) => void,
             },
-          });
-          banner.onScreen = trigger.isActive;
-          return [Object.assign(banner, { trigger })];
+          ];
         },
       );
+
+      // Off-screen banners don't move. The observer reports every banner's state as soon
+      // as it starts watching, so nothing waits on a scroll to start drifting.
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const banner = banners.find((b) => b.wrapper === entry.target);
+          if (banner) banner.onScreen = entry.isIntersecting;
+        });
+      });
+      banners.forEach((b) => observer.observe(b.wrapper));
 
       const measure = () => {
         banners.forEach((b) => {
@@ -81,10 +85,8 @@ export default function BannerScroll() {
         gsap.ticker.remove(tick);
         ScrollTrigger.removeEventListener("refresh", measure);
         scroll.kill();
-        banners.forEach((b) => {
-          b.trigger.kill();
-          gsap.set(b.track, { clearProps: "transform" });
-        });
+        observer.disconnect();
+        banners.forEach((b) => gsap.set(b.track, { clearProps: "transform" }));
       };
     });
     return () => mm.revert();
