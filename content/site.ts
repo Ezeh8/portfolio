@@ -141,7 +141,7 @@ export const site = {
     label: "03 / Experience",
     headline: { text: "where the work happened.", highlight: "happened" } satisfies Headline,
     // Numbers in the bullets drawn with a marker highlight (matched as whole numbers).
-    markers: ["cutting admin overhead 85%", "₦17 million in revenue", "in-app automation", "AI-driven credit-scoring model", "from 4 to 35 team members", "1,000", "7,000", "cycle times", "operational friction"],
+    markers: ["cutting admin overhead 85%", "₦17 million in revenue", "in-app automation", "AI-driven credit-scoring model", "1,000", "7,000", "cycle times", "operational friction"],
     roles: [
       {
         role: "Founder",
