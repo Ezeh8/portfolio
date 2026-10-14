@@ -6,12 +6,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-// Banner marquee: every banner drifts on its own at a slow base speed and never stops.
-// Scrolling pushes it faster in step with the scroll speed, and sets its direction: left
-// while scrolling down, right while scrolling up. When the scroll stops the push fades
-// back to the slow drift, in the last direction. The track holds two identical halves,
-// so wrapping its x over half its width loops seamlessly. A banner off screen doesn't
-// move. Under reduced motion the banners stand still.
+// Banner marquee: every banner always drifts left at a slow base speed. Scrolling down
+// changes nothing. Scrolling up turns it right and moves it with the scroll, faster when
+// scrolling faster; when the upward scroll stops it eases back to the left drift. The
+// track holds two identical halves, so wrapping its x over half its width loops
+// seamlessly. A banner off screen doesn't move. Under reduced motion the banners stand
+// still.
 const BASE_SPEED = 50; // px per second
 const MAX_BOOST = 1500; // px per second
 
@@ -55,27 +55,32 @@ export default function BannerScroll() {
       ScrollTrigger.addEventListener("refresh", measure);
 
       // Shared by every banner.
-      let direction = -1; // -1 moves left
-      let boost = 0;
-      let target = 0;
+      let velocity = -BASE_SPEED; // signed px per second; negative moves left
+      let upAt = 0; // time (performance.now()) of the last upward scroll update
+      let upBoost = 0; // extra px per second while scrolling up
 
       const scroll = ScrollTrigger.create({
         start: 0,
         end: "max",
         onUpdate: (self) => {
-          direction = self.direction === 1 ? -1 : 1;
-          target = Math.min(Math.abs(self.getVelocity()) * 0.25, MAX_BOOST);
+          if (self.direction === -1) {
+            // scrolling up
+            upAt = performance.now();
+            upBoost = Math.min(Math.abs(self.getVelocity()) * 0.25, MAX_BOOST);
+          } else {
+            upAt = 0; // scrolling down: back to the normal drift at once
+          }
         },
       });
 
       const tick = (_time: number, deltaTime: number) => {
         const dt = deltaTime / 1000;
-        target *= 0.9;
-        boost += (target - boost) * 0.1;
-        const speed = BASE_SPEED + boost;
+        const scrollingUp = performance.now() - upAt < 150;
+        const goal = scrollingUp ? BASE_SPEED + upBoost : -BASE_SPEED;
+        velocity += (goal - velocity) * 0.1; // smooth turn-around
         banners.forEach((b) => {
           if (!b.onScreen || b.half <= 0) return;
-          b.x = gsap.utils.wrap(-b.half, 0, b.x + direction * speed * dt);
+          b.x = gsap.utils.wrap(-b.half, 0, b.x + velocity * dt);
           b.setX(b.x);
         });
       };
