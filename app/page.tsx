@@ -1,5 +1,6 @@
 import About from "@/components/About";
 import Banner from "@/components/Banner";
+import BannerScroll from "@/components/BannerScroll";
 import CardHighlights from "@/components/CardHighlights";
 import Contact from "@/components/Contact";
 import Experience from "@/components/Experience";
@@ -25,6 +26,7 @@ export default function Home() {
       </main>
       <Contact />
       <CardHighlights />
+      <BannerScroll />
     </>
   );
 }

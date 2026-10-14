@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { site } from "@/content/site";
 import ThemeToggle from "./ThemeToggle";
-import { Container } from "./ui";
+import { Container, Glyphs } from "./ui";
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
@@ -42,9 +42,12 @@ export default function Nav() {
             <div className="flex items-center gap-2">
               <a
                 href={cta.href}
-                className="inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs hover:bg-btn-bg hover:text-btn-text"
+                className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:text-btn-text motion-safe:active:scale-95"
               >
-                {cta.label}
+                {/* wrapped so the flex container keeps the space before the trailing → */}
+                <span>
+                  <Glyphs text={cta.label} />
+                </span>
               </a>
               <ThemeToggle className="h-9 w-9" />
             </div>
@@ -72,7 +75,7 @@ export default function Nav() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="block py-3 font-mono text-sm uppercase tracking-[0.12em]"
+                  className="block py-3 font-mono text-sm uppercase tracking-[0.12em] active:text-accent-text"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}
@@ -82,10 +85,12 @@ export default function Nav() {
             <li className="pt-3">
               <a
                 href={cta.href}
-                className="inline-flex h-11 items-center rounded-full border-(length:--border-width) border-line px-5 font-mono text-sm"
+                className="group inline-flex h-11 items-center rounded-full border-(length:--border-width) border-line px-5 font-mono text-sm transition-[scale,background-color,color] duration-150 motion-safe:active:scale-95"
                 onClick={() => setOpen(false)}
               >
-                {cta.label}
+                <span>
+                  <Glyphs text={cta.label} />
+                </span>
               </a>
             </li>
           </ul>

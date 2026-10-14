@@ -35,7 +35,7 @@ export default function Hero() {
               <ButtonLink href={primary.href}>{primary.label}</ButtonLink>
               <a
                 href={secondary.href}
-                className="text-sm font-medium underline decoration-2 underline-offset-4 hover:text-accent-text"
+                className="text-sm font-medium underline decoration-2 underline-offset-4 transition-[color,text-underline-offset] duration-150 hover:text-accent-text hover:underline-offset-[7px]"
               >
                 {secondary.label}
               </a>

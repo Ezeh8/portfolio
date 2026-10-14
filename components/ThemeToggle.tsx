@@ -67,7 +67,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       type="button"
       onClick={toggle}
       aria-label={label}
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border-(length:--border-width) border-line hover:bg-btn-bg hover:text-btn-text ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full border-(length:--border-width) border-line transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:text-btn-text motion-safe:active:scale-90 [&_svg]:transition-transform [&_svg]:duration-300 motion-safe:hover:[&_svg]:rotate-12 ${className}`}
     >
       {/* moon: shown in light mode */}
       <svg

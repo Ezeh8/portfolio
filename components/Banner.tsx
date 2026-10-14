@@ -35,6 +35,7 @@ export default function Banner({ id, decorative = false }: { id?: string; decora
     // for the tilt so the band's corners are never cut off at the top or bottom.
     <div
       id={id}
+      data-banner
       aria-hidden={decorative || undefined}
       className="relative z-[2] overflow-hidden py-[max(2rem,3vw)]"
     >

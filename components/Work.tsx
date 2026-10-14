@@ -67,7 +67,7 @@ export default function Work() {
                           target: "_blank",
                           rel: "noopener noreferrer",
                         })}
-                        className="mt-4 inline-block text-sm font-medium underline decoration-2 underline-offset-4 hover:text-accent-text"
+                        className="mt-4 inline-block text-sm font-medium underline decoration-2 underline-offset-4 transition-[color,text-underline-offset] duration-150 hover:text-accent-text hover:underline-offset-[7px]"
                       >
                         <Glyphs text={linkLabel} />
                         <span className="sr-only">: {project.name}</span>

@@ -141,22 +141,13 @@ body {
   }
 }
 
-/* Banner: the track holds two identical halves, so sliding it by -50% loops seamlessly. */
-@keyframes banner-scroll {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
+/* Banner: the track never moves on its own; components/BannerScroll.tsx moves it with
+   the page scroll. */
 .banner-track {
-  animation: banner-scroll 40s linear infinite;
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .banner-track {
-    animation: none;
-  }
-
   .panel {
     transition: none;
   }
