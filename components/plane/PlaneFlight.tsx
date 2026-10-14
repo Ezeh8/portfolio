@@ -259,7 +259,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
       maxTilt: 20,
     },
     // 6. Second banner: one glide right, rising, behind the banner, into the upper-right
-    // leg. Desktop: flatter (tilt at most 8°), shorter, on screen and slower (see below);
+    // leg. Desktop: flatter (tilt at most 8°) and shorter, timed by paceStretch() below;
     // phones keep the original legs 6-7 values, since their flight reuses legs 7-9.
     // leg 6
     {
@@ -281,8 +281,6 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
           y: 22,
           scale: 0.4,
           maxTilt: 8,
-          xEase: "sine.out",
-          yEase: "sine.out",
         }
       : {
           name: "off-screen upper right",
@@ -315,7 +313,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
       yEase: "sine.inOut",
     },
   ];
-  if (desktop) slowLegs6And7(keys);
+  if (desktop) paceStretch(keys, size, max);
   const s = inOrder(
     keys.map((k) => k.s),
     max,
@@ -323,24 +321,78 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   return keys.map((k, i) => ({ ...k, s: s[i] }));
 }
 
-// Desktop only: legs 6 and 7 together get 1.5 times their scroll distance, each stretched
-// by the same factor from leg 6's unchanged start. The extra comes only from leg 8 (the
-// glide in toward the closing block), which may shrink to 1px if it has to; leg 9, the
-// landing, keeps its start and still ends at the bottom of the scroll.
-const SLOW_6_7 = 1.5;
+// Desktop only: the stretch from leg 6 to the landing moves at the pace of legs 4 and 5.
+// Only timing and easing change; no positions. The boundary between legs 5 and 6 moves
+// earlier until the stretch's average speed (path length on screen / scroll) matches
+// legs 4 and 5 together, but never so far that leg 5 becomes more than LEG5_LIMIT times
+// faster than leg 4. The stretch's scroll is then shared by path length, so its legs all
+// move at the same speed; the landing still ends at the bottom of the scroll.
+const LEG5_LIMIT = 1.2;
+const STRETCH_EASES = ["sine.in", "none", "none", "sine.out"]; // legs 6, 7, 8, 9
 
-function slowLegs6And7(keys: Key[]) {
-  const [k5, k6, k7, k8] = [keys[5], keys[6], keys[7], keys[8]];
-  const before = k7.s - k5.s;
-  const room = k8.s - k7.s - 1;
-  const extra = clamp(before * (SLOW_6_7 - 1), 0, Math.max(0, room));
-  const factor = before > 0 ? (before + extra) / before : 1;
-  k6.s = k5.s + (k6.s - k5.s) * factor;
-  k7.s = k5.s + before * factor;
+// On-screen length of the leg ending at keyframe b, along its eased (and bowed) path.
+function pathLength(a: Key, b: Key, size: Size) {
+  const ex = gsap.parseEase(b.xEase ?? "sine.inOut");
+  const ey = gsap.parseEase(b.yEase ?? "sine.inOut");
+  const point = (u: number) => ({
+    x: ((a.x + (b.x - a.x) * ex(u)) / 100) * size.vw,
+    y: ((a.y + (b.y - a.y) * ey(u) + (b.sag ?? 0) * Math.sin(Math.PI * u)) / 100) * size.vh,
+  });
+  let length = 0;
+  let prev = point(0);
+  for (let i = 1; i <= 200; i++) {
+    const next = point(i / 200);
+    length += Math.hypot(next.x - prev.x, next.y - prev.y);
+    prev = next;
+  }
+  return length;
+}
+
+function paceStretch(keys: Key[], size: Size, max: number) {
+  const stretch = keys.slice(6);
+  if (keys.length !== 10 || stretch.length !== STRETCH_EASES.length) return;
+  const report = (label: string) =>
+    keys.slice(4).map((k, i) => {
+      const scroll = k.s - keys[i + 3].s;
+      const path = pathLength(keys[i + 3], k, size);
+      return { leg: i + 4, name: k.name, label, scroll: Math.round(scroll), path: Math.round(path), speed: +(path / scroll).toFixed(2) };
+    });
+  const before = process.env.NODE_ENV !== "production" ? report("before") : [];
+
+  stretch.forEach((k, i) => {
+    k.xEase = STRETCH_EASES[i];
+    k.yEase = STRETCH_EASES[i];
+  });
+  const [s3, s4, s5] = [keys[3].s, keys[4].s, keys[5].s];
+  const l4 = pathLength(keys[3], keys[4], size);
+  const l5 = pathLength(keys[4], keys[5], size);
+  const lengths = stretch.map((k, i) => pathLength(keys[i + 5], k, size));
+  const total = lengths.reduce((sum, l) => sum + l, 0);
+  if (!(s4 > s3) || !(total > 0)) return;
+
+  // same average speed: total / (max - B) = (l4 + l5) / (B - s3)
+  const target = (total * s3 + (l4 + l5) * max) / (total + l4 + l5);
+  // leg 5 at most LEG5_LIMIT times leg 4's speed: l5 / (B - s4) <= LEG5_LIMIT * l4 / (s4 - s3)
+  const limit = s4 + l5 / ((LEG5_LIMIT * l4) / (s4 - s3));
+  const boundary = Math.min(s5, Math.max(target, limit));
+  keys[5].s = boundary;
+  let s = boundary;
+  stretch.forEach((k, i) => {
+    s += (lengths[i] / total) * (max - boundary);
+    k.s = s;
+  });
+  stretch[stretch.length - 1].s = max;
+
   if (process.env.NODE_ENV !== "production") {
-    const after = k7.s - k5.s;
-    const message = `[plane] legs 6-7: ${Math.round(before)}px -> ${Math.round(after)}px of scroll (x${factor.toFixed(2)}); leg 8 now ${Math.round(k8.s - k7.s)}px`;
-    if (factor < SLOW_6_7 - 0.001) console.warn(`${message}; leg 8 is too short to give the full 1.5x`);
+    const after = report("after");
+    console.table([...before, ...after]);
+    const pace = (rows: typeof after, from: number, to: number) => {
+      const r = rows.filter((row) => row.leg >= from && row.leg <= to);
+      return r.reduce((sum, row) => sum + row.path, 0) / r.reduce((sum, row) => sum + row.scroll, 0);
+    };
+    const ratio = pace(after, 6, 9) / pace(after, 4, 5);
+    const message = `[plane] desktop pace: legs 6-9 ${ratio.toFixed(2)}x the speed of legs 4-5 (was ${(pace(before, 6, 9) / pace(before, 4, 5)).toFixed(2)}x)`;
+    if (ratio > 1.15) console.warn(`${message}; leg 5's limit leaves a gap`);
     else console.info(message);
   }
 }
