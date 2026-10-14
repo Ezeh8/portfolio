@@ -25,11 +25,11 @@ export default function Contact() {
             <p className="mt-4 max-w-xl text-lg leading-relaxed text-text/75 sm:mt-6">{text}</p>
 
             <div className="mt-4 flex flex-wrap gap-3 sm:mt-6">
-              {buttons.filter(hasHref).map((button, i) => (
+              {buttons.filter(hasHref).map((button) => (
                 <ButtonLink
                   key={button.label}
                   href={button.href}
-                  variant={i === 0 ? "primary" : "secondary"}
+                  variant={button.primary ? "primary" : "secondary"}
                 >
                   {button.label}
                 </ButtonLink>

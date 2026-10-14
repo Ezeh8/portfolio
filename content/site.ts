@@ -9,6 +9,7 @@
 export type Link = {
   label: string;
   href: string | null;
+  primary?: boolean;
 };
 
 export type Headline = {
@@ -206,7 +207,7 @@ export const site = {
     text: "Based in Nigeria and working remotely across time zones. I'm open to AI product and operations roles, so if you're building where AI meets operations, say hello.",
     email: email as string | null,
     buttons: [
-      { label: "Email", href: email ? `mailto:${email}` : null },
+      { label: "Email", href: email ? `mailto:${email}` : null, primary: true },
       { label: "LinkedIn", href: null }, // TODO: add LinkedIn profile URL
       { label: "GitHub", href: "https://github.com/Ezeh8" },
     ] satisfies Link[],
