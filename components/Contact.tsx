@@ -42,11 +42,11 @@ export default function Contact() {
             </p>
           </div>
 
-          <div className="hidden border-l border-line pl-12 text-sm lg:block">
+          <div className="hidden border-l border-line pl-12 text-[1.0625rem] lg:block">
             <h3 className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
               {credentials.label}
             </h3>
-            <ul className="mt-3 space-y-1 leading-relaxed">
+            <ul className="mt-4 space-y-3 leading-relaxed">
               {credentials.items.map((item) => (
                 <li key={item}>{item}</li>
               ))}
