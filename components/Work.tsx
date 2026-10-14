@@ -10,6 +10,9 @@ import {
   isExternal,
 } from "./ui";
 
+// A different small tilt per card from 1024px up; flat below, so the phone flight is unaffected.
+const tilts = ["lg:[--tilt:-1deg]", "lg:[--tilt:0.75deg]", "lg:[--tilt:0.5deg]", "lg:[--tilt:-1deg]"];
+
 // Tinted cards: the Evaluate toolkit card's grey, with muted labels in its title grey.
 const tint = "bg-card-alt [--text-muted:var(--card-alt-title)]";
 
@@ -31,7 +34,7 @@ export default function Work() {
             <li key={project.id}>
               <article
                 id={project.id}
-                className={`panel relative z-[2] flex h-full flex-col overflow-hidden${project.tinted ? ` ${tint}` : ""}`}
+                className={`panel relative z-[2] flex h-full flex-col overflow-hidden ${tilts[i % tilts.length]}${project.tinted ? ` ${tint}` : ""}`}
               >
                 <PanelBar className={project.tinted ? "text-card-alt-title" : ""}>
                   <span className="flex items-center gap-2">

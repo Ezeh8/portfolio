@@ -1,6 +1,9 @@
 import { site } from "@/content/site";
 import { Container, Glyphs, Headline, PanelBar, SectionLabel, StatusDot } from "./ui";
 
+// Smaller tilts than Work: these cards are full width, so a bigger angle would squeeze the gaps between them.
+const tilts = ["lg:[--tilt:-0.5deg]", "lg:[--tilt:0.4deg]", "lg:[--tilt:-0.3deg]"];
+
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // Matches the marker numbers only as whole numbers ("4" never matches inside "1,400").
@@ -61,10 +64,10 @@ export default function Experience() {
         <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.5rem)]" />
 
         <ol className="mt-10 space-y-8">
-          {roles.map((entry) => (
+          {roles.map((entry, i) => (
             <li
               key={entry.company}
-              className={`panel relative z-[2] overflow-hidden${entry.tinted ? ` ${tint}` : ""}`}
+              className={`panel relative z-[2] overflow-hidden ${tilts[i % tilts.length]}${entry.tinted ? ` ${tint}` : ""}`}
             >
               <PanelBar className={entry.tinted ? "text-card-alt-title" : ""}>
                 <span className="flex min-w-0 items-center gap-2">
