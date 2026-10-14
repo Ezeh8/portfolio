@@ -37,8 +37,7 @@ export type Role = {
   tinted?: boolean;
 };
 
-// TODO: add email address (e.g. "name@domain.com"). While null, the Email button is hidden.
-const email: string | null = null;
+const email = "ezehkena@gmail.com";
 
 export const site = {
   name: "Ezeh Ikenna",
@@ -204,12 +203,12 @@ export const site = {
 
   contact: {
     headline: { text: "get in touch.", highlight: "touch" } satisfies Headline,
-    text: "Based in Nigeria and working remotely across time zones. I'm open to AI product and operations roles, so if you're building where AI meets operations, say hello.",
+    text: "Tell me about your business, the AI you've adopted so far, and what you want this engagement to achieve. I'm based in Nigeria and work remotely across time zones.",
     email: email as string | null,
     buttons: [
-      { label: "Email", href: email ? `mailto:${email}` : null, primary: true },
+      { label: "get in touch →", href: `mailto:${email}`, primary: true },
+      { label: "view my work →", href: "https://github.com/Ezeh8", primary: true },
       { label: "LinkedIn", href: null }, // TODO: add LinkedIn profile URL
-      { label: "GitHub", href: "https://github.com/Ezeh8" },
     ] satisfies Link[],
     replies: "replies within 24 hours", // TODO: confirm before launch
   },
