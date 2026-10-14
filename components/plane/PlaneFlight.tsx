@@ -109,7 +109,10 @@ function headlineLanding(word: HTMLElement, plane: HTMLElement, size: Size, max:
 // centred under the tip of the note's arrow. The note draws on top (z-index 2).
 // If that would cover the headline, the hero buttons or the flight log, the plane moves
 // up under the note in 2px steps until it doesn't; failing that, to the nearest clear
-// spot. Falls back to x 26, y 55 if the note is missing.
+// spot. Falls back to x 26, y 55 if the note is missing. The final spot is then dropped
+// by REST_DROP px so the plane sits a little lower, under the arrow.
+const REST_DROP = 12;
+
 function heroRest(size: Size) {
   const { w, h, vw, vh } = size;
   const note = $("#hero .font-hand");
@@ -164,7 +167,7 @@ function heroRest(size: Size) {
       how = `moved to the nearest clear spot (${Math.round(found.x - x)}, ${Math.round(found.y - y)})px`;
     }
   }
-  const result = { x: (spot.x / vw) * 100, y: (spot.y / vh) * 100 };
+  const result = { x: (spot.x / vw) * 100, y: ((spot.y + REST_DROP) / vh) * 100 };
   if (process.env.NODE_ENV !== "production") {
     console.info(
       `[plane] hero rest at (${result.x.toFixed(1)}, ${result.y.toFixed(1)})` +
