@@ -37,12 +37,29 @@ export default function CountUp() {
           onEnter: () =>
             gsap.to(counter, {
               value: target,
-              duration: 1.2,
-              ease: "power2.out",
+              duration: 2.4,
+              ease: "power1.out",
               onUpdate: () => {
                 span.textContent = format.format(Math.round(counter.value));
               },
-              onComplete: () => release(span, i),
+              // a small pop as the number lands, then the original text goes back
+              onComplete: () =>
+                gsap.fromTo(
+                  span,
+                  { scale: 1 },
+                  {
+                    scale: 1.1,
+                    duration: 0.12,
+                    ease: "power1.out",
+                    yoyo: true,
+                    repeat: 1,
+                    transformOrigin: "50% 60%",
+                    onComplete: () => {
+                      gsap.set(span, { clearProps: "transform" });
+                      release(span, i);
+                    },
+                  },
+                ),
             }),
         });
       });
