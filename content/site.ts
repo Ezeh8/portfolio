@@ -141,7 +141,7 @@ export const site = {
     label: "03 / Experience",
     headline: { text: "where the work happened.", highlight: "happened" } satisfies Headline,
     // Numbers in the bullets drawn with a marker highlight (matched as whole numbers).
-    markers: ["85%", "quadrupling", "₦17 million", "integration blueprint", "in-app automation", "digital KYC verification platform", "AI-driven credit-scoring model", "resource allocation", "4", "35", "1,000", "7,000", "operational friction"],
+    markers: ["85%", "quadrupling", "₦17 million", "in-app automation", "digital KYC verification platform", "AI-driven credit-scoring model", "35", "1,000", "7,000", "operational friction"],
     roles: [
       {
         role: "Founder",
