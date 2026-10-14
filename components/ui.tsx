@@ -26,11 +26,11 @@ export function Headline({
   copy: HeadlineCopy;
   className?: string;
 }) {
-  const { text, highlight } = copy;
+  const { text, highlight, keepCase } = copy;
   const at = text.indexOf(highlight);
   return (
     <Tag
-      className={`font-display font-extrabold lowercase leading-[1.02] tracking-tight ${className}`}
+      className={`font-display font-extrabold ${keepCase ? "" : "lowercase "}leading-[1.02] tracking-tight ${className}`}
     >
       {at === -1 ? (
         text

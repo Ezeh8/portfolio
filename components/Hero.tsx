@@ -2,7 +2,7 @@ import { site } from "@/content/site";
 import { ButtonLink, Container, HandNote, Headline, PanelBar, StatusDot } from "./ui";
 
 export default function Hero() {
-  const { label, name, tagline, status, headline, primary, secondary, flightLog, note } =
+  const { label, name, tagline, status, headline, intro, primary, secondary, flightLog, note } =
     site.hero;
   const { projects } = site.work;
 
@@ -25,8 +25,11 @@ export default function Hero() {
             <Headline
               as="h1"
               copy={headline}
-              className="mt-6 text-[clamp(3.5rem,17vw,6rem)] lg:mt-5 lg:text-[clamp(4.5rem,5.5vw,5rem)]"
+              className="mt-6 whitespace-pre-line text-[clamp(3.5rem,17vw,6rem)] lg:mt-5 lg:text-[clamp(4.5rem,5.5vw,5rem)]"
             />
+            <p className="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1.6vw,1.25rem)] leading-relaxed text-text/75">
+              {intro}
+            </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
               <ButtonLink href={primary.href}>{primary.label}</ButtonLink>

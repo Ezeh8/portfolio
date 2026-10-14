@@ -6,7 +6,8 @@ import { ButtonLink, Container, Headline, StatusDot, hasHref } from "./ui";
 // education on the right (2/5) behind a thin vertical line. Below 1024px the education
 // block is hidden.
 export default function Contact() {
-  const { headline, text, buttons, replies } = site.contact;
+  const { headline, text, email, buttons, replies } = site.contact;
+  const title = <Headline copy={headline} className="text-[clamp(2.75rem,8vw,6rem)]" />;
   const { credentials, line, copyright } = site.footer;
 
   return (
@@ -14,7 +15,13 @@ export default function Contact() {
       <Container>
         <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:gap-12">
           <div className="min-w-0">
-            <Headline copy={headline} className="text-[clamp(2.75rem,8vw,6rem)]" />
+            {email ? (
+              <a href={`mailto:${email}`} className="block">
+                {title}
+              </a>
+            ) : (
+              title
+            )}
             <p className="mt-4 max-w-xl text-lg leading-relaxed text-text/75 sm:mt-6">{text}</p>
 
             <div className="mt-4 flex flex-wrap gap-3 sm:mt-6">

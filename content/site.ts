@@ -14,6 +14,7 @@ export type Link = {
 export type Headline = {
   text: string;
   highlight: string;
+  keepCase?: boolean;
 };
 
 export type Project = {
@@ -52,42 +53,45 @@ export const site = {
   },
 
   hero: {
-    label: "AI Product Manager | AI Operations Lead",
+    label: "AI Product Manager | AI Systems Builder",
     name: "Ezeh Ikenna",
     tagline: "Founder, Rithma Labs",
     status: "building agentic systems from Nigeria",
-    headline: {
-      text: "I turn messy business operations into agentic systems that run on their own and report back clearly.",
-      highlight: "agentic systems",
-    } satisfies Headline,
-    primary: { label: "View my work →", href: "#work" } satisfies Link,
-    secondary: { label: "Get in touch", href: "#contact" } satisfies Link,
+    headline: { text: "build.\nship.\nevaluate.", highlight: "evaluate." } satisfies Headline,
+    intro:
+      "10+ years running teams and operations systems taught me where companies lose time, money, and trust. I map how your team works, redesign the slow parts around AI agents, and trace every decision they make so each one can be audited and improved.",
+    primary: { label: "view my work →", href: "#work" } satisfies Link,
+    secondary: { label: "get in touch", href: "#contact" } satisfies Link,
     // Project lines are generated from work.projects below.
     flightLog: {
       header: "flight log",
       command: "$ status",
       status: (count: number) => `> online · ${count} systems in range`,
     },
-    note: "follow the plane", // FILLER
+    note: "follow the plane",
   },
 
   banner: {
-    phrase: "evaluated ✦ traced ✦ governed ✦ shipped ✦",
+    phrase: "evals ✦ regression ✦ security ✦ governance ✦",
   },
 
   about: {
     label: "01 / About",
     headline: { text: "built by an operator.", highlight: "operator" } satisfies Headline,
     paragraphs: [
-      "I spent 10+ years in operations, running teams and suppliers, and learned that companies lose time, money, and trust to broken processes. That lens led me to found Rithma Labs, where I've spent two years delivering production AI for clients across logistics, construction, and finance, from process redesign through deployment and ongoing management.",
-      "I build agents that work alongside people and change what a team can handle, from the time it gets back to the capacity it gains and the revenue it protects. Every one is evaluated and traced, so each decision can be seen, questioned, and fixed, and security and governance come standard in everything I ship.",
+      "I came to AI from the operator's side, after co-founding a fashion retail brand and running operations systems at Standard Chartered.",
+      "Since 2024, through Rithma Labs, I've designed and shipped AI for clients in logistics, construction, SaaS, and energy.",
     ],
   },
 
   work: {
     label: "02 / Work",
-    headline: { text: "agents built to be checked.", highlight: "checked" } satisfies Headline,
-    note: "every number here links to proof", // FILLER
+    headline: {
+      text: "POCs specced.",
+      highlight: "specced",
+      keepCase: true,
+    } satisfies Headline,
+    note: "the code is all on GitHub",
     panelStatus: "public repo",
     linkLabel: "View on GitHub",
     projects: [
@@ -113,7 +117,7 @@ export const site = {
         id: "scan-invoice",
         name: "Invoice Exception Handler",
         description:
-          "An agent that checks vendor invoices against purchase orders and flags price gaps, duplicates, and missing POs.",
+          "An agent that checks vendor invoices against purchase orders and flags price gaps, duplicates, and missing POs. This repo is the public eval build of a client deployment.",
         readout: "peak-week capacity 50 → 200+ invoices",
         chips: ["Rule engine", "LLM judgment", "Slack", "Google Sheets", "CI"],
         href: "https://github.com/Ezeh8/Invoice-exception-handler-eval",
@@ -134,7 +138,7 @@ export const site = {
     label: "03 / Experience",
     headline: { text: "where the work happened.", highlight: "happened" } satisfies Headline,
     // Numbers in the bullets drawn with a marker highlight (matched as whole numbers).
-    markers: ["85%", "₦17M+", "4", "35", "1,000+", "7,000+"],
+    markers: ["85%", "₦17M+", "4", "35", "1,000+", "7,000+", "50", "200"],
     roles: [
       {
         role: "Founder",
@@ -142,8 +146,8 @@ export const site = {
         dates: "Sept 2024 – Present",
         opsLog: "deploy · agentic systems for logistics, construction, saas, energy",
         bullets: [
-          "Cut admin overhead by 85% for a logistics firm with an n8n pipeline that routes CRM and deal data to billing and project tools, with a guardrail step for edge cases.",
-          "Deployed the Invoice Exception Handler for a global construction firm, raising invoice processing capacity during peak weeks.",
+          "Cut admin overhead by 85% for a logistics firm by building an n8n pipeline that routes CRM and deal data into billing and project tools, with a guardrail step for edge cases.",
+          "Deployed the Invoice Exception Handler for a global construction firm, raising peak-week capacity from about 50 to over 200 invoices.",
           "Won back ₦17M+ in revenue in two months for a Nigerian SaaS company with a prompt-engineered churn-reduction system.",
           "Delivered an integration blueprint for an energy multinational across SAP ERP, SLB Lumi, Avocet, AVEVA PI, and SCADA.",
         ],
@@ -167,7 +171,7 @@ export const site = {
         bullets: [
           "Scaled the team from 4 to 35 people.",
           "Served 1,000+ bespoke and 7,000+ retail customers.",
-          "Managed international vendor relationships across sourcing, manufacturing, and packaging.",
+          "Managed local manufacturing partners and international suppliers for labels, packaging, and specialist materials.",
         ],
       },
     ] satisfies Role[],
@@ -177,11 +181,11 @@ export const site = {
     label: "04 / Toolkit",
     headline: { text: "the kit behind the work.", highlight: "work" } satisfies Headline,
     groups: [
-      { title: "Build", items: ["Python", "Claude Code", "Codex"] },
+      { title: "Build", items: ["Python", "FastAPI", "PostgreSQL", "Docker", "Claude Code", "Codex"] },
       { title: "Agents", items: ["LangGraph", "MCP", "RAG pipelines", "LLM APIs"] },
       {
         title: "Evaluate",
-        items: ["LangSmith", "Langfuse", "golden datasets", "regression suites"],
+        items: ["LangSmith", "Langfuse", "Golden datasets", "Regression suites"],
       },
       {
         title: "Automate",
@@ -192,7 +196,7 @@ export const site = {
 
   contact: {
     headline: { text: "get in touch.", highlight: "touch" } satisfies Headline,
-    text: "Based in Nigeria, working remotely across time zones. My inbox is open to anyone building where AI meets operations ~ say hello.",
+    text: "Based in Nigeria and working remotely across time zones. I'm open to AI product and operations roles, so if you're building where AI meets operations, say hello.",
     email: email as string | null,
     buttons: [
       { label: "Email", href: email ? `mailto:${email}` : null },
