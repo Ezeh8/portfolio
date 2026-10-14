@@ -20,6 +20,8 @@
   --shadow: #111214; /* hard offset card shadows */
   --btn-bg: #111214;
   --btn-text: #e6e7ea;
+  --btn-border: #9a9ea6; /* grey border on the navy buttons */
+  --btn-hover: #2e4fa8; /* navy buttons on hover */
   --accent: #1f3c8c; /* filled shapes only */
   --accent-text: #1f3c8c; /* highlighted words, readouts, lines, status dots, links */
   --accent-soft: #d0d8ef;
@@ -42,6 +44,8 @@
   --shadow: #1f3c8c;
   --btn-bg: #1f3c8c;
   --btn-text: #edeef0;
+  --btn-border: #9a9ea6; /* grey border on the navy buttons */
+  --btn-hover: #2e4fa8; /* navy buttons on hover */
   --accent: #1f3c8c;
   --accent-text: #7b95e8;
   --accent-soft: #1a2a57;
@@ -64,6 +68,8 @@
   --color-shadow: var(--shadow);
   --color-btn-bg: var(--btn-bg);
   --color-btn-text: var(--btn-text);
+  --color-btn-border: var(--btn-border);
+  --color-btn-hover: var(--btn-hover);
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);

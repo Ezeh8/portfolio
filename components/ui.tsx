@@ -143,7 +143,7 @@ export function ButtonLink({
 }) {
   const styles =
     variant === "primary"
-      ? "border-btn-bg bg-btn-bg text-btn-text hover:bg-accent hover:border-accent"
+      ? "border-btn-border bg-accent text-btn-text hover:bg-btn-hover"
       : "border-line bg-card text-text hover:bg-bg";
   return (
     <a

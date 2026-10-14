@@ -29,7 +29,7 @@ export default function Contact() {
                 <ButtonLink
                   key={button.label}
                   href={button.href}
-                  variant={button.primary ? "primary" : "secondary"}
+                  variant="primary"
                 >
                   {button.label}
                 </ButtonLink>
