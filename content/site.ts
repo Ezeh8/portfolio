@@ -208,7 +208,6 @@ export const site = {
     buttons: [
       { label: "get in touch →", href: `mailto:${email}`, primary: true },
       { label: "view my work →", href: "https://github.com/Ezeh8", primary: true },
-      { label: "LinkedIn", href: null }, // TODO: add LinkedIn profile URL
     ] satisfies Link[],
     replies: "replies within 24 hours", // TODO: confirm before launch
   },
@@ -223,6 +222,12 @@ export const site = {
         "Deploy Multi-Agent Systems with Gemini Enterprise Agent Platform (Google)",
       ],
     },
+    // Round icon buttons under the education list. The label names the icon.
+    socials: [
+      { label: "X", href: "https://x.com/ezeh8_8" },
+      { label: "TikTok", href: "https://www.tiktok.com/@ezeh8_8" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/ezeh-ikenna-a3350b307" },
+    ] satisfies Link[],
     copyright: "© 2026 Ezeh Ikenna",
   },
 };
