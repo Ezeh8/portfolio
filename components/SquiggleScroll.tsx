@@ -18,7 +18,9 @@ export default function SquiggleScroll() {
   useGSAP(() => {
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const squiggles = gsap.utils.toArray<HTMLElement>(".squiggle");
+      // A live list: it always holds the squiggles currently on the page, so a headline
+      // that re-renders (the client-side Work section, or a dev hot reload) keeps moving.
+      const squiggles = document.getElementsByClassName("squiggle") as HTMLCollectionOf<HTMLElement>;
 
       // Shared by every squiggle.
       let x = 0;
@@ -46,16 +48,14 @@ export default function SquiggleScroll() {
         const goal = scrollingUp ? BASE_SPEED + upBoost : -BASE_SPEED;
         velocity += (goal - velocity) * 0.1; // smooth turn-around
         x += velocity * dt;
-        squiggles.forEach((s) => {
-          s.style.backgroundPositionX = `${x}px`;
-        });
+        for (const s of squiggles) s.style.backgroundPositionX = `${x}px`;
       };
       gsap.ticker.add(tick);
 
       return () => {
         gsap.ticker.remove(tick);
         scroll.kill();
-        squiggles.forEach((s) => s.style.removeProperty("background-position-x"));
+        for (const s of squiggles) s.style.removeProperty("background-position-x");
       };
     });
     return () => mm.revert();
