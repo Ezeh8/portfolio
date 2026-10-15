@@ -71,7 +71,7 @@ export const site = {
     flightLog: {
       header: "flight log",
       command: "$ status",
-      status: (count: number) => `> online · ${count} systems in range`,
+      status: (count: number) => `> ACTIVE! · ${count} systems in range`,
     },
     note: "follow the plane",
   },
