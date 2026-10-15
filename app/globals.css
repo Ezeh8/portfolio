@@ -11,8 +11,8 @@
   --text: #edeef0;
   --text-muted: #9a9ea6;
   --note: #9a9ea6; /* handwritten notes */
-  --line: #3a3d44; /* card, chip, pill and header-bar borders */
-  --shadow: #4a4d55; /* hard offset card shadows */
+  --line: #4a4d55; /* card, chip, pill and header-bar borders */
+  --shadow: #6b6f78; /* hard offset card shadows */
   --btn-bg: #edeef0; /* nav pill on hover */
   --btn-text: #0b0c0e;
   --btn-hover: #edeef0; /* filled buttons on hover */
@@ -21,7 +21,7 @@
   --btn-fill: #111214; /* filled buttons */
   --btn-ink: #edeef0; /* text on filled buttons */
   --btn-shadow: #6b6f78; /* grey offset under filled buttons */
-  --btn-edge: #3a3d44; /* thin edge on filled buttons at rest */
+  --btn-edge: #4a4d55; /* thin edge on filled buttons at rest */
   --accent: #6b6f78; /* filled shapes only */
   --accent-text: #ffffff; /* highlighted words, readouts, lines, status dots, links */
   --accent-soft: #2a2d33;
@@ -31,7 +31,7 @@
   --banner-text: #0b0c0e;
   --banner-star: #0b0c0e; /* black star between banner phrases, same as the banner text */
   --trail: #edeef0; /* drawn at 25% opacity */
-  --border-width: 1.5px;
+  --border-width: 2px;
 }
 
 @theme inline {
@@ -66,8 +66,11 @@
   --font-hand: var(--font-hand);
 }
 
+/* A faint dot grid over the whole page, for a slightly raw, printed feel. */
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
   color: var(--text);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
@@ -78,8 +81,8 @@ body {
   .panel {
     background: var(--card);
     border: var(--border-width) solid var(--line);
-    border-radius: 14px;
-    box-shadow: 2px 2px 0 var(--shadow);
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 var(--shadow);
     transform: rotate(var(--tilt, 0deg));
     transition:
       transform 150ms ease,
@@ -88,7 +91,7 @@ body {
 
   @media (min-width: 768px) {
     .panel {
-      box-shadow: 4px 4px 0 var(--shadow);
+      box-shadow: 6px 6px 0 var(--shadow);
     }
   }
 
@@ -120,8 +123,8 @@ body {
 
   @media (hover: hover) {
     .panel:hover {
-      transform: translate(-2px, -2px) rotate(var(--tilt, 0deg));
-      box-shadow: 6px 6px 0 var(--shadow);
+      transform: translate(-3px, -3px) rotate(var(--tilt, 0deg));
+      box-shadow: 9px 9px 0 var(--shadow);
     }
   }
 

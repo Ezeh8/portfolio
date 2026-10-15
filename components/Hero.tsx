@@ -1,8 +1,9 @@
 import { site } from "@/content/site";
-import { ButtonLink, Container, HandNote, Headline, PanelBar, StatusDot } from "./ui";
+import { RotatingWord } from "./RotatingWord";
+import { ButtonLink, Container, HandNote, PanelBar, StatusDot } from "./ui";
 
 export default function Hero() {
-  const { label, name, tagline, status, headline, intro, primary, secondary, flightLog, note } =
+  const { label, name, tagline, status, prefix, words, headlineLabel, body, primary, secondary, flightLog, note } =
     site.hero;
   const { projects } = site.work;
 
@@ -22,13 +23,21 @@ export default function Hero() {
               {status}
             </p>
 
-            <Headline
-              as="h1"
-              copy={headline}
-              className="mt-6 whitespace-nowrap text-[clamp(1.75rem,8.8vw,4.5rem)] lg:mt-5 lg:text-[clamp(3rem,5vw,3.5rem)]"
-            />
+            <h1 className="mt-6 flex flex-col gap-1 lg:mt-5">
+              <span className="sr-only">{headlineLabel}</span>
+              <span
+                aria-hidden="true"
+                className="font-mono text-sm uppercase tracking-[0.18em] text-text-muted"
+              >
+                {prefix}
+              </span>
+              <RotatingWord
+                words={[...words]}
+                className="font-display text-[clamp(3rem,9vw,4.5rem)] font-extrabold leading-none tracking-[-0.03em] lowercase"
+              />
+            </h1>
             <p className="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1.6vw,1.25rem)] leading-relaxed text-text/75">
-              {intro}
+              {body}
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
