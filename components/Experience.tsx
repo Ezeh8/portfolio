@@ -44,7 +44,7 @@ function Marked({ text }: { text: string }) {
   return text.split(markerPattern).map((part, i) =>
     // split() with one capture group puts matches at odd indexes
     i % 2 === 1 ? (
-      <mark key={i} className="rounded-sm bg-marker px-1 text-marker-ink">
+      <mark key={i} className="rounded-sm bg-marker bg-[image:var(--chrome-smooth)] px-1 text-marker-ink">
         <Marker text={part} />
       </mark>
     ) : (

@@ -39,7 +39,7 @@ export default function Banner({ id, decorative = false }: { id?: string; decora
       aria-hidden={decorative || undefined}
       className="relative z-[2] overflow-hidden py-[max(2rem,3vw)]"
     >
-      <div className="-mx-[10vw] -rotate-2 bg-banner-bg py-4 text-banner-text">
+      <div className="-mx-[10vw] -rotate-2 metal bg-banner-bg py-4 text-banner-text">
         <div className="banner-track flex w-max font-mono text-sm uppercase tracking-[0.18em] sm:text-base">
           {Array.from({ length: COPIES * 2 }, (_, i) => (
             <Phrase key={i} hidden={i > 0} />

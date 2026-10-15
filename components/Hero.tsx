@@ -26,8 +26,8 @@ export default function Hero() {
             {/* one line: "i map the" then the rotating word, sized to fit the column */}
             <h1 className="mt-6 whitespace-nowrap font-display text-[clamp(1.75rem,8vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.03em] lowercase lg:mt-5 lg:text-[clamp(3rem,5vw,3.5rem)]">
               <span className="sr-only">{headlineLabel}</span>
-              <span aria-hidden="true">{prefix} </span>
-              <RotatingWord words={[...words]} />
+              <span aria-hidden="true" className="chrome">{prefix} </span>
+              <RotatingWord words={[...words]} wordClassName="chrome" />
             </h1>
             <p className="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1.6vw,1.25rem)] leading-relaxed text-text/75">
               {body}

@@ -30,7 +30,7 @@ export function Headline({
   const at = text.indexOf(highlight);
   return (
     <Tag
-      className={`font-display font-extrabold ${keepCase ? "" : "lowercase "}leading-[1.02] tracking-tight ${className}`}
+      className={`chrome font-display font-extrabold ${keepCase ? "" : "lowercase "}leading-[1.02] tracking-tight ${className}`}
     >
       {at === -1 ? (
         text
@@ -146,7 +146,7 @@ export function ButtonLink({
 }) {
   const styles =
     variant === "primary"
-      ? "border-btn-edge bg-btn-fill text-btn-ink hover:bg-btn-hover hover:border-btn-hover hover:text-btn-hover-ink [--offset:var(--btn-shadow)] hover:[--offset:var(--btn-hover-shadow)]"
+      ? "border-btn-edge bg-btn-fill bg-[image:linear-gradient(180deg,#2a2d33,#111214)] text-btn-ink hover:bg-[image:var(--chrome)] hover:bg-btn-hover hover:border-btn-hover hover:text-btn-hover-ink [--offset:var(--btn-shadow)] hover:[--offset:var(--btn-hover-shadow)]"
       : "border-line bg-card text-text hover:bg-bg";
   return (
     <a

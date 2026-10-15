@@ -41,7 +41,7 @@ export default function Nav() {
             <div className="flex items-center gap-2">
               <a
                 href={cta.href}
-                className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:text-btn-text motion-safe:active:scale-95"
+                className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
               >
                 {/* wrapped so the flex container keeps the space before the trailing → */}
                 <span>

@@ -12,10 +12,13 @@ const HOLD_MS = 2200;
 export function RotatingWord({
   words,
   className = "",
+  wordClassName = "",
   style,
 }: {
   words: string[];
   className?: string;
+  // added to each word, e.g. for text effects that must sit on the moving element itself
+  wordClassName?: string;
   style?: CSSProperties;
 }) {
   const [index, setIndex] = useState(0);
@@ -40,7 +43,7 @@ export function RotatingWord({
         return (
           <span
             key={word}
-            className={`[grid-area:1/1] transition-[translate,opacity] duration-500 ease-out ${state}`}
+            className={`[grid-area:1/1] transition-[translate,opacity] duration-500 ease-out ${state} ${wordClassName}`}
           >
             {word}
           </span>
