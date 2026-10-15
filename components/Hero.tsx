@@ -15,7 +15,7 @@ export default function Hero() {
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
               {label}
             </p>
-            <p className="mt-6 font-display text-[1.75rem] sm:text-[1.875rem] font-medium lg:mt-3">{name}</p>
+            <p className="chrome mt-6 font-display text-[33px] sm:text-[35px] font-medium lg:mt-3">{name}</p>
             <p className="mt-1 text-text/70">{tagline}</p>
 
             <p className="mt-8 inline-flex items-center gap-2 rounded-full lg:mt-5 border-(length:--border-width) border-line bg-card px-3 py-1.5 font-mono text-xs">
