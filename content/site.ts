@@ -50,7 +50,6 @@ export const site = {
       { label: "Toolkit", href: "#toolkit" },
       { label: "Contact", href: "#contact" },
     ] satisfies Link[],
-    cta: { label: "get in touch →", href: `mailto:${email}` } satisfies Link,
   },
 
   hero: {

@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { site } from "@/content/site";
 import SoundToggle from "./SoundToggle";
-import { Container, Glyphs } from "./ui";
+import { Container } from "./ui";
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
-  const { wordmark, links, cta } = site.nav;
+  const { wordmark, links } = site.nav;
 
   useEffect(() => {
     if (!open) return;
@@ -40,17 +40,6 @@ export default function Nav() {
                   </li>
                 ))}
               </ul>
-              <div className="flex items-center gap-2">
-                <a
-                  href={cta.href}
-                  className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
-                >
-                  {/* wrapped so the flex container keeps the space before the trailing → */}
-                  <span>
-                    <Glyphs text={cta.label} />
-                  </span>
-                </a>
-              </div>
             </div>
 
             {/* one toggle for every layout, so there is only ever one sound engine */}
@@ -85,17 +74,6 @@ export default function Nav() {
                 </a>
               </li>
             ))}
-            <li className="pt-3">
-              <a
-                href={cta.href}
-                className="group inline-flex h-11 items-center rounded-full border-(length:--border-width) border-line px-5 font-mono text-sm transition-[scale,background-color,color] duration-150 motion-safe:active:scale-95"
-                onClick={() => setOpen(false)}
-              >
-                <span>
-                  <Glyphs text={cta.label} />
-                </span>
-              </a>
-            </li>
           </ul>
         </Container>
       </div>
