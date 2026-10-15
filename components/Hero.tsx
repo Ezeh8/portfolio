@@ -31,14 +31,11 @@ export default function Hero() {
               {intro}
             </p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <div className="mt-10 flex flex-wrap items-center gap-3">
               <ButtonLink href={primary.href}>{primary.label}</ButtonLink>
-              <a
-                href={secondary.href}
-                className="text-sm font-medium underline decoration-2 underline-offset-4 transition-[color,text-underline-offset] duration-150 hover:text-accent-text hover:underline-offset-[7px]"
-              >
+              <ButtonLink href={secondary.href} download>
                 {secondary.label}
-              </a>
+              </ButtonLink>
             </div>
           </div>
 

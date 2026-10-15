@@ -136,10 +136,13 @@ export function ButtonLink({
   href,
   children,
   variant = "primary",
+  download = false,
 }: {
   href: string;
   children: ReactNode;
   variant?: "primary" | "secondary";
+  // Save the file instead of opening it.
+  download?: boolean;
 }) {
   const styles =
     variant === "primary"
@@ -149,6 +152,7 @@ export function ButtonLink({
     <a
       href={href}
       {...(isExternal(href) && { target: "_blank", rel: "noopener noreferrer" })}
+      {...(download && { download: "" })}
       className={`group inline-flex h-11 items-center justify-center rounded-full border-(length:--border-width) px-5 text-sm font-medium whitespace-nowrap shadow-[3px_3px_0_var(--offset,var(--shadow))] transition-[translate,box-shadow,background-color,border-color,color] duration-150 ease-out motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--offset,var(--shadow))] motion-safe:active:translate-x-0.5 motion-safe:active:translate-y-0.5 active:shadow-[1px_1px_0_var(--offset,var(--shadow))] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-text ${styles}`}
     >
       {/* wrapped so the flex container keeps the space before a trailing → */}
