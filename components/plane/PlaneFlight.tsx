@@ -431,7 +431,10 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
   const secondBanner = box($("#second-banner"));
   const shown = shownCards();
   const cards = CARD_IDS.map((_, i) => box(shown[i]));
-  const roles = Array.from(document.querySelectorAll("#experience ol > li")).map(box);
+  // only the role cards on screen (the Experience pager hides the rest)
+  const roles = Array.from(document.querySelectorAll("#experience ol > li"))
+    .filter((el) => el.getClientRects().length > 0)
+    .map(box);
 
   // Scroll position at which the document y `docY` sits `screen` % down the screen.
   const when = (docY: number | null | undefined, screen = PHONE_Y) =>

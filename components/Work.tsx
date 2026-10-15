@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/content/site";
+import { Pager, usePager } from "./Pager";
 import {
   Container,
   Glyphs,
@@ -17,30 +16,10 @@ import {
 // A different small tilt per card from 1024px up; flat below, so the phone flight is unaffected.
 const tilts = ["lg:[--tilt:-1deg]", "lg:[--tilt:0.75deg]", "lg:[--tilt:0.5deg]", "lg:[--tilt:-1deg]"];
 
-const pagerBtn =
-  "inline-flex h-9 min-w-9 items-center justify-center rounded-full border-(length:--border-width) border-line px-2 transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95";
-
-
-// Two project cards per page, side by side from 768px (stacked on phones), with a
-// numbered pager (one number per page, so it grows as projects are added), previous /
-// next, and a horizontal swipe on touch screens. "see all" shows every card.
-// Hidden cards stay in the page with the `hidden` attribute, so their ids still exist.
-const PER_PAGE = 2;
-const SWIPE = 50; // px of horizontal travel that counts as a swipe
-
 export default function Work() {
   const { label, headline, note, panelStatus, linkLabel, projects } = site.work;
-  const [page, setPage] = useState(0);
-  const [all, setAll] = useState(false);
-  const count = projects.length;
-  const pages = Math.ceil(count / PER_PAGE);
-  const go = (p: number) => setPage((p + pages) % pages);
-  const touch = useRef<{ x: number; y: number } | null>(null);
-
-  // The page length changes, so scroll-driven effects (the plane, reveals) re-measure.
-  useEffect(() => {
-    ScrollTrigger.refresh();
-  }, [page, all]);
+  // two cards per page with a numbered pager, swipe and "see all" (see Pager)
+  const pager = usePager(projects.length);
 
   return (
     <section id="work" className="scroll-mt-16 py-20 sm:py-28">
@@ -55,26 +34,12 @@ export default function Work() {
 
         <ul
           className="mt-10 grid gap-12 md:grid-cols-2 md:gap-x-8 lg:gap-8"
-          // a mostly-horizontal swipe turns the page; vertical scrolling is left alone
-          onTouchStart={(e) => {
-            if (all) return;
-            const t = e.touches[0];
-            touch.current = { x: t.clientX, y: t.clientY };
-          }}
-          onTouchEnd={(e) => {
-            const start = touch.current;
-            touch.current = null;
-            if (!start || all) return;
-            const t = e.changedTouches[0];
-            const dx = t.clientX - start.x;
-            if (Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(t.clientY - start.y))
-              go(page + (dx < 0 ? 1 : -1));
-          }}
+          {...pager.swipe}
         >
           {projects.map((project, i) => (
             <li
               key={project.id}
-              hidden={!all && Math.floor(i / PER_PAGE) !== page}
+              hidden={!pager.shows(i)}
               className="motion-safe:animate-[card-in_350ms_ease-out]"
             >
               <article
@@ -134,43 +99,7 @@ export default function Work() {
           ))}
         </ul>
 
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
-          {all ? (
-            <span className="text-text-muted">all {count} projects</span>
-          ) : (
-            <nav aria-label="Projects" className="flex items-center gap-2">
-              <button type="button" onClick={() => go(page - 1)} aria-label="Previous projects" className={pagerBtn}>
-                ←
-              </button>
-              {Array.from({ length: pages }, (_, p) => {
-                const shown = projects.slice(p * PER_PAGE, (p + 1) * PER_PAGE);
-                return (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => go(p)}
-                    aria-label={`Page ${p + 1} of ${pages}: ${shown.map((s) => s.name).join(" and ")}`}
-                    aria-current={p === page || undefined}
-                    className={`${pagerBtn} aria-[current]:bg-btn-bg aria-[current]:bg-[image:var(--chrome)] aria-[current]:text-btn-text`}
-                  >
-                    {String(p + 1).padStart(2, "0")}
-                  </button>
-                );
-              })}
-              <button type="button" onClick={() => go(page + 1)} aria-label="Next projects" className={pagerBtn}>
-                →
-              </button>
-            </nav>
-          )}
-          <button
-            type="button"
-            onClick={() => setAll((v) => !v)}
-            aria-expanded={all}
-            className="inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
-          >
-            {all ? `show ${PER_PAGE} at a time` : `see all (${count})`}
-          </button>
-        </div>
+        <Pager pager={pager} names={projects.map((p) => p.name)} noun="projects" />
       </Container>
     </section>
   );
