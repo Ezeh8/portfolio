@@ -92,27 +92,29 @@ body {
     }
   }
 
-  /* Every card floats gently up and down, all the time. It moves with `translate`, which
-     stacks with the tilt and hover lift in `transform`. Neighbouring cards get different
+  /* Every card floats gently up and down and sways a little, all the time. It moves with
+     `translate` and `rotate`, which stack with the tilt and hover lift in `transform`. Neighbouring cards get different
      speeds and start points so they never bob in step. */
   .panel {
-    animation: card-float 6s ease-in-out infinite alternate;
+    animation: card-float 3s ease-in-out infinite alternate;
   }
   .panel:nth-child(3n + 2) {
-    animation-duration: 7s;
-    animation-delay: -2.5s;
+    animation-duration: 3.6s;
+    animation-delay: -1.3s;
   }
   .panel:nth-child(3n + 3) {
-    animation-duration: 5.5s;
-    animation-delay: -4s;
+    animation-duration: 2.7s;
+    animation-delay: -2.2s;
   }
 
   @keyframes card-float {
     from {
-      translate: 0 -3px;
+      translate: 0 -6px;
+      rotate: -0.4deg;
     }
     to {
-      translate: 0 3px;
+      translate: 0 6px;
+      rotate: 0.4deg;
     }
   }
 
