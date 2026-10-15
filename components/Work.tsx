@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/content/site";
 import {
@@ -23,20 +23,27 @@ const pagerBtn =
 // Tinted cards: the Evaluate toolkit card's grey, with muted labels in its title grey.
 const tint = "bg-card-alt [--text-muted:var(--card-alt-title)]";
 
-// One project card at a time, with a numbered pager (one number per project, so it grows
-// as projects are added) and previous / next. "see all" shows every card in a grid.
+
+// Two project cards per page, side by side from 768px (stacked on phones), with a
+// numbered pager (one number per page, so it grows as projects are added), previous /
+// next, and a horizontal swipe on touch screens. "see all" shows every card.
 // Hidden cards stay in the page with the `hidden` attribute, so their ids still exist.
+const PER_PAGE = 2;
+const SWIPE = 50; // px of horizontal travel that counts as a swipe
+
 export default function Work() {
   const { label, headline, note, panelStatus, linkLabel, projects } = site.work;
-  const [index, setIndex] = useState(0);
+  const [page, setPage] = useState(0);
   const [all, setAll] = useState(false);
   const count = projects.length;
-  const go = (i: number) => setIndex((i + count) % count);
+  const pages = Math.ceil(count / PER_PAGE);
+  const go = (p: number) => setPage((p + pages) % pages);
+  const touch = useRef<{ x: number; y: number } | null>(null);
 
   // The page length changes, so scroll-driven effects (the plane, reveals) re-measure.
   useEffect(() => {
     ScrollTrigger.refresh();
-  }, [index, all]);
+  }, [page, all]);
 
   return (
     <section id="work" className="scroll-mt-16 py-20 sm:py-28">
@@ -50,12 +57,27 @@ export default function Work() {
         </div>
 
         <ul
-          className={`mt-10 grid ${all ? "gap-12 md:grid-cols-2 md:gap-x-8 lg:gap-8" : "max-w-3xl"}`}
+          className="mt-10 grid gap-12 md:grid-cols-2 md:gap-x-8 lg:gap-8"
+          // a mostly-horizontal swipe turns the page; vertical scrolling is left alone
+          onTouchStart={(e) => {
+            if (all) return;
+            const t = e.touches[0];
+            touch.current = { x: t.clientX, y: t.clientY };
+          }}
+          onTouchEnd={(e) => {
+            const start = touch.current;
+            touch.current = null;
+            if (!start || all) return;
+            const t = e.changedTouches[0];
+            const dx = t.clientX - start.x;
+            if (Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(t.clientY - start.y))
+              go(page + (dx < 0 ? 1 : -1));
+          }}
         >
           {projects.map((project, i) => (
             <li
               key={project.id}
-              hidden={!all && i !== index}
+              hidden={!all && Math.floor(i / PER_PAGE) !== page}
               className="motion-safe:animate-[card-in_350ms_ease-out]"
             >
               <article
@@ -120,22 +142,25 @@ export default function Work() {
             <span className="text-text-muted">all {count} projects</span>
           ) : (
             <nav aria-label="Projects" className="flex items-center gap-2">
-              <button type="button" onClick={() => go(index - 1)} aria-label="Previous project" className={pagerBtn}>
+              <button type="button" onClick={() => go(page - 1)} aria-label="Previous projects" className={pagerBtn}>
                 ←
               </button>
-              {projects.map((project, i) => (
-                <button
-                  key={project.id}
-                  type="button"
-                  onClick={() => go(i)}
-                  aria-label={`Project ${i + 1} of ${count}: ${project.name}`}
-                  aria-current={i === index || undefined}
-                  className={`${pagerBtn} aria-[current]:bg-btn-bg aria-[current]:bg-[image:var(--chrome)] aria-[current]:text-btn-text`}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </button>
-              ))}
-              <button type="button" onClick={() => go(index + 1)} aria-label="Next project" className={pagerBtn}>
+              {Array.from({ length: pages }, (_, p) => {
+                const shown = projects.slice(p * PER_PAGE, (p + 1) * PER_PAGE);
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => go(p)}
+                    aria-label={`Page ${p + 1} of ${pages}: ${shown.map((s) => s.name).join(" and ")}`}
+                    aria-current={p === page || undefined}
+                    className={`${pagerBtn} aria-[current]:bg-btn-bg aria-[current]:bg-[image:var(--chrome)] aria-[current]:text-btn-text`}
+                  >
+                    {String(p + 1).padStart(2, "0")}
+                  </button>
+                );
+              })}
+              <button type="button" onClick={() => go(page + 1)} aria-label="Next projects" className={pagerBtn}>
                 →
               </button>
             </nav>
@@ -146,7 +171,7 @@ export default function Work() {
             aria-expanded={all}
             className="inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
           >
-            {all ? "show one at a time" : `see all (${count})`}
+            {all ? `show ${PER_PAGE} at a time` : `see all (${count})`}
           </button>
         </div>
       </Container>
