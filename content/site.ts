@@ -70,7 +70,7 @@ export const site = {
     words: ["gaps", "friction", "flow"] as const,
     headlineLabel: "I map the gaps, friction and flow.",
     body: "I'm not that interested in Agents ~ I'm interested in the processes, the handoffs, the 5-minute decision that stalls for 48 hours. I re-imagine the process, then build the agent in around it.",
-    primary: { label: "see what I'm building →", href: "https://github.com/Ezeh8" } satisfies Link,
+    primary: { label: "view my work →", href: "https://github.com/Ezeh8" } satisfies Link,
     // Downloads straight away. The file lives at public/Ezeh-Ikenna-CV.pdf.
     secondary: { label: "download CV", href: "/Ezeh-Ikenna-CV.pdf" } satisfies Link,
     // Project lines are generated from work.projects below.
@@ -239,7 +239,7 @@ export const site = {
     email: email as string | null,
     buttons: [
       { label: "get in touch →", href: `mailto:${email}`, primary: true },
-      { label: "see what I'm building →", href: "https://github.com/Ezeh8", primary: true },
+      { label: "view my work →", href: "https://github.com/Ezeh8", primary: true },
     ] satisfies Link[],
     replies: "replies within 24 hours", // TODO: confirm before launch
   },
