@@ -77,7 +77,7 @@ export const site = {
   },
 
   banner: {
-    phrase: "evals ✦ regression ✦ security ✦ governance ✦",
+    phrase: "AI security ✦ regression suites ✦ AI governance ✦ evals metrics ✦",
   },
 
   work: {
