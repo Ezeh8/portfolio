@@ -23,18 +23,11 @@ export default function Hero() {
               {status}
             </p>
 
-            <h1 className="mt-6 flex flex-col gap-1 lg:mt-5">
+            {/* one line: "i map the" then the rotating word, sized to fit the column */}
+            <h1 className="mt-6 whitespace-nowrap font-display text-[clamp(1.75rem,8vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.03em] lowercase lg:mt-5 lg:text-[clamp(3rem,5vw,3.5rem)]">
               <span className="sr-only">{headlineLabel}</span>
-              <span
-                aria-hidden="true"
-                className="font-mono text-sm uppercase tracking-[0.18em] text-text-muted"
-              >
-                {prefix}
-              </span>
-              <RotatingWord
-                words={[...words]}
-                className="font-display text-[clamp(3rem,9vw,4.5rem)] font-extrabold leading-none tracking-[-0.03em] lowercase"
-              />
+              <span aria-hidden="true">{prefix} </span>
+              <RotatingWord words={[...words]} />
             </h1>
             <p className="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1.6vw,1.25rem)] leading-relaxed text-text/75">
               {body}
