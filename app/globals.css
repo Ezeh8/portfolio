@@ -174,7 +174,8 @@ body {
     padding-bottom: 0.06em;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: repeat-x;
-    background-position: 0 100%;
+    /* --squiggle-shift is set by SquiggleScroll, the same for every squiggle */
+    background-position: var(--squiggle-shift, 0em) 100%;
     background-size: 0.5em 0.2em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
@@ -185,7 +186,7 @@ body {
      lifted into it instead. */
   #contact .squiggle {
     padding-bottom: 0;
-    background-position: 0 calc(100% - 0.06em);
+    background-position: var(--squiggle-shift, 0em) calc(100% - 0.06em);
   }
 }
 
