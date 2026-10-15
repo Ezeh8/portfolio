@@ -29,7 +29,7 @@ export default function Hero() {
               <span aria-hidden="true" className="chrome">{prefix} </span>
               <RotatingWord words={[...words]} wordClassName="chrome" />
             </h1>
-            <p className="mt-6 max-w-[34rem] text-[clamp(1.0625rem,1.6vw,1.25rem)] leading-relaxed text-text/75">
+            <p className="mt-2 max-w-[34rem] text-[clamp(1.0625rem,1.6vw,1.25rem)] leading-relaxed text-text/75">
               {body}
             </p>
 
