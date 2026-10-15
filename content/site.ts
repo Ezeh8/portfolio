@@ -90,8 +90,8 @@ export const site = {
   work: {
     label: "02 / Work",
     headline: {
-      text: "POCs specced.",
-      highlight: "specced",
+      text: "see what I am building",
+      highlight: "building",
       keepCase: true,
     } satisfies Headline,
     note: "the code is all on GitHub",
