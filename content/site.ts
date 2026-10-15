@@ -57,7 +57,7 @@ export const site = {
     label: "AI Product Manager | AI Systems Builder",
     name: "Ezeh Ikenna",
     tagline: "Founder, Rithma Labs",
-    status: "building agentic systems from Nigeria",
+    status: "STATUS: ACTIVE!",
     // The headline: the prefix over one word that rotates through `words`. Screen readers
     // get `headlineLabel` instead.
     prefix: "i map the",
