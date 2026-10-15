@@ -96,14 +96,14 @@ body {
      `translate` and `rotate`, which stack with the tilt and hover lift in `transform`. Neighbouring cards get different
      speeds and start points so they never bob in step. */
   .panel {
-    animation: card-float 3s ease-in-out infinite alternate;
+    animation: card-float 3.5s ease-in-out infinite alternate;
   }
   .panel:nth-child(3n + 2) {
-    animation-duration: 3.6s;
+    animation-duration: 4.2s;
     animation-delay: -1.3s;
   }
   .panel:nth-child(3n + 3) {
-    animation-duration: 2.7s;
+    animation-duration: 3.1s;
     animation-delay: -2.2s;
   }
 
