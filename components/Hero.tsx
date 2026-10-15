@@ -51,8 +51,11 @@ export default function Hero() {
                 </span>
               </PanelBar>
               <div className="space-y-2 p-4 font-mono text-[13px] leading-relaxed sm:p-5">
-                <p>{flightLog.command}</p>
-                <p className="text-accent-text">{flightLog.status(projects.length)}</p>
+                {/* the command and its answer on one line */}
+                <p>
+                  {flightLog.command}{" "}
+                  <span className="text-accent-text">{flightLog.status(projects.length)}</span>
+                </p>
                 <ul className="space-y-2 pt-1">
                   {projects.map((p) => (
                     <li key={p.id}>
