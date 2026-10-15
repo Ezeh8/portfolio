@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/content/site";
 import {
   Container,
@@ -13,11 +17,27 @@ import {
 // A different small tilt per card from 1024px up; flat below, so the phone flight is unaffected.
 const tilts = ["lg:[--tilt:-1deg]", "lg:[--tilt:0.75deg]", "lg:[--tilt:0.5deg]", "lg:[--tilt:-1deg]"];
 
+const pagerBtn =
+  "inline-flex h-9 min-w-9 items-center justify-center rounded-full border-(length:--border-width) border-line px-2 transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95";
+
 // Tinted cards: the Evaluate toolkit card's grey, with muted labels in its title grey.
 const tint = "bg-card-alt [--text-muted:var(--card-alt-title)]";
 
+// One project card at a time, with a numbered pager (one number per project, so it grows
+// as projects are added) and previous / next. "see all" shows every card in a grid.
+// Hidden cards stay in the page with the `hidden` attribute, so their ids still exist.
 export default function Work() {
   const { label, headline, note, panelStatus, linkLabel, projects } = site.work;
+  const [index, setIndex] = useState(0);
+  const [all, setAll] = useState(false);
+  const count = projects.length;
+  const go = (i: number) => setIndex((i + count) % count);
+
+  // The page length changes, so scroll-driven effects (the plane, reveals) re-measure.
+  useEffect(() => {
+    ScrollTrigger.refresh();
+  }, [index, all]);
+
   return (
     <section id="work" className="scroll-mt-16 py-20 sm:py-28">
       <Container>
@@ -29,9 +49,15 @@ export default function Work() {
           </HandNote>
         </div>
 
-        <ul className="mt-10 grid gap-12 md:grid-cols-2 md:gap-x-8 lg:gap-8">
+        <ul
+          className={`mt-10 grid ${all ? "gap-12 md:grid-cols-2 md:gap-x-8 lg:gap-8" : "max-w-3xl"}`}
+        >
           {projects.map((project, i) => (
-            <li key={project.id}>
+            <li
+              key={project.id}
+              hidden={!all && i !== index}
+              className="motion-safe:animate-[card-in_350ms_ease-out]"
+            >
               <article
                 id={project.id}
                 className={`panel relative z-[2] flex h-full flex-col overflow-hidden ${tilts[i % tilts.length]}${project.tinted ? ` ${tint}` : ""}`}
@@ -88,6 +114,41 @@ export default function Work() {
             </li>
           ))}
         </ul>
+
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+          {all ? (
+            <span className="text-text-muted">all {count} projects</span>
+          ) : (
+            <nav aria-label="Projects" className="flex items-center gap-2">
+              <button type="button" onClick={() => go(index - 1)} aria-label="Previous project" className={pagerBtn}>
+                ←
+              </button>
+              {projects.map((project, i) => (
+                <button
+                  key={project.id}
+                  type="button"
+                  onClick={() => go(i)}
+                  aria-label={`Project ${i + 1} of ${count}: ${project.name}`}
+                  aria-current={i === index || undefined}
+                  className={`${pagerBtn} aria-[current]:bg-btn-bg aria-[current]:bg-[image:var(--chrome)] aria-[current]:text-btn-text`}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </button>
+              ))}
+              <button type="button" onClick={() => go(index + 1)} aria-label="Next project" className={pagerBtn}>
+                →
+              </button>
+            </nav>
+          )}
+          <button
+            type="button"
+            onClick={() => setAll((v) => !v)}
+            aria-expanded={all}
+            className="inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
+          >
+            {all ? "show one at a time" : `see all (${count})`}
+          </button>
+        </div>
       </Container>
     </section>
   );

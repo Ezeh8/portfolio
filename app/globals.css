@@ -121,6 +121,14 @@ body {
     animation-delay: -2.2s;
   }
 
+  /* a project card coming into view in the Work pager */
+  @keyframes card-in {
+    from {
+      opacity: 0;
+      translate: 0 12px;
+    }
+  }
+
   @keyframes card-float {
     from {
       translate: 0 -6px;

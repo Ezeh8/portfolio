@@ -14,6 +14,12 @@ import { clamp, heading, inOrder, isClear, nearestClear } from "./flightPath";
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const CARD_IDS = site.work.projects.map((p) => p.id);
+// The Work pager hides cards (display: none); the flight only uses the ones on screen,
+// in page order.
+const shownCards = () =>
+  CARD_IDS.map((id) => document.getElementById(id)).filter(
+    (el): el is HTMLElement => !!el && el.getClientRects().length > 0,
+  );
 
 // Document coordinates of a box.
 function docRect(el: Element | Range) {
@@ -188,7 +194,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   const toolkit = $("#toolkit");
   const secondBanner = $("#second-banner");
   const touch = $("#contact .squiggle") as HTMLElement | null;
-  const firstCard = document.getElementById(CARD_IDS[0]);
+  const firstCard = shownCards()[0];
   if (!hero || !banner || !work || !toolkit || !secondBanner || !touch || !firstCard) return null;
 
   // Scroll position at which the point `frac` of the way down `el` sits `screen` of the
@@ -423,7 +429,8 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
   const experience = box($("#experience"));
   const toolkit = box($("#toolkit"));
   const secondBanner = box($("#second-banner"));
-  const cards = CARD_IDS.map((id) => box(document.getElementById(id)));
+  const shown = shownCards();
+  const cards = CARD_IDS.map((_, i) => box(shown[i]));
   const roles = Array.from(document.querySelectorAll("#experience ol > li")).map(box);
 
   // Scroll position at which the document y `docY` sits `screen` % down the screen.
