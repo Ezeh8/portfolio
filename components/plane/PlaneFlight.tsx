@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Lenis from "lenis";
 import { site } from "@/content/site";
+import { PLANE_EVENT, type PlaneMoment } from "../SoundToggle";
 import PaperPlane from "./PaperPlane";
 import { clamp, heading, inOrder, isClear, nearestClear } from "./flightPath";
 
@@ -680,6 +681,18 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
   }
   let shown = 0;
 
+  // Moments the sound toggle can beep on: each keyframe where the plane is on screen at a
+  // side (within 20% of the left or right edge), and the landing on the headline.
+  const last = keys.length - 1;
+  const moments = keys.flatMap((k, i): { s: number; kind: PlaneMoment }[] =>
+    i === last
+      ? [{ s: k.s, kind: "landing" }]
+      : i > 0 && k.x >= 0 && k.x <= 100 && (k.x <= 20 || k.x >= 80)
+        ? [{ s: k.s, kind: "side" }]
+        : [],
+  );
+  let before = NaN; // timeline time at the previous draw
+
   const setX = gsap.quickSetter(plane, "x", "px");
   const setY = gsap.quickSetter(plane, "y", "px");
   const setScale = gsap.quickSetter(plane, "scale");
@@ -710,6 +723,18 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
     for (let i = Math.min(n, shown); i < Math.max(n, shown); i++)
       dots[i].el.setAttribute("visibility", i < n ? "visible" : "hidden");
     shown = n;
+
+    // A side counts when the plane passes its keyframe in either direction; the landing
+    // only when arriving (scrolling down).
+    const now = tl.time();
+    if (Number.isFinite(before))
+      for (const m of moments) {
+        const down = before < m.s && now >= m.s;
+        const up = before >= m.s && now < m.s;
+        if (down || (up && m.kind === "side"))
+          window.dispatchEvent(new CustomEvent<PlaneMoment>(PLANE_EVENT, { detail: m.kind }));
+      }
+    before = now;
   };
 
   const tl = gsap.timeline({

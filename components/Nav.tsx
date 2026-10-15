@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { site } from "@/content/site";
+import SoundToggle from "./SoundToggle";
 import { Container, Glyphs } from "./ui";
 
 export default function Nav() {
@@ -28,39 +29,44 @@ export default function Nav() {
             <span className="text-accent-text">{wordmark.dot}</span>
           </a>
 
-          <div className="hidden items-center gap-8 md:flex">
-            <ul className="flex gap-6 font-mono text-xs uppercase tracking-[0.12em]">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href} className="hover:text-accent-text">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-center gap-2">
-              <a
-                href={cta.href}
-                className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
-              >
-                {/* wrapped so the flex container keeps the space before the trailing → */}
-                <span>
-                  <Glyphs text={cta.label} />
-                </span>
-              </a>
+          <div className="flex items-center gap-3">
+            <div className="hidden items-center gap-8 md:flex">
+              <ul className="flex gap-6 font-mono text-xs uppercase tracking-[0.12em]">
+                {links.map((link) => (
+                  <li key={link.href}>
+                    <a href={link.href} className="hover:text-accent-text">
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex items-center gap-2">
+                <a
+                  href={cta.href}
+                  className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
+                >
+                  {/* wrapped so the flex container keeps the space before the trailing → */}
+                  <span>
+                    <Glyphs text={cta.label} />
+                  </span>
+                </a>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2 md:hidden">
-            <button
-              type="button"
-              className="inline-flex h-10 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs uppercase tracking-[0.12em]"
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              onClick={() => setOpen((v) => !v)}
-            >
-              {open ? "Close" : "Menu"}
-            </button>
+            {/* one toggle for every layout, so there is only ever one sound engine */}
+            <SoundToggle />
+
+            <div className="flex items-center gap-2 md:hidden">
+              <button
+                type="button"
+                className="inline-flex h-10 items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs uppercase tracking-[0.12em]"
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                onClick={() => setOpen((v) => !v)}
+              >
+                {open ? "Close" : "Menu"}
+              </button>
+            </div>
           </div>
         </nav>
       </Container>
