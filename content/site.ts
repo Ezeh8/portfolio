@@ -45,7 +45,6 @@ export const site = {
   nav: {
     wordmark: { text: "ezeh", dot: "." },
     links: [
-      { label: "About", href: "#about" },
       { label: "Work", href: "#work" },
       { label: "Experience", href: "#experience" },
       { label: "Toolkit", href: "#toolkit" },
@@ -59,9 +58,12 @@ export const site = {
     name: "Ezeh Ikenna",
     tagline: "Founder, Rithma Labs",
     status: "building agentic systems from Nigeria",
-    headline: { text: "build. ship. evaluate.", highlight: "evaluate." } satisfies Headline,
-    intro:
-      "10+ years running teams and operations systems taught me where companies lose time, money, and trust. I map how your team works, redesign the slow parts around AI agents, and trace every decision they make so each one can be audited and improved.",
+    // The headline: the prefix over one word that rotates through `words`. Screen readers
+    // get `headlineLabel` instead.
+    prefix: "i map the",
+    words: ["gaps", "friction", "flow"] as const,
+    headlineLabel: "I map the gaps, friction and flow.",
+    body: "I came to AI from the operator's side, after co-founding a fashion retail brand and running operations systems at Standard Chartered. Since 2024, through Rithma Labs, I've designed and shipped AI for clients in logistics, construction, SaaS, and energy.",
     primary: { label: "see what I'm building →", href: "https://github.com/Ezeh8" } satisfies Link,
     // Downloads straight away. The file lives at public/Ezeh-Ikenna-CV.pdf.
     secondary: { label: "download CV", href: "/Ezeh-Ikenna-CV.pdf" } satisfies Link,
@@ -76,13 +78,6 @@ export const site = {
 
   banner: {
     phrase: "evals ✦ regression ✦ security ✦ governance ✦",
-  },
-
-  about: {
-    prefix: "i map the",
-    words: ["gaps", "friction", "flow"] as const,
-    label: "I map the gaps, friction and flow.",
-    body: "I came to AI from the operator's side, after co-founding a fashion retail brand and running operations systems at Standard Chartered. Since 2024, through Rithma Labs, I've designed and shipped AI for clients in logistics, construction, SaaS, and energy.",
   },
 
   work: {

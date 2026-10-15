@@ -182,13 +182,13 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   const { vw, vh } = size;
   const max = maxScroll();
   const hero = $("#hero");
-  const about = $("#about");
+  const banner = $("main [data-banner]");
   const work = $("#work");
   const toolkit = $("#toolkit");
   const secondBanner = $("#second-banner");
   const touch = $("#contact .squiggle") as HTMLElement | null;
   const firstCard = document.getElementById(CARD_IDS[0]);
-  if (!hero || !about || !work || !toolkit || !secondBanner || !touch || !firstCard) return null;
+  if (!hero || !banner || !work || !toolkit || !secondBanner || !touch || !firstCard) return null;
 
   // Scroll position at which the point `frac` of the way down `el` sits `screen` of the
   // way down the screen.
@@ -225,11 +225,11 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
       tilt: -8,
       facing: -1,
     },
-    // 2. banner and about: near the left edge, easing slowly down, shrinking
+    // 2. banner: near the left edge, easing slowly down, shrinking
     // leg 2
     {
-      name: "banner and about",
-      s: at(about, 1, 0.5),
+      name: "banner",
+      s: at(banner, 1, 0.5),
       x: 20,
       y: clamp(restY + 15, 45, 70),
       scale: 0.6,
@@ -418,7 +418,6 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
 
   const box = (el: Element | null | undefined) => (el ? docRect(el) : null);
   const banner = box($("main .banner-track")?.closest(".overflow-hidden"));
-  const about = box($("#about"));
   const work = box($("#work"));
   const experience = box($("#experience"));
   const toolkit = box($("#toolkit"));
@@ -444,8 +443,7 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
   const tilt = { maxTilt: PHONE_TILT };
 
   const middle: Key[] = [
-    // 1. Banner and About: over to the right edge behind the first banner, then a slow
-    // drift down it
+    // 1. Banner: over to the right edge behind the first banner
     {
       name: "phone: right edge, behind first banner",
       s: when(banner && (banner.top + banner.bottom) / 2, 40),
@@ -454,7 +452,6 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
       scale: 0.85,
       ...tilt,
     },
-    { name: "phone: about, down the right edge", s: when(about?.bottom, 50), x: 80, y: 48, scale: 0.7, ...tilt },
     // 2. Work: down and left, behind the first project card
     {
       name: "phone: behind project card 1",
