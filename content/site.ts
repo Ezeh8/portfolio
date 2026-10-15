@@ -40,6 +40,8 @@ export type Role = {
   dates: string;
   opsLog: string;
   bullets: string[];
+  // the graph drawn on the role card's cover (see GraphPattern)
+  topology: Topology;
 };
 
 const email = "ezehkena@gmail.com";
@@ -177,6 +179,7 @@ export const site = {
         company: "Rithma Labs (Global AI & Systems Consulting)",
         dates: "Sept 2024 – Present",
         opsLog: "deploy · agentic systems for logistics, construction, saas, energy",
+        topology: "radial",
         bullets: [
           "Built an n8n pipeline for an enterprise logistics company, routing CRM and deal data to billing and project tools with a guardrail step for edge cases, cutting admin overhead 85%",
           "Deployed a self-hosted AI model for a global construction firm, evaluated against sandbox cases before going live, quadrupling invoice processing capacity during peak weeks",
@@ -189,6 +192,7 @@ export const site = {
         company: "Standard Chartered Bank",
         dates: "Aug 2021 – Dec 2024",
         opsLog: "operate · automation, kyc, credit scoring",
+        topology: "grid",
         bullets: [
           "Monitored the bank's in-app automation for real-time customer engagement and support, flagging issues and coordinating fixes with cross-functional teams",
           "Collaborated with compliance and engineering teams to roll out a digital KYC verification platform aligned with Central Bank of Nigeria requirements",
@@ -201,6 +205,7 @@ export const site = {
         company: "Ropa Brand",
         dates: "Feb 2014 – Mar 2021",
         opsLog: "scale · 4 → 35 people",
+        topology: "tree",
         bullets: [
           "Founded and scaled an independent fashion retail brand from 4 to 35 team members, overseeing daily operations, hiring, and revenue growth",
           "Managed international vendor relationships across fabric sourcing, garment manufacturing, and custom packaging, supporting over 1,000 bespoke and 7,000 retail customer transactions",

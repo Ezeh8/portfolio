@@ -2,7 +2,8 @@
 
 import { site } from "@/content/site";
 import { Pager, usePager } from "./Pager";
-import { Container, Glyphs, Headline, PanelBar, SectionLabel, StatusDot } from "./ui";
+import StoryCard from "./StoryCard";
+import { Container, Glyphs, Headline, SectionLabel } from "./ui";
 
 // Smaller tilts than Work, to keep the gaps between the cards even.
 const tilts = ["lg:[--tilt:-0.5deg]", "lg:[--tilt:0.4deg]", "lg:[--tilt:-0.3deg]"];
@@ -57,11 +58,9 @@ function Marked({ text }: { text: string }) {
 }
 
 // Two role cards per page, side by side from 768px (stacked on phones), with the same
-// numbered pager, swipe and "see all" as Work (see Pager). Each card shows only its first
-// BULLETS bullets, to keep the cards close to the Work cards' size; reorder a role's
-// bullets in content/site.ts to choose which ones show.
-const BULLETS = 2;
-
+// numbered pager, swipe and "see all" as Work (see Pager). Each card follows the Work
+// card pattern (StoryCard): a graph cover, the company, the role and the dates; clicking
+// it opens the role's full story with every bullet and its highlights.
 export default function Experience() {
   const { label, headline, roles } = site.experience;
   const pager = usePager(roles.length);
@@ -78,30 +77,27 @@ export default function Experience() {
               hidden={!pager.shows(i)}
               className="motion-safe:animate-[card-in_350ms_ease-out]"
             >
-              <article className={`panel relative z-[2] h-full overflow-hidden ${tilts[i % tilts.length]}`}>
-                <PanelBar>
-                  <span className="flex min-w-0 items-center gap-2">
-                    <StatusDot />
-                    <span>{entry.opsLog}</span>
-                  </span>
-                </PanelBar>
-                <div className="grid gap-5 p-5 sm:p-7">
-                  <div>
-                    <h3 className="font-display text-2xl font-bold">{entry.role}</h3>
-                    <p className="mt-1 text-text/75">{entry.company}</p>
-                    <p className="mt-3 font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
-                      {entry.dates}
-                    </p>
-                  </div>
-                  <ul className="list-disc space-y-3 text-[1.0625rem] pl-5 leading-relaxed marker:text-accent-text">
-                    {entry.bullets.slice(0, BULLETS).map((bullet) => (
-                      <li key={bullet}>
-                        <Marked text={bullet} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </article>
+              <StoryCard
+                id={`role-${i + 1}`}
+                title={entry.company}
+                subtitle={entry.role}
+                topology={entry.topology}
+                pills={[entry.dates]}
+                pillsLabel="Dates"
+                className={tilts[i % tilts.length]}
+              >
+                <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+                  <Glyphs text={entry.opsLog} />
+                </p>
+                <hr className="my-8 border-line" />
+                <ul className="list-disc space-y-4 pl-5 text-lg leading-relaxed text-btn-ink marker:text-accent-text">
+                  {entry.bullets.map((bullet) => (
+                    <li key={bullet}>
+                      <Marked text={bullet} />
+                    </li>
+                  ))}
+                </ul>
+              </StoryCard>
             </li>
           ))}
         </ol>
