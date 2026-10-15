@@ -20,9 +20,6 @@ const tilts = ["lg:[--tilt:-1deg]", "lg:[--tilt:0.75deg]", "lg:[--tilt:0.5deg]",
 const pagerBtn =
   "inline-flex h-9 min-w-9 items-center justify-center rounded-full border-(length:--border-width) border-line px-2 transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95";
 
-// Tinted cards: the Evaluate toolkit card's grey, with muted labels in its title grey.
-const tint = "bg-card-alt [--text-muted:var(--card-alt-title)]";
-
 
 // Two project cards per page, side by side from 768px (stacked on phones), with a
 // numbered pager (one number per page, so it grows as projects are added), previous /
@@ -82,9 +79,9 @@ export default function Work() {
             >
               <article
                 id={project.id}
-                className={`panel relative z-[2] flex h-full flex-col overflow-hidden ${tilts[i % tilts.length]}${project.tinted ? ` ${tint}` : ""}`}
+                className={`panel relative z-[2] flex h-full flex-col overflow-hidden ${tilts[i % tilts.length]}`}
               >
-                <PanelBar className={project.tinted ? "text-card-alt-title" : ""}>
+                <PanelBar>
                   <span className="flex items-center gap-2">
                     <StatusDot />
                     {panelStatus}

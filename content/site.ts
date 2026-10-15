@@ -25,7 +25,6 @@ export type Project = {
   readout: string;
   chips: string[];
   href: string | null;
-  tinted?: boolean;
 };
 
 export type Role = {
@@ -34,7 +33,6 @@ export type Role = {
   dates: string;
   opsLog: string;
   bullets: string[];
-  tinted?: boolean;
 };
 
 const email = "ezehkena@gmail.com";
@@ -125,7 +123,6 @@ export const site = {
         readout: "runs unattended every morning / one stable URL",
         chips: ["Scheduled agent", "Live web search", "Persistent memory", "HTML/CSS/JS"],
         href: "https://github.com/Ezeh8/command-centre",
-        tinted: true,
       },
     ] satisfies Project[],
   },
@@ -159,7 +156,6 @@ export const site = {
           "Partnered with the data science team to operationalize an AI-driven credit-scoring model, monitoring borrower default-risk outputs to support acceptance decisions and reduce credit losses",
           "Built and managed operational workflows and tracking systems for cross-functional project management, optimizing resource allocation across initiatives",
         ],
-        tinted: true,
       },
       {
         role: "Co-Founder & Chief Operating Officer (COO)",
@@ -185,7 +181,6 @@ export const site = {
       {
         title: "Evaluate",
         items: ["LangSmith", "Langfuse", "Golden datasets", "Regression suites"],
-        tinted: true,
       },
       {
         title: "Automate",

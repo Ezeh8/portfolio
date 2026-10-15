@@ -53,8 +53,6 @@ function Marked({ text }: { text: string }) {
   );
 }
 
-// Tinted cards: the Evaluate toolkit card's grey, with muted labels in its title grey.
-const tint = "bg-card-alt [--text-muted:var(--card-alt-title)]";
 
 export default function Experience() {
   const { label, headline, roles } = site.experience;
@@ -68,9 +66,9 @@ export default function Experience() {
           {roles.map((entry, i) => (
             <li
               key={entry.company}
-              className={`panel relative z-[2] overflow-hidden ${tilts[i % tilts.length]}${entry.tinted ? ` ${tint}` : ""}`}
+              className={`panel relative z-[2] overflow-hidden ${tilts[i % tilts.length]}`}
             >
-              <PanelBar className={entry.tinted ? "text-card-alt-title" : ""}>
+              <PanelBar>
                 <span className="flex min-w-0 items-center gap-2">
                   <StatusDot />
                   <span>{entry.opsLog}</span>

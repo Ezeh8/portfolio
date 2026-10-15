@@ -16,10 +16,10 @@ export default function Toolkit() {
           {groups.map((group, i) => (
             <li
               key={group.title}
-              className={`panel relative z-[2] p-5 ${tilts[i % tilts.length]}${group.tinted ? " bg-card-alt" : ""}`}
+              className={`panel relative z-[2] p-5 ${tilts[i % tilts.length]}`}
             >
               <h3
-                className={`flex items-center justify-between border-b-(length:--border-width) border-dashed border-line/40 pb-3 font-mono text-xs uppercase tracking-[0.12em]${group.tinted ? " text-card-alt-title" : ""}`}
+                className={`flex items-center justify-between border-b-(length:--border-width) border-dashed border-line/40 pb-3 font-mono text-xs uppercase tracking-[0.12em]`}
               >
                 {group.title}
                 <span
