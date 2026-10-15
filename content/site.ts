@@ -60,7 +60,7 @@ export const site = {
     prefix: "i map the",
     words: ["gaps", "friction", "flow"] as const,
     headlineLabel: "I map the gaps, friction and flow.",
-    body: "I came to AI from the operator's side, after co-founding a fashion retail brand and running operations systems at Standard Chartered. Since 2024, through Rithma Labs, I've designed and shipped AI for clients in logistics, construction, SaaS, and energy.",
+    body: "I'm not that interested in Agents ~ I'm interested in the processes, the handoffs, the 5-minute decision that stalls for 48 hours. I re-imagine the process, then build the agent in around it.",
     primary: { label: "see what I'm building →", href: "https://github.com/Ezeh8" } satisfies Link,
     // Downloads straight away. The file lives at public/Ezeh-Ikenna-CV.pdf.
     secondary: { label: "download CV", href: "/Ezeh-Ikenna-CV.pdf" } satisfies Link,
