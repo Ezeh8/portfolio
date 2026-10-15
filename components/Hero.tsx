@@ -59,7 +59,7 @@ export default function Hero() {
                 <ul className="space-y-2 pt-1">
                   {projects.map((p) => (
                     <li key={p.id}>
-                      ✓ {p.name.toLowerCase()} · {p.readout}
+                      ✓ {p.title.toLowerCase()} · {p.deployedResult}
                     </li>
                   ))}
                 </ul>

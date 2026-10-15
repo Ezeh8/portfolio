@@ -18,13 +18,20 @@ export type Headline = {
   keepCase?: boolean;
 };
 
+export type Topology = "radial" | "tree" | "grid" | "pipeline";
+
 export type Project = {
   id: string;
-  name: string;
-  description: string;
-  readout: string;
-  chips: string[];
-  href: string | null;
+  title: string;
+  subtitle: string;
+  topology: Topology;
+  oneLiner: string;
+  deployedAt: string;
+  deployedResult: string;
+  teaching: string;
+  teachingStory: readonly string[];
+  stack: readonly string[];
+  github: string;
 };
 
 export type Role = {
@@ -89,42 +96,74 @@ export const site = {
     linkLabel: "View on GitHub",
     projects: [
       {
-        id: "scan-llm-wiki",
-        name: "LLM Wiki",
-        description:
-          "A knowledge base that answers staff questions from company policy, with a citation behind every answer.",
-        readout: "36 automated tests passing in CI",
-        chips: ["LangGraph", "FastAPI", "Qdrant", "Postgres", "Claude"],
-        href: "https://github.com/Ezeh8/llm_wiki",
+        id: "invoice-handler",
+        title: "Invoice Exception Handler",
+        subtitle: "",
+        topology: "tree",
+        oneLiner: "An AI agent that catches, routes, and resolves invoice exceptions in QuickBooks ~ turning a multi-step manual review into a single approval decision.",
+        deployedAt: "Construction industry client",
+        deployedResult: "50 → 200+ invoices processed per week at peak",
+        teaching: "Agents break at the seams ~ the handoffs you didn't design are the ones that fail first.",
+        teachingStory: [
+          "The build worked well until it hit real client data. Vendor names didn't match. POs weren't linked to Bills. Approval gates sat in an inbox for 48 hours.",
+          "The agent logic was fine. The process around it wasn't designed for automation. That's where the actual work was.",
+          "Every system I've built since starts with a process map, not a tech stack.",
+        ],
+        stack: ["LangGraph", "FastAPI", "Ollama", "Postgres", "Docker"],
+        github: "",
       },
       {
-        id: "scan-tool-access",
-        name: "Tool Access Controller",
-        description:
-          "A security layer that controls which tools an AI agent may call, with instant revocation and a full audit trail.",
-        readout: "12 MCP tools behind token auth / live revocation",
-        chips: ["FastAPI", "FastMCP", "PostgreSQL", "Docker"],
-        href: "https://github.com/Ezeh8/Tool-access-controller",
+        id: "llm-wiki",
+        title: "LLM Wiki",
+        subtitle: "Large Language Model Wikipedia",
+        topology: "radial",
+        oneLiner: "A knowledge base that answers staff questions from company SOP and policy documents ~ with a citation behind every answer and no hallucinated sources.",
+        deployedAt: "RankedLM (internal)",
+        deployedResult: "4 live SOPs · 29 regression tests · weekly drift check · CI/CD gate",
+        teaching: "RAG at production scale is a governance problem before it's a retrieval problem.",
+        teachingStory: [
+          "The retrieval worked from day one. The hard part was what goes in, when it changes, and who manages it.",
+          "Two real incidents mid-build: an API key landed in the wrong config field and got printed to the terminal. A live prompt-injection payload sat in the corpus for weeks without anyone noticing.",
+          "What shipped is mostly a content pipeline with a query interface attached. That inversion is the thing I keep thinking about.",
+        ],
+        stack: ["LangGraph", "Qdrant", "FastAPI", "LangSmith", "GitHub Actions"],
+        github: "https://github.com/ezeh8/llm_wiki",
       },
       {
-        id: "scan-invoice",
-        name: "Invoice Exception Handler",
-        description:
-          "An agent that checks vendor invoices against purchase orders and flags price gaps, duplicates, and missing POs. This repo is the public eval build of a client deployment.",
-        readout: "peak-week capacity 50 → 200+ invoices",
-        chips: ["Rule engine", "LLM judgment", "Slack", "Google Sheets", "CI"],
-        href: "https://github.com/Ezeh8/Invoice-exception-handler-eval",
+        id: "keycard",
+        title: "Keycard",
+        subtitle: "Agent Access Control Layer",
+        topology: "grid",
+        oneLiner: "A security layer that governs what agents can access, who they can act as, and when their permissions expire ~ built so no agent operates outside its lane.",
+        deployedAt: "RankedLM agent infrastructure",
+        deployedResult: "7 security steps live-tested · RBAC + ABAC + server-derived audit trail",
+        teaching: "In agentic systems, the access model is the trust model ~ and most builds skip it entirely.",
+        teachingStory: [
+          "The question that started this: if an agent approves a payment and something goes wrong, who is accountable? What's the trail?",
+          "Most agentic builds hand agents a key and trust them. Keycard gates every tool call by scope, derives identity server-side, and fails closed if the audit write itself fails.",
+          "Governance isn't a final step you add when the system is done. It's a decision you either make early or spend a lot of time undoing later.",
+        ],
+        stack: ["FastAPI", "FastMCP", "Postgres", "JWT", "RBAC/ABAC"],
+        github: "",
       },
       {
-        id: "scan-command-centre",
-        name: "Command Centre",
-        description:
-          "A scheduled agent that researches, verifies, and republishes a daily briefing to one stable page, with no one watching.",
-        readout: "runs unattended every morning / one stable URL",
-        chips: ["Scheduled agent", "Live web search", "Persistent memory", "HTML/CSS/JS"],
-        href: "https://github.com/Ezeh8/command-centre",
+        id: "rankedlm",
+        title: "RankedLM",
+        subtitle: "Agentic Commerce Infrastructure",
+        topology: "pipeline",
+        oneLiner: "A multi-skill AI pipeline that evaluates, routes, and ranks decisions across a commerce operation ~ replacing the coordination layer, not just automating individual tasks.",
+        deployedAt: "RankedLM + Rithma Labs clients",
+        deployedResult: "Logistics, construction, SaaS, and energy engagements",
+        teaching: "The bottleneck was never the task ~ it was always the handoff between people deciding what to do next.",
+        teachingStory: [
+          "Every client had the same pattern. The tasks were fine. The coordination between them wasn't ~ approvals sitting in email, decisions stalled because the right person wasn't reachable.",
+          "The pipeline doesn't automate the tasks. It automates the routing between them. That's a different problem and a different design.",
+          "The highest-value thing an AI system can do inside a business is compress decision latency, not just task latency. That realization changed how I scope every build.",
+        ],
+        stack: ["LangGraph", "FastAPI", "Claude", "Qdrant", "LangSmith"],
+        github: "",
       },
-    ] satisfies Project[],
+    ] as const satisfies readonly Project[],
   },
 
   experience: {
