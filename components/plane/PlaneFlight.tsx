@@ -780,7 +780,7 @@ function placeStill(parts: Parts, desktop: boolean, size: Size) {
 // Lenis share one clock. In-page links scroll through Lenis and stop with the target's
 // top just below the sticky nav.
 function startLenis() {
-  const lenis = new Lenis({ lerp: 0.1 });
+  const lenis = new Lenis({ lerp: 0.15 });
   lenis.on("scroll", ScrollTrigger.update);
   const tick = (time: number) => lenis.raf(time * 1000);
   gsap.ticker.add(tick);
