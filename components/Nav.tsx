@@ -23,7 +23,7 @@ export default function Nav() {
           <a
             href="#hero"
             aria-label={site.name}
-            className="chrome font-display text-2xl font-extrabold tracking-tight"
+            className="font-display text-2xl font-extrabold tracking-tight text-white"
           >
             {wordmark.text}
             <span className="text-accent-text">{wordmark.dot}</span>
