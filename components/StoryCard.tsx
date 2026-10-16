@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import type { Topology } from "@/content/site";
 import GraphPattern from "./GraphPattern";
+import { useFitLine } from "./useFitLine";
 
 gsap.registerPlugin(useGSAP);
 
@@ -36,6 +37,9 @@ export default function StoryCard({
 }) {
   const [open, setOpen] = useState(false);
   const opener = useRef<HTMLButtonElement>(null);
+  // the title, subtitle and pills each stay on one line, shrinking to fit the card
+  const titleRef = useFitLine<HTMLHeadingElement>();
+  const subtitleRef = useFitLine<HTMLParagraphElement>();
 
   return (
     <article
@@ -47,7 +51,10 @@ export default function StoryCard({
       </div>
 
       <div className="flex flex-1 flex-col p-5 sm:p-7">
-        <h3 className="font-display text-2xl font-extrabold lowercase text-btn-ink sm:text-3xl">
+        <h3
+          ref={titleRef}
+          className="overflow-hidden font-display text-2xl font-extrabold whitespace-nowrap lowercase text-btn-ink sm:text-3xl"
+        >
           {/* the title is the card's button; its ::before stretches over the whole card */}
           <button
             ref={opener}
@@ -59,8 +66,15 @@ export default function StoryCard({
             {title}
           </button>
         </h3>
-        {subtitle && <p className="mt-1 font-display text-[13px] font-normal text-text-muted">{subtitle}</p>}
-        <Pills items={pills} label={pillsLabel} className="mt-4" />
+        {subtitle && (
+          <p
+            ref={subtitleRef}
+            className="mt-1 overflow-hidden font-display text-[13px] font-normal whitespace-nowrap text-text-muted"
+          >
+            {subtitle}
+          </p>
+        )}
+        <Pills items={pills} label={pillsLabel} oneLine className="mt-4" />
       </div>
 
       {open && (
@@ -80,21 +94,30 @@ export default function StoryCard({
   );
 }
 
+// A row of pills. `oneLine` keeps them on a single line, shrinking the row to fit; the
+// padding and gaps are in em so they shrink with it.
 export function Pills({
   items,
   label,
+  oneLine = false,
   className = "",
 }: {
   items: readonly string[];
   label: string;
+  oneLine?: boolean;
   className?: string;
 }) {
+  const ref = useFitLine<HTMLUListElement>();
   return (
-    <ul className={`flex flex-wrap gap-2 ${className}`} aria-label={label}>
+    <ul
+      ref={oneLine ? ref : undefined}
+      className={`flex gap-[0.8em] text-[10px] ${oneLine ? "flex-nowrap overflow-hidden" : "flex-wrap"} ${className}`}
+      aria-label={label}
+    >
       {items.map((item) => (
         <li
           key={item}
-          className="rounded-full bg-[#16181e] px-2.5 py-1 text-[10px] uppercase tracking-[0.08em] text-card-alt-title"
+          className="shrink-0 rounded-full bg-[#16181e] px-[1em] py-[0.4em] whitespace-nowrap uppercase tracking-[0.08em] text-card-alt-title"
         >
           {item}
         </li>

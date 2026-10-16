@@ -116,8 +116,8 @@ export const site = {
       },
       {
         id: "llm-wiki",
-        title: "LLM Wiki",
-        subtitle: "Large Language Model Wikipedia",
+        title: "Large Language Model Wikipedia",
+        subtitle: "",
         topology: "radial",
         oneLiner: "A knowledge base that answers staff questions from company SOP and policy documents ~ with a citation behind every answer and no hallucinated sources.",
         deployedAt: "RankedLM (internal)",
