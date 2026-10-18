@@ -151,7 +151,7 @@ export function buttonClass(variant: "primary" | "secondary" = "primary") {
     variant === "primary"
       ? "border-btn-edge bg-btn-fill bg-[image:linear-gradient(180deg,#2a2d33,#111214)] text-btn-ink hover:bg-[image:var(--chrome)] hover:bg-btn-hover hover:border-btn-hover hover:text-btn-hover-ink [--offset:var(--btn-shadow)] hover:[--offset:var(--btn-hover-shadow)]"
       : "border-line bg-card text-text hover:bg-bg";
-  return `group inline-flex h-11 cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-5 text-sm font-medium whitespace-nowrap shadow-[3px_3px_0_var(--offset,var(--shadow))] transition-[translate,box-shadow,background-color,border-color,color] duration-150 ease-out motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--offset,var(--shadow))] motion-safe:active:translate-x-0.5 motion-safe:active:translate-y-0.5 active:shadow-[1px_1px_0_var(--offset,var(--shadow))] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-text ${styles}`;
+  return `group inline-flex h-11 cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-5 text-sm font-medium whitespace-nowrap shadow-[2px_2px_0_var(--offset,var(--shadow))] transition-[translate,box-shadow,background-color,border-color,color] duration-150 ease-out motion-safe:hover:-translate-x-0.5 motion-safe:hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--offset,var(--shadow))] motion-safe:active:translate-x-0.5 motion-safe:active:translate-y-0.5 active:shadow-[1px_1px_0_var(--offset,var(--shadow))] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-text ${styles}`;
 }
 
 export function ButtonLink({

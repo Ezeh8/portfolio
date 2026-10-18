@@ -17,7 +17,7 @@ export default function Work({ all = false }: { all?: boolean }) {
       <Container>
         <SectionLabel>{label}</SectionLabel>
         <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-8">
-          <Headline as={all ? "h1" : "h2"} copy={headline} className="text-[clamp(2.25rem,5vw,3.5rem)]" />
+          <Headline as={all ? "h1" : "h2"} copy={headline} className="text-[calc(clamp(2.25rem,5vw,3.5rem)-3px)]" />
           <HandNote arrow="down" className="-rotate-2 self-start md:mb-2 md:self-auto">
             {note}
           </HandNote>
