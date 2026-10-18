@@ -102,7 +102,7 @@ export const site = {
   },
 
   work: {
-    label: "02 / Work",
+    label: "02 / WORK IN PROGRESS",
     headline: {
       text: "see what I am building",
       highlight: "building",
