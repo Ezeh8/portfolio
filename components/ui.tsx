@@ -106,13 +106,21 @@ export function PanelBar({ children, className = "" }: { children: ReactNode; cl
 
 export const isExternal = (href: string) => href.startsWith("http");
 
-// Characters General Sans lacks: ₦ renders in the display font, → in the
-// (self-hosted, full) mono font. The copy itself is unchanged.
+// Characters General Sans lacks: ₦ renders in the display font, → and ↓ in the
+// (self-hosted, full) mono font. On a hovered button (group) → nudges right and ↓ down.
+// The copy itself is unchanged.
 export function Glyphs({ text }: { text: string }) {
-  return text.split(/([₦→])/).map((part, i) =>
+  return text.split(/([₦→↓])/).map((part, i) =>
     part === "₦" ? (
       <span key={i} className="font-display">
         ₦
+      </span>
+    ) : part === "↓" ? (
+      <span
+        key={i}
+        className="inline-block font-mono transition-transform duration-150 motion-safe:group-hover:translate-y-0.5"
+      >
+        ↓
       </span>
     ) : part === "→" ? (
       <span
