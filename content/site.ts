@@ -220,15 +220,15 @@ export const site = {
     label: "04 / Toolkit",
     headline: { text: "the kit behind the work.", highlight: "work" } satisfies Headline,
     groups: [
-      { title: "Build", items: ["Python", "FastAPI", "PostgreSQL", "Docker", "Claude Code / Codex"] },
-      { title: "Agents", items: ["LangGraph", "MCP", "RAG pipelines", "LLM APIs"] },
+      { title: "Build", items: ["Python", "FastAPI", "PostgreSQL", "Docker / AWS", "Claude Code / Codex"] },
+      { title: "Agents", items: ["LangGraph", "Chroma DB", "RAG pipelines", "MCP / LLM APIs"] },
       {
         title: "Evaluate",
-        items: ["LangSmith", "Langfuse", "Golden datasets", "Regression suites"],
+        items: ["Langfuse", "LangSmith", "Golden datasets", "Regression suites"],
       },
       {
         title: "Automate",
-        items: ["n8n", "Zapier", "GoHighLevel", "Google Workspace"],
+        items: ["n8n", "Zapier", "Google Workspace", "GoHighLevel / HubSpot"],
       },
     ],
   },
