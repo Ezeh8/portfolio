@@ -11,7 +11,7 @@
   --text: #edeef0;
   --text-muted: #9a9ea6;
   --note: #9a9ea6; /* handwritten notes */
-  --line: #4a4d55; /* card, chip, pill and header-bar borders */
+  --line: #3a3d44; /* card, chip, pill and header-bar borders */
   --shadow: #6b6f78; /* hard offset card shadows */
   --btn-bg: #edeef0; /* nav pill on hover */
   --btn-text: #0b0c0e;
@@ -21,7 +21,7 @@
   --btn-fill: #111214; /* filled buttons */
   --btn-ink: #edeef0; /* text on filled buttons */
   --btn-shadow: #6b6f78; /* grey offset under filled buttons */
-  --btn-edge: #4a4d55; /* thin edge on filled buttons at rest */
+  --btn-edge: #3a3d44; /* thin edge on filled buttons at rest */
   --accent: #6b6f78; /* filled shapes only */
   --accent-text: #ffffff; /* highlighted words, readouts, lines, status dots, links */
   --accent-soft: #2a2d33;
@@ -31,7 +31,7 @@
   --banner-text: #0b0c0e;
   --banner-star: #0b0c0e; /* black star between banner phrases, same as the banner text */
   --trail: #edeef0; /* drawn at 25% opacity */
-  --border-width: 2px;
+  --border-width: 1px;
   /* polished chrome: bright top, dark mid-band reflection, light lower edge */
   --chrome: linear-gradient(180deg, #ffffff 0%, #d7dade 36%, #7d828a 50%, #e4e6e9 64%, #a9adb4 100%);
   /* smooth chrome for wide strips behind text (banners, Experience highlights): no dark
