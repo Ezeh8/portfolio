@@ -16,7 +16,7 @@ const socialIcons: Record<string, string> = {
 // under it. Below 1024px the education list is hidden and the social buttons sit under
 // the get-in-touch block.
 export default function Contact() {
-  const { headline, text, email, buttons, replies } = site.contact;
+  const { headline, paragraphs, email, buttons, replies } = site.contact;
   const title = <Headline copy={headline} className="text-[clamp(2.75rem,8vw,6rem)]" />;
   const { credentials, socials, copyright } = site.footer;
   const socialLinks = socials.filter(hasHref);
@@ -33,7 +33,11 @@ export default function Contact() {
             ) : (
               title
             )}
-            <p className="mt-4 max-w-xl text-lg leading-relaxed text-text/75 sm:mt-6">{text}</p>
+            <div className="mt-4 max-w-xl space-y-4 text-lg leading-relaxed text-text/75 sm:mt-6">
+              {paragraphs.map((p) => (
+                <p key={p.slice(0, 24)}>{p}</p>
+              ))}
+            </div>
 
             <div className="mt-4 flex flex-wrap gap-3 sm:mt-6">
               {buttons.filter(hasHref).map((button) => (
@@ -53,12 +57,18 @@ export default function Contact() {
             </p>
           </div>
 
-          <div className="text-[1.0625rem] lg:border-l lg:border-line lg:pl-12">
-            <div className="hidden lg:block">
+          {/* from 1024px the column runs the full height of the row, with the social buttons
+              pinned to its bottom, so the list's length never moves them */}
+          <div className="text-[1.0625rem] lg:flex lg:flex-col lg:border-l lg:border-line lg:pl-12">
+            {/* nudged down so the heading's capitals start level with the tops of the big
+                "get in touch." letters, which sit about 0.08em below the top of their line
+                (Bricolage's ascent, less the 1.02 line height's leading and its ascender),
+                less the ~3px above the heading's own capitals */}
+            <div className="hidden lg:block lg:mt-[calc(clamp(2.75rem,8vw,6rem)*0.08-3px)]">
               <h3 className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
                 {credentials.label}
               </h3>
-              <ul className="mt-4 space-y-3 leading-relaxed">
+              <ul className="mt-4 space-y-3 text-sm leading-relaxed">
                 {credentials.items.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
@@ -66,7 +76,7 @@ export default function Contact() {
             </div>
 
             {socialLinks.length > 0 && (
-              <ul className="mt-6 flex gap-3 lg:mt-8">
+              <ul className="mt-6 flex gap-3 lg:mt-auto lg:pt-8">
                 {socialLinks.map((link) => (
                   <li key={link.label}>
                     <a

@@ -231,7 +231,10 @@ export const site = {
 
   contact: {
     headline: { text: "get in touch.", highlight: "touch" } satisfies Headline,
-    text: "Tell me about your business, the AI you've adopted so far, and your most manual process. I'm based in Nigeria and work remotely across time zones.",
+    paragraphs: [
+      "Tell me about your business, the AI you’ve adopted so far, and your most manual task. Let’s rebuild your workflows together.",
+      "I’m based in Nigeria and work remotely across time zones.",
+    ],
     email: email as string | null,
     buttons: [
       { label: "send me an email →", href: `mailto:${email}`, primary: true },
