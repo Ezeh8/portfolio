@@ -99,6 +99,27 @@ export const site = {
       "I’ve spent the last few years in banking infrastructure, high-end retail operations, an AI agency, and now in AI infrastructure. The industries kept changing, the work didn’t.",
       "Every time, the actual job was the same: find the part of the system that’s quietly costing everyone time, and rebuild it so nobody has to think about it again.",
     ],
+    // "the whole story": the button under the paragraphs opens it in the card-style
+    // overlay. `steps` sit between the paragraphs at `stepsAfter`; `hello` closes it and
+    // goes to #contact.
+    storyButton: "the whole story",
+    story: [
+      "Every team I've worked with had the same problem: plenty of people ready to build, and nobody holding a clear picture of what to build next. Enter Ezeh, I became that person ~ the one who brings clarity.",
+      "Seven years running The Ropa Brand, a fashion retail company that grew from 4 people to 35, taught me that teams move fastest when the hard thinking happens first ~ when the process is mapped end to end, documented, and the success metrics are locked in before the build begins.",
+      "Standard Chartered reinforced the same lesson ~ I ran operations systems across in-app automation, digital KYC rollout, and AI-driven credit scoring. The deployments that stuck were the ones where we coordinated around the SOPs, locked the KPIs, and set the SLAs before the tech went live. The ones that failed were coordination disasters ~ someone just said \"build XYZ system\" without asking why, for whom, what success looks like, or what we're not doing.",
+      "Now, through Rithma Labs ~ an AI transformation company, I'm still doing the exact same thing.",
+      "That's the approach I take with every build: most people attach agents to every business system to capitalize on speed ~ I re-imagine your processes first, then attach agents to capitalize on efficiency.",
+    ],
+    stepsAfter: 4,
+    steps: [
+      "I map the process end to end, defining what success looks like.",
+      "I write the documentation ~ PRD and TDD.",
+      "I build the agents and infrastructure around that clarity.",
+      "I evaluate and test whether it works.",
+      "I demo the results to the team.",
+      "I push to production when it's proven.",
+    ],
+    hello: { before: "If you want to adopt agents the right way ~ ", label: "say hello", href: "#contact" },
   },
 
   work: {

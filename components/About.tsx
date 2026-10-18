@@ -1,4 +1,5 @@
 import { site } from "@/content/site";
+import AboutStory from "./AboutStory";
 import { Container, Headline, SectionLabel } from "./ui";
 
 export default function About() {
@@ -15,6 +16,7 @@ export default function About() {
             {paragraphs.map((p) => (
               <p key={p.slice(0, 24)}>{p}</p>
             ))}
+            <AboutStory />
           </div>
         </div>
       </Container>

@@ -149,16 +149,24 @@ export function StoryLabel({ children }: { children: ReactNode }) {
   return <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted">{children}</p>;
 }
 
-function StoryDialog({
+// The full-screen story overlay. Also used on its own (the About section's "the whole
+// story"). A click on anything inside marked `data-story-close` closes it too.
+export function StoryDialog({
   id,
   title,
   subtitle,
+  keepCase = false,
+  chrome = false,
   onClosed,
   children,
 }: {
   id: string;
   title: string;
   subtitle?: string;
+  // keep the title's case and its \n line breaks (card titles are lowercase)
+  keepCase?: boolean;
+  // a chrome (metallic) title, like the section headlines
+  chrome?: boolean;
   onClosed: () => void;
   children: ReactNode;
 }) {
@@ -212,8 +220,15 @@ function StoryDialog({
         ✕
       </button>
 
-      <div ref={content} className="mx-auto max-w-[640px] px-4 py-20 sm:px-8 sm:py-24">
-        <h2 id={titleId} className="font-display text-4xl font-extrabold lowercase text-btn-ink sm:text-5xl">
+      <div
+        ref={content}
+        onClick={(e) => (e.target as Element).closest("[data-story-close]") && close()}
+        className="mx-auto max-w-[640px] px-4 py-20 sm:px-8 sm:py-24"
+      >
+        <h2
+          id={titleId}
+          className={`font-display text-4xl font-extrabold text-btn-ink sm:text-5xl ${keepCase ? "whitespace-pre-line" : "lowercase"}${chrome ? " chrome" : ""}`}
+        >
           {title}
         </h2>
         {subtitle && <p className="mt-2 font-display text-sm font-normal text-text-muted">{subtitle}</p>}
