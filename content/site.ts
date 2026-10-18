@@ -96,8 +96,8 @@ export const site = {
       keepCase: true,
     } satisfies Headline,
     paragraphs: [
-      "I came to AI from the operator's side, after co-founding a fashion retail brand and running operations systems at Standard Chartered.",
-      "Since 2024, through Rithma Labs, I've designed and shipped AI for clients in logistics, construction, SaaS, and energy.",
+      "I’ve spent the last few years in banking infrastructure, high-end retail operations, an AI agency, and now in AI infrastructure. The industries kept changing, the work didn’t.",
+      "Every time, the actual job was the same: find the part of the system that’s quietly costing everyone time, and rebuild it so nobody has to think about it again.",
     ],
   },
 
