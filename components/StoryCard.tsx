@@ -23,6 +23,7 @@ export default function StoryCard({
   topology,
   pills,
   pillsLabel,
+  plainPills = false,
   fitGroup,
   className = "",
   children,
@@ -33,6 +34,8 @@ export default function StoryCard({
   topology: Topology;
   pills: readonly string[];
   pillsLabel: string;
+  // plain text instead of pill shapes, so the items line up with the title's left edge
+  plainPills?: boolean;
   // cards sharing a fitGroup (one per section) size their one-line title, subtitle and
   // pills alike, so the lines align across the cards
   fitGroup?: string;
@@ -82,6 +85,7 @@ export default function StoryCard({
           items={pills}
           label={pillsLabel}
           oneLine
+          plain={plainPills}
           fitGroup={fitGroup && `${fitGroup}-pills`}
           className="mt-4"
         />
@@ -110,12 +114,14 @@ export function Pills({
   items,
   label,
   oneLine = false,
+  plain = false,
   fitGroup,
   className = "",
 }: {
   items: readonly string[];
   label: string;
   oneLine?: boolean;
+  plain?: boolean;
   fitGroup?: string;
   className?: string;
 }) {
@@ -129,7 +135,7 @@ export function Pills({
       {items.map((item) => (
         <li
           key={item}
-          className="shrink-0 rounded-full bg-[#16181e] px-[1em] py-[0.4em] whitespace-nowrap uppercase tracking-[0.08em] text-card-alt-title"
+          className={`shrink-0 whitespace-nowrap uppercase tracking-[0.08em] text-card-alt-title ${plain ? "font-mono" : "rounded-full bg-[#16181e] px-[1em] py-[0.4em]"}`}
         >
           {item}
         </li>

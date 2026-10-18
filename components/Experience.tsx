@@ -84,6 +84,7 @@ export default function Experience() {
                 topology={entry.topology}
                 pills={[entry.dates]}
                 pillsLabel="Dates"
+                plainPills
                 fitGroup="experience"
                 className={tilts[i % tilts.length]}
               >
