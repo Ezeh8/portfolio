@@ -85,7 +85,7 @@ export const site = {
     label: "01 / ABOUT ME",
     headline: {
       // line breaks: the \n breaks are kept by the About headline (whitespace-pre-line)
-      text: "I own the maps & specs\nbefore the code",
+      text: "I own the maps & specs\nbefore the code.",
       highlight: "maps & specs",
       keepCase: true,
     } satisfies Headline,

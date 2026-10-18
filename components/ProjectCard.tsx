@@ -14,7 +14,7 @@ export default function ProjectCard({ project, number }: { project: Project; num
       className="panel relative z-[2] grid gap-6 p-6 sm:p-8 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-12"
     >
       <div>
-        <p className="font-mono text-sm text-text-muted">{String(number).padStart(2, "0")} ~</p>
+        <p className="font-mono text-sm leading-6 text-text-muted">{String(number).padStart(2, "0")} ~</p>
         <h3 className="mt-2 font-display text-2xl leading-tight font-extrabold text-btn-ink sm:text-[1.75rem]">
           {project.title}
         </h3>
@@ -22,7 +22,7 @@ export default function ProjectCard({ project, number }: { project: Project; num
       </div>
 
       <div className="flex flex-col">
-        <p className="text-[15px] leading-relaxed text-btn-shadow">{project.description}</p>
+        <p className="text-[15px] leading-6 text-btn-shadow">{project.description}</p>
 
         {/* the pills, with Visit on the same line at the right */}
         <div className="mt-5 flex items-center gap-4">

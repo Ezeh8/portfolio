@@ -48,7 +48,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${generalSans.variable} ${bricolage.variable} ${fragmentMono.variable} ${kalam.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      {/* The body is held at the window's height, with the page in a wrapper that
+          overflows it. The plane rebuilds its flight when the body resizes, so cards
+          opening (Experience "+2 more") no longer make it swoop to a new
+          route; it still rebuilds when the window is resized. The sticky header's
+          containing block is the wrapper, so it sticks for the whole page. */}
+      <body className="h-full">
+        <div className="flex min-h-full flex-col">{children}</div>
+      </body>
     </html>
   );
 }

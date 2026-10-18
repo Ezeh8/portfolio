@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Link from "next/link";
+import { useState } from "react";
 import { site } from "@/content/site";
 import { Container, Glyphs, Headline, SectionLabel } from "./ui";
 
@@ -62,15 +62,12 @@ type Role = (typeof site.experience.roles)[number];
 // One role: a full-width two-column glass card. Left: the number, the company, the role,
 // then the dates. Right: the first POINTS bullets with their highlights, then the ops log.
 // Clicking anywhere on the card (its button's ::before stretches over it) shows every
-// bullet; clicking again folds it back.
+// bullet; clicking again folds it back. Opening a card deliberately
+// doesn't re-measure the plane's flight, so the plane doesn't swoop to a new route
+// mid-scroll (see the page wrapper in app/layout.tsx).
 function RoleCard({ role, number }: { role: Role; number: number }) {
   const [open, setOpen] = useState(false);
   const more = role.bullets.length > POINTS;
-
-  // the card's height changes, so scroll-driven effects (the plane) re-measure
-  useEffect(() => {
-    ScrollTrigger.refresh();
-  }, [open]);
 
   return (
     <article
@@ -78,7 +75,7 @@ function RoleCard({ role, number }: { role: Role; number: number }) {
       className={`panel relative z-[2] grid gap-6 p-6 sm:p-8 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-12 ${more ? "cursor-pointer has-[button:focus-visible]:outline-2 has-[button:focus-visible]:outline-offset-2 has-[button:focus-visible]:outline-accent-text" : ""}`}
     >
       <div>
-        <p className="font-mono text-sm text-text-muted">{String(number).padStart(2, "0")} ~</p>
+        <p className="font-mono text-sm leading-6 text-text-muted">{String(number).padStart(2, "0")} ~</p>
         <h3 className="mt-2 font-display text-2xl leading-tight font-extrabold text-btn-ink sm:text-[1.75rem]">
           {role.company}
         </h3>
@@ -89,7 +86,8 @@ function RoleCard({ role, number }: { role: Role; number: number }) {
       <div>
         <ul
           id={`role-${number}-points`}
-          className="list-disc space-y-3 pl-5 text-[15px] leading-relaxed text-btn-shadow marker:text-accent-text"
+          // from md the bullet dots hang in the gap, so the text lines up with the Work cards' text
+          className="list-disc space-y-3 pl-5 text-[15px] leading-6 text-btn-shadow marker:text-accent-text md:-ml-5"
         >
           {role.bullets.map((bullet, i) => (
             <li key={bullet} hidden={!open && i >= POINTS}>
@@ -118,46 +116,38 @@ function RoleCard({ role, number }: { role: Role; number: number }) {
   );
 }
 
-// How many role cards show before "See all".
-const SHOWN = 2;
+// How many role cards the homepage shows; "See all" goes to /experience for the rest.
+const HOME_ROLES = 2;
 
 // Mirrors the Work section: full-width two-column glass cards (RoleCard), stacked, with
-// no cover or pop-up. The first SHOWN show; "See all" shows the rest in place (hidden
-// cards stay in the page with the `hidden` attribute).
-export default function Experience() {
+// no cover or pop-up. On the homepage (the default) only the first HOME_ROLES, then
+// "See all →" to the experience page; `all` shows every one.
+export default function Experience({ all = false }: { all?: boolean }) {
   const { label, headline, roles } = site.experience;
-  const [all, setAll] = useState(false);
-
-  // the page length changes, so scroll-driven effects (the plane) re-measure
-  useEffect(() => {
-    ScrollTrigger.refresh();
-  }, [all]);
+  const shown = all ? roles : roles.slice(0, HOME_ROLES);
 
   return (
     <section id="experience" className="scroll-mt-16 py-20 sm:py-28">
       <Container>
         <SectionLabel>{label}</SectionLabel>
-        <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.5rem)]" />
+        <Headline as={all ? "h1" : "h2"} copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.5rem)]" />
 
-        <ol id="experience-roles" className="mt-10 grid gap-8">
-          {roles.map((entry, i) => (
-            <li key={entry.company} hidden={!all && i >= SHOWN}>
+        <ol className="mt-10 grid gap-8">
+          {shown.map((entry, i) => (
+            <li key={entry.company}>
               <RoleCard role={entry} number={i + 1} />
             </li>
           ))}
         </ol>
 
-        {roles.length > SHOWN && (
+        {!all && roles.length > HOME_ROLES && (
           <div className="mt-10 flex justify-end font-mono text-xs">
-            <button
-              type="button"
-              onClick={() => setAll((v) => !v)}
-              aria-expanded={all}
-              aria-controls="experience-roles"
-              className="group inline-flex h-9 cursor-pointer items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
+            <Link
+              href="/experience"
+              className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
             >
-              {all ? "show less" : <Glyphs text={site.work.seeAll} />}
-            </button>
+              <Glyphs text={site.work.seeAll} />
+            </Link>
           </div>
         )}
       </Container>
