@@ -139,21 +139,23 @@ function headlineLanding(word: HTMLElement, plane: HTMLElement, size: Size, max:
 
 // The hero resting spot (leg 0), in screen % at scroll 0, measured from the "follow the
 // plane" note on every layout: just below the note, overlapping its lower edge by 8px,
-// centred under the tip of the note's arrow. The note draws on top (z-index 2).
+// centred under the tip of the note's arrow, or under the note itself when it has none.
+// The note draws on top (z-index 2).
 // If that would cover the headline, the hero buttons or the flight log, the plane moves
 // up under the note in 2px steps until it doesn't; failing that, to the nearest clear
 // spot. Falls back to x 26, y 55 if the note is missing. The final spot is then dropped
-// by REST_DROP px so the plane sits a little lower, under the arrow.
+// by REST_DROP px so the plane sits a little lower.
 const REST_DROP = 12;
 
 function heroRest(size: Size) {
   const { w, h, vw, vh } = size;
   const note = $("#hero .font-hand");
-  const tip = note?.querySelector("svg path:last-of-type");
-  if (!note || !tip) return { x: 26, y: 55 };
+  if (!note) return { x: 26, y: 55 };
 
-  // The arrow points down, so its tip is the lowest point of the arrowhead.
-  const head = docRect(tip);
+  // Centred under the tip of the note's arrow (its lowest point, as it points down), or
+  // under the middle of the note when it has no arrow.
+  const tip = note.querySelector("svg path:last-of-type");
+  const head = docRect(tip ?? note);
   const x = (head.left + head.right) / 2;
   const y = docRect(note).bottom - 8 + h / 2;
 

@@ -57,7 +57,7 @@ export function HandNote({
   className = "",
 }: {
   children: ReactNode;
-  arrow?: "down" | "left";
+  arrow?: "down" | "left" | "none";
   className?: string;
 }) {
   return (
@@ -66,7 +66,9 @@ export function HandNote({
     >
       {arrow === "left" && <HandArrow className="h-6 w-10 -scale-x-100" />}
       <span>{children}</span>
-      {arrow === "down" && <HandArrow className="h-8 w-8 rotate-[70deg]" />}
+      {/* turned so the arrow runs straight down and its head points down and slightly
+          in, at the cards below the note */}
+      {arrow === "down" && <HandArrow className="h-8 w-8 translate-y-2 rotate-[100deg]" />}
     </p>
   );
 }

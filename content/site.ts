@@ -213,7 +213,7 @@ export const site = {
   },
 
   toolkit: {
-    label: "04 / Toolkit",
+    label: "04 / THE TOOLKIT I USE",
     headline: { text: "the kit behind the work.", highlight: "work" } satisfies Headline,
     groups: [
       { title: "Build", items: ["Python", "FastAPI", "PostgreSQL", "Docker / AWS", "Claude Code / Codex"] },
@@ -247,9 +247,9 @@ export const site = {
     credentials: {
       label: "Education and certifications",
       items: [
-        "B.Sc. Business Administration, University of Lagos",
-        "Introduction to Model Context Protocol (Anthropic)",
+        "B.Sc. Business Administration",
         "Introduction to Agent Skills (Anthropic)",
+        "Introduction to Model Context Protocol (Anthropic)",
         "Deploy Multi-Agent Systems with Gemini Enterprise Agent Platform (Google)",
       ],
     },

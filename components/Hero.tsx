@@ -42,7 +42,9 @@ export default function Hero() {
           </div>
 
           <div>
-            <HandNote className="relative z-[2] mb-3 ml-4 -rotate-3">{note}</HandNote>
+            <HandNote arrow="none" className="relative z-[2] mb-3 ml-4 -rotate-3">
+              {note}
+            </HandNote>
             <div className="panel panel-classic relative z-[2] overflow-hidden lg:[--tilt:1deg]">
               <PanelBar>
                 <span className="flex items-center gap-2">
