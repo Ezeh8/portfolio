@@ -65,12 +65,12 @@ export default function Contact() {
                 (Bricolage's ascent, less the 1.02 line height's leading and its ascender),
                 less the ~3px above the heading's own capitals, plus 27px judged by eye */}
             <div className="hidden lg:block lg:mt-[calc(clamp(2.75rem,8vw,6rem)*0.08+24px)]">
-              <h3 className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+              <h3 className="font-mono text-xs uppercase tracking-[0.12em] text-white">
                 {credentials.label}
               </h3>
               {/* the same line height and gap as the contact paragraphs on the left (18px text,
                   1.625 leading, 16px apart), so the lines keep one rhythm across */}
-              <ul className="mt-4 space-y-4 text-sm leading-[calc(1.125rem*1.625)]">
+              <ul className="mt-4 space-y-4 text-sm leading-[calc(1.125rem*1.625)] text-text-muted">
                 {credentials.items.map((item) => (
                   <li key={item}>{item}</li>
                 ))}

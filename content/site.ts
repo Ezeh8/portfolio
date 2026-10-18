@@ -123,7 +123,6 @@ export const site = {
       highlight: "building",
       keepCase: true,
     } satisfies Headline,
-    note: "the code is all on GitHub",
     panelStatus: "public repo",
     linkLabel: "View on GitHub",
     seeAll: "See all →",

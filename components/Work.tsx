@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { site } from "@/content/site";
 import ProjectCard from "./ProjectCard";
-import { Container, Glyphs, HandNote, Headline, SectionLabel } from "./ui";
+import { Container, Glyphs, Headline, SectionLabel } from "./ui";
 
 // How many project cards the homepage shows; "See all" goes to /projects for the rest.
 const HOME_PROJECTS = 2;
@@ -9,19 +9,18 @@ const HOME_PROJECTS = 2;
 // The projects as stacked full-width cards. On the homepage (the default) only the first
 // HOME_PROJECTS, then "See all →" to the projects page; `all` shows every one.
 export default function Work({ all = false }: { all?: boolean }) {
-  const { label, headline, note, seeAll, projects } = site.work;
+  const { label, headline, seeAll, projects } = site.work;
   const shown = all ? projects : projects.slice(0, HOME_PROJECTS);
 
   return (
     <section id="work" className="scroll-mt-16 py-20 sm:py-28">
       <Container>
         <SectionLabel>{label}</SectionLabel>
-        <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-8">
-          <Headline as={all ? "h1" : "h2"} copy={headline} className="text-[calc(clamp(2.25rem,5vw,3.5rem)-3px)]" />
-          <HandNote arrow="down" className="-rotate-2 self-start md:mb-2 md:self-auto">
-            {note}
-          </HandNote>
-        </div>
+        <Headline
+          as={all ? "h1" : "h2"}
+          copy={headline}
+          className="mt-4 text-[calc(clamp(2.25rem,5vw,3.5rem)-3px)]"
+        />
 
         <ul className="mt-10 grid gap-8">
           {shown.map((project, i) => (
