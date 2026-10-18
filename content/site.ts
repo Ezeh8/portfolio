@@ -52,6 +52,7 @@ export const site = {
   nav: {
     wordmark: { text: "ezeh", dot: "." },
     links: [
+      { label: "About", href: "#about" },
       { label: "Work", href: "#work" },
       { label: "Experience", href: "#experience" },
       { label: "Toolkit", href: "#toolkit" },
@@ -84,6 +85,15 @@ export const site = {
 
   banner: {
     phrase: "AI security ✦ regression suites ✦ AI governance ✦ evals metrics ✦",
+  },
+
+  about: {
+    label: "01 / About",
+    headline: { text: "operator lens.", highlight: "operator" } satisfies Headline,
+    paragraphs: [
+      "I came to AI from the operator's side, after co-founding a fashion retail brand and running operations systems at Standard Chartered.",
+      "Since 2024, through Rithma Labs, I've designed and shipped AI for clients in logistics, construction, SaaS, and energy.",
+    ],
   },
 
   work: {

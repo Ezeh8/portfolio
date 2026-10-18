@@ -1,3 +1,4 @@
+import About from "@/components/About";
 import Banner from "@/components/Banner";
 import BannerScroll from "@/components/BannerScroll";
 import CardHighlights from "@/components/CardHighlights";
@@ -20,6 +21,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <Banner />
+        <About />
         <Work />
         <Experience />
         <Toolkit />
