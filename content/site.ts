@@ -89,7 +89,12 @@ export const site = {
 
   about: {
     label: "01 / About",
-    headline: { text: "operator lens.", highlight: "operator" } satisfies Headline,
+    headline: {
+      // line breaks: the \n breaks are kept by the About headline (whitespace-pre-line)
+      text: "I own the maps & specs\nbefore the code",
+      highlight: "maps & specs",
+      keepCase: true,
+    } satisfies Headline,
     paragraphs: [
       "I came to AI from the operator's side, after co-founding a fashion retail brand and running operations systems at Standard Chartered.",
       "Since 2024, through Rithma Labs, I've designed and shipped AI for clients in logistics, construction, SaaS, and energy.",

@@ -9,7 +9,7 @@ export default function About() {
         <div className="grid gap-8 md:grid-cols-[1fr_1.6fr] md:gap-16">
           <div>
             <SectionLabel>{label}</SectionLabel>
-            <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.5rem)]" />
+            <Headline copy={headline} className="mt-4 whitespace-pre-line text-[clamp(2.25rem,5vw,3.5rem)]" />
           </div>
           <div className="space-y-8 text-[clamp(1.25rem,2.2vw,1.625rem)] leading-[1.6] text-text/75 md:pt-9">
             {paragraphs.map((p) => (
