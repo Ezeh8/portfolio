@@ -181,6 +181,13 @@ body {
     box-decoration-break: clone;
   }
 
+  /* Preview: squiggles switched off. The highlighted words and the spans stay (the plane
+     lands on the "touch" one); only the wave underline is hidden. Delete this rule to
+     bring the squiggles back. */
+  .squiggle {
+    background-image: none;
+  }
+
   /* The closing "touch" squiggle sits closer to its word. "touch" has no descenders, so
      the line box's descender space leaves a gap even with no padding; the image is
      lifted into it instead. */
