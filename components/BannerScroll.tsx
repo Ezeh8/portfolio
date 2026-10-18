@@ -10,8 +10,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 // changes nothing. Scrolling up turns it right and moves it with the scroll, faster when
 // scrolling faster; when the upward scroll stops it eases back to the left drift. The
 // track holds two identical halves, so wrapping its x over half its width loops
-// seamlessly. A banner off screen doesn't move. Under reduced motion the banners stand
-// still.
+// seamlessly. Under reduced motion the banners stand still.
 const BASE_SPEED = 50; // px per second
 const MAX_BOOST = 1500; // px per second
 
@@ -19,28 +18,16 @@ export default function BannerScroll() {
   useGSAP(() => {
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      // Off-screen banners don't move. The observer reports every banner's state as soon
-      // as it starts watching, so nothing waits on a scroll to start drifting.
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const banner = banners.find((b) => b.wrapper === entry.target);
-          if (banner) banner.onScreen = entry.isIntersecting;
-        });
-      });
-
       const collect = () =>
         Array.from(document.querySelectorAll<HTMLElement>("[data-banner]")).flatMap((wrapper) => {
           const track = wrapper.querySelector<HTMLElement>(".banner-track");
           if (!track) return [];
-          observer.observe(wrapper);
           return [
             {
               wrapper,
               track,
               x: 0,
               half: track.scrollWidth / 2,
-              // assumed on screen until the observer says otherwise, so it drifts from the start
-              onScreen: true,
               setX: gsap.quickSetter(track, "x", "px") as (x: number) => void,
             },
           ];
@@ -51,7 +38,6 @@ export default function BannerScroll() {
       // old element leaves the page; then every banner is picked up again so none stands still.
       const recollect = () => {
         if (banners.every((b) => b.wrapper.isConnected)) return;
-        observer.disconnect();
         banners = collect();
       };
 
@@ -88,7 +74,10 @@ export default function BannerScroll() {
         velocity += (goal - velocity) * 0.1; // smooth turn-around
         recollect();
         banners.forEach((b) => {
-          if (!b.onScreen || b.half <= 0) return;
+          // every banner moves all the time, on screen or not (there are only two); one
+          // measured before it had a width is measured again
+          if (b.half <= 0) b.half = b.track.scrollWidth / 2;
+          if (b.half <= 0) return;
           b.x = gsap.utils.wrap(-b.half, 0, b.x + velocity * dt);
           b.setX(b.x);
         });
@@ -99,7 +88,6 @@ export default function BannerScroll() {
         gsap.ticker.remove(tick);
         ScrollTrigger.removeEventListener("refresh", measure);
         scroll.kill();
-        observer.disconnect();
         banners.forEach((b) => gsap.set(b.track, { clearProps: "transform" }));
       };
     });
