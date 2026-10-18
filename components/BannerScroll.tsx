@@ -19,10 +19,20 @@ export default function BannerScroll() {
   useGSAP(() => {
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const banners = Array.from(document.querySelectorAll<HTMLElement>("[data-banner]")).flatMap(
-        (wrapper) => {
+      // Off-screen banners don't move. The observer reports every banner's state as soon
+      // as it starts watching, so nothing waits on a scroll to start drifting.
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const banner = banners.find((b) => b.wrapper === entry.target);
+          if (banner) banner.onScreen = entry.isIntersecting;
+        });
+      });
+
+      const collect = () =>
+        Array.from(document.querySelectorAll<HTMLElement>("[data-banner]")).flatMap((wrapper) => {
           const track = wrapper.querySelector<HTMLElement>(".banner-track");
           if (!track) return [];
+          observer.observe(wrapper);
           return [
             {
               wrapper,
@@ -34,18 +44,16 @@ export default function BannerScroll() {
               setX: gsap.quickSetter(track, "x", "px") as (x: number) => void,
             },
           ];
-        },
-      );
-
-      // Off-screen banners don't move. The observer reports every banner's state as soon
-      // as it starts watching, so nothing waits on a scroll to start drifting.
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const banner = banners.find((b) => b.wrapper === entry.target);
-          if (banner) banner.onScreen = entry.isIntersecting;
         });
-      });
-      banners.forEach((b) => observer.observe(b.wrapper));
+      let banners = collect();
+
+      // If a banner is replaced (a section re-rendered, or a dev hot reload swapped it), the
+      // old element leaves the page; then every banner is picked up again so none stands still.
+      const recollect = () => {
+        if (banners.every((b) => b.wrapper.isConnected)) return;
+        observer.disconnect();
+        banners = collect();
+      };
 
       const measure = () => {
         banners.forEach((b) => {
@@ -78,6 +86,7 @@ export default function BannerScroll() {
         const scrollingUp = performance.now() - upAt < 150;
         const goal = scrollingUp ? BASE_SPEED + upBoost : -BASE_SPEED;
         velocity += (goal - velocity) * 0.1; // smooth turn-around
+        recollect();
         banners.forEach((b) => {
           if (!b.onScreen || b.half <= 0) return;
           b.x = gsap.utils.wrap(-b.half, 0, b.x + velocity * dt);
