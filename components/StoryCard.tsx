@@ -23,6 +23,7 @@ export default function StoryCard({
   topology,
   pills,
   pillsLabel,
+  fitGroup,
   className = "",
   children,
 }: {
@@ -32,14 +33,17 @@ export default function StoryCard({
   topology: Topology;
   pills: readonly string[];
   pillsLabel: string;
+  // cards sharing a fitGroup (one per section) size their one-line title, subtitle and
+  // pills alike, so the lines align across the cards
+  fitGroup?: string;
   className?: string;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const opener = useRef<HTMLButtonElement>(null);
   // the title, subtitle and pills each stay on one line, shrinking to fit the card
-  const titleRef = useFitLine<HTMLHeadingElement>();
-  const subtitleRef = useFitLine<HTMLParagraphElement>();
+  const titleRef = useFitLine<HTMLHeadingElement>(fitGroup && `${fitGroup}-title`);
+  const subtitleRef = useFitLine<HTMLParagraphElement>(fitGroup && `${fitGroup}-subtitle`);
 
   return (
     <article
@@ -74,7 +78,13 @@ export default function StoryCard({
             {subtitle}
           </p>
         )}
-        <Pills items={pills} label={pillsLabel} oneLine className="mt-4" />
+        <Pills
+          items={pills}
+          label={pillsLabel}
+          oneLine
+          fitGroup={fitGroup && `${fitGroup}-pills`}
+          className="mt-4"
+        />
       </div>
 
       {open && (
@@ -100,14 +110,16 @@ export function Pills({
   items,
   label,
   oneLine = false,
+  fitGroup,
   className = "",
 }: {
   items: readonly string[];
   label: string;
   oneLine?: boolean;
+  fitGroup?: string;
   className?: string;
 }) {
-  const ref = useFitLine<HTMLUListElement>();
+  const ref = useFitLine<HTMLUListElement>(fitGroup);
   return (
     <ul
       ref={oneLine ? ref : undefined}

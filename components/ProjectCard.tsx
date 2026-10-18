@@ -22,6 +22,7 @@ export default function ProjectCard({
       topology={project.topology}
       pills={project.stack}
       pillsLabel="Tools used"
+      fitGroup="work"
       className={className}
     >
       <p className="mt-6 text-lg leading-relaxed text-btn-ink sm:text-xl">{project.oneLiner}</p>
