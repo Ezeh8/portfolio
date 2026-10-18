@@ -145,7 +145,7 @@ export const hasHref = <T extends { href: string | null }>(
   link: T,
 ): link is T & { href: string } => link.href !== null;
 
-// The pill button look, shared by ButtonLink and the few real <button>s that match it.
+// The pill button look of ButtonLink.
 export function buttonClass(variant: "primary" | "secondary" = "primary") {
   const styles =
     variant === "primary"

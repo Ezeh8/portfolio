@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { site } from "@/content/site";
 import { StoryDialog } from "./StoryDialog";
-import { buttonClass, Glyphs } from "./ui";
+import { Glyphs } from "./ui";
 
 // "the whole story": a button under the About paragraphs that opens the longer story in
 // the same full-screen overlay the Work and Experience cards use. "say hello" at the end
@@ -24,11 +24,10 @@ export default function AboutStory() {
           type="button"
           aria-haspopup="dialog"
           onClick={() => setOpen(true)}
-          className={buttonClass()}
+          // the same look as the "See all →" buttons under Work and Experience
+          className="group inline-flex h-9 cursor-pointer items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
         >
-          <span>
-            <Glyphs text={`${storyButton} →`} />
-          </span>
+          <Glyphs text={`${storyButton} →`} />
         </button>
       </div>
 
