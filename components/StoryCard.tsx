@@ -144,11 +144,6 @@ export function Pills({
   );
 }
 
-// Small uppercase label used between the parts of a story.
-export function StoryLabel({ children }: { children: ReactNode }) {
-  return <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted">{children}</p>;
-}
-
 // The full-screen story overlay. Also used on its own (the About section's "the whole
 // story"). A click on anything inside marked `data-story-close` closes it too.
 export function StoryDialog({

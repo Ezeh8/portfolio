@@ -1,63 +1,67 @@
+"use client";
+
 import type { site } from "@/content/site";
-import StoryCard, { Pills, StoryLabel } from "./StoryCard";
 import { Glyphs } from "./ui";
+import { useFitLine } from "./useFitLine";
 
 type Project = (typeof site.work.projects)[number];
 
-// A project card: the shared StoryCard with the title, subtitle and the tools used (the
-// stack). Its overlay tells the full story: what it is, where it is deployed, and what
-// it is teaching me.
+// A project card, everything on the card itself (no overlay or cover): the numbered
+// title, the subtitle, what it does, then the stack and a "Visit →" link to the repo.
+// The card keeps the project's id, which the plane and the reveal effects look up.
 export default function ProjectCard({
   project,
+  number,
   className = "",
 }: {
   project: Project;
+  number: number;
   className?: string;
 }) {
+  // the title and subtitle stay on one line, sized alike across the Work cards
+  const titleRef = useFitLine<HTMLHeadingElement>("work-title");
+  const subtitleRef = useFitLine<HTMLParagraphElement>("work-subtitle");
+
   return (
-    <StoryCard
-      id={project.id}
-      title={project.title}
-      subtitle={project.subtitle}
-      topology={project.topology}
-      pills={project.stack}
-      pillsLabel="Tools used"
-      fitGroup="work"
-      className={className}
-    >
-      <p className="mt-6 text-lg leading-relaxed text-btn-ink sm:text-xl">{project.oneLiner}</p>
-
-      <hr className="my-8 border-line" />
-
-      <StoryLabel>Deployed at</StoryLabel>
-      <p className="mt-2 text-btn-ink">{project.deployedAt}</p>
-      <p className="mt-2 text-sm text-accent-text">
-        <Glyphs text={project.deployedResult} />
-      </p>
-
-      <hr className="my-8 border-line" />
-
-      <StoryLabel>what this is teaching me</StoryLabel>
-      <p className="mt-3 font-display text-xl font-semibold text-btn-ink">{project.teaching}</p>
-      <div className="mt-5 flex flex-col gap-4 leading-relaxed text-btn-shadow">
-        {project.teachingStory.map((p) => (
-          <p key={p.slice(0, 24)}>{p}</p>
-        ))}
-      </div>
-
-      <hr className="my-8 border-line" />
-
-      <Pills items={project.stack} label="Tools used" />
-      {project.github && (
-        <a
-          href={project.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group mt-6 inline-block text-sm font-medium underline decoration-2 underline-offset-4 transition-[color,text-underline-offset] duration-150 hover:text-accent-text hover:underline-offset-[7px]"
+    <article id={project.id} className={`panel relative z-[2] flex h-full flex-col overflow-hidden ${className}`}>
+      <div className="flex flex-1 flex-col p-5 sm:p-7">
+        <h3
+          ref={titleRef}
+          className="overflow-hidden font-display text-2xl font-extrabold whitespace-nowrap lowercase text-btn-ink sm:text-3xl"
         >
-          <Glyphs text="View on GitHub →" />
-        </a>
-      )}
-    </StoryCard>
+          {String(number).padStart(2, "0")} ~ {project.title}
+        </h3>
+        {project.subtitle && (
+          <p
+            ref={subtitleRef}
+            className="mt-1 overflow-hidden font-display text-[13px] font-normal whitespace-nowrap italic text-text-muted"
+          >
+            {project.subtitle}
+          </p>
+        )}
+
+        <p className="mt-4 flex-1 text-sm leading-relaxed text-btn-shadow">{project.description}</p>
+
+        <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.08em] text-card-alt-title">
+          <span className="text-text-muted">Stack:</span> {project.stack.join(" + ")}
+          {project.github && (
+            <>
+              <span aria-hidden="true" className="mx-2 text-text-muted">
+                |
+              </span>
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit ${project.title} on GitHub`}
+                className="group whitespace-nowrap text-btn-ink underline decoration-1 underline-offset-4 transition-[color,text-underline-offset] duration-150 hover:text-accent-text hover:underline-offset-[6px]"
+              >
+                <Glyphs text="Visit →" />
+              </a>
+            </>
+          )}
+        </p>
+      </div>
+    </article>
   );
 }

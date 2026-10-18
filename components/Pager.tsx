@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type TouchEvent } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Glyphs } from "./ui";
 
 // Shared by the Work and Experience sections: cards shown PER_PAGE at a time, a numbered
 // pager (one number per page, so it grows as cards are added), previous / next, a
@@ -55,15 +56,18 @@ export function usePager(count: number) {
 }
 
 // The controls under the cards. `names` labels each card for screen readers; `noun` is
-// the plural used in the labels ("projects", "roles").
+// the plural used in the labels ("projects", "roles"). `seeAll` replaces the default
+// "see all (n)" button text.
 export function Pager({
   pager,
   names,
   noun,
+  seeAll,
 }: {
   pager: ReturnType<typeof usePager>;
   names: string[];
   noun: string;
+  seeAll?: string;
 }) {
   const { page, pages, all, go, toggleAll } = pager;
   return (
@@ -98,9 +102,9 @@ export function Pager({
         type="button"
         onClick={toggleAll}
         aria-expanded={all}
-        className="inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
+        className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
       >
-        {all ? `show ${PER_PAGE} at a time` : `see all (${names.length})`}
+        {all ? `show ${PER_PAGE} at a time` : <Glyphs text={seeAll ?? `see all (${names.length})`} />}
       </button>
     </div>
   );

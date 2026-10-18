@@ -9,7 +9,7 @@ import { Container, HandNote, Headline, SectionLabel } from "./ui";
 const tilts = ["lg:[--tilt:-1deg]", "lg:[--tilt:0.75deg]", "lg:[--tilt:0.5deg]", "lg:[--tilt:-1deg]"];
 
 export default function Work() {
-  const { label, headline, note, projects } = site.work;
+  const { label, headline, note, seeAll, projects } = site.work;
   // two cards per page with a numbered pager, swipe and "see all" (see Pager)
   const pager = usePager(projects.length);
 
@@ -25,7 +25,7 @@ export default function Work() {
         </div>
 
         <ul
-          className="mt-10 grid gap-12 md:grid-cols-2 md:gap-x-8 lg:gap-8"
+          className="mt-10 grid gap-8"
           {...pager.swipe}
         >
           {projects.map((project, i) => (
@@ -34,12 +34,12 @@ export default function Work() {
               hidden={!pager.shows(i)}
               className="motion-safe:animate-[card-in_350ms_ease-out]"
             >
-              <ProjectCard project={project} className={tilts[i % tilts.length]} />
+              <ProjectCard project={project} number={i + 1} className={tilts[i % tilts.length]} />
             </li>
           ))}
         </ul>
 
-        <Pager pager={pager} names={projects.map((p) => p.title)} noun="projects" />
+        <Pager pager={pager} names={projects.map((p) => p.title)} noun="projects" seeAll={seeAll} />
       </Container>
     </section>
   );
