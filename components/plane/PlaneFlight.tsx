@@ -61,54 +61,80 @@ const onScreen = (k: Key) => k.x >= 0 && k.x <= 100 && k.y >= 0 && k.y <= 100;
 
 export type Size = { w: number; h: number; vw: number; vh: number };
 
-// Overlap between the landed plane's lowest point and the top of the letters, in px.
-const LANDING_OVERLAP = 4;
-// The landed plane: nose left, tilted gently down.
-const LANDING_TILT = 10;
+// The landed plane: nose left, at `scale`, the tip of its nose dug this many px into the
+// top-right corner of the "h" of the closing headline's "touch".
 const LANDING_SCALE = 0.45;
+const NOSE_DEPTH = 1;
+// The nose tip in the plane's SVG viewBox (see PaperPlane).
+const NOSE = { x: 208, y: 70 };
 
-// How far the plane's lowest point sits below its centre, in px, when drawn facing
-// `facing` at `tilt` and `scale`. Read from the plane's own SVG shapes.
-function lowestPoint(plane: HTMLElement, size: Size, facing: 1 | -1, tilt: number, scale: number) {
-  const svg = plane.querySelector("svg");
-  const box = svg?.viewBox.baseVal;
-  if (!svg || !box?.width || !box.height) return (size.h / 2) * scale;
-  const rad = ((facing < 0 ? -1 : 1) * tilt * Math.PI) / 180;
-  let lowest = -Infinity;
-  svg.querySelectorAll("polygon").forEach((polygon) => {
-    for (const point of Array.from(polygon.points)) {
-      const x = facing * ((point.x / box.width) * size.w - size.w / 2);
-      const y = (point.y / box.height) * size.h - size.h / 2;
-      lowest = Math.max(lowest, (x * Math.sin(rad) + y * Math.cos(rad)) * scale);
-    }
-  });
-  return Number.isFinite(lowest) ? lowest : (size.h / 2) * scale;
+// Where the tip of the nose sits relative to the plane's centre, in px, when drawn facing
+// `facing` at `tilt` (nose down positive) and `scale`; the same rotation the timeline
+// applies (rotation = facing * tilt).
+function noseOffset(plane: HTMLElement, size: Size, facing: 1 | -1, tilt: number, scale: number) {
+  const box = plane.querySelector("svg")?.viewBox.baseVal;
+  const bw = box?.width || 220;
+  const bh = box?.height || 135;
+  const x = facing * ((NOSE.x / bw) * size.w - size.w / 2);
+  const y = (NOSE.y / bh) * size.h - size.h / 2;
+  const rad = (facing * tilt * Math.PI) / 180;
+  return {
+    x: (x * Math.cos(rad) - y * Math.sin(rad)) * scale,
+    y: (x * Math.sin(rad) + y * Math.cos(rad)) * scale,
+  };
 }
 
-// The landing spot (last keyframe), in screen % at the bottom of the scroll: the plane
-// sits on top of the highlighted word of the closing headline ("touch"), centred on it,
-// its lowest point LANDING_OVERLAP px into the tops of the letters. The letters' top
-// comes from the font's own glyph metrics, not the line box.
-function headlineLanding(word: HTMLElement, plane: HTMLElement, size: Size, max: number) {
-  const { vw, vh } = size;
+// The top-right corner of the last letter of `word` (the "h" of "touch"), in document px.
+// The letter's right edge and top come from the font's own glyph metrics, not its box.
+function lastLetterCorner(word: HTMLElement) {
   const r = docRect(word);
-  const style = getComputedStyle(word);
-  let glyphTop = r.top + r.height * 0.2;
+  const text = word.firstChild;
+  const length = text?.textContent?.length ?? 0;
+  let left = r.right;
+  let right = r.right;
+  if (text && length) {
+    const range = document.createRange();
+    range.setStart(text, length - 1);
+    range.setEnd(text, length);
+    const box = docRect(range);
+    left = box.left;
+    right = box.right;
+  }
+  let top = r.top + r.height * 0.2;
   const ctx = document.createElement("canvas").getContext("2d");
   if (ctx) {
+    const style = getComputedStyle(word);
     ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-    const m = ctx.measureText((word.textContent ?? "").toLowerCase());
-    if (m.fontBoundingBoxAscent) glyphTop = r.top + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
+    const letter = (word.textContent ?? "").slice(-1).toLowerCase();
+    const m = ctx.measureText(letter);
+    if (m.actualBoundingBoxRight) right = left + m.actualBoundingBoxRight;
+    if (m.fontBoundingBoxAscent) top = r.top + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
   }
-  const below = lowestPoint(plane, size, -1, LANDING_TILT, LANDING_SCALE);
-  const x = (r.left + r.right) / 2;
-  const y = glyphTop - max + LANDING_OVERLAP - below;
+  return { x: right, y: top, bottom: r.bottom };
+}
+
+// The landing spot (last keyframe), in screen % at the bottom of the scroll, and the tilt
+// it lands at: the plane flies in from `from` (the previous keyframe) facing left, nose
+// first along its straight final glide, until the tip of its nose touches the top-right
+// corner of the "h" of "touch". The tilt is the glide's own angle, so the nose leads.
+function headlineLanding(word: HTMLElement, plane: HTMLElement, size: Size, max: number, from: { x: number; y: number }) {
+  const { vw, vh } = size;
+  const corner = lastLetterCorner(word);
+  const tip = { x: corner.x - NOSE_DEPTH, y: corner.y - max + NOSE_DEPTH };
+  // the tilt and the centre depend on each other; a few rounds settle them
+  let centre = { x: tip.x, y: tip.y };
+  let tilt = 0;
+  for (let i = 0; i < 4; i++) {
+    tilt = heading(centre.x - (from.x / 100) * vw, centre.y - (from.y / 100) * vh, -1).tilt;
+    const nose = noseOffset(plane, size, -1, tilt, LANDING_SCALE);
+    centre = { x: tip.x - nose.x, y: tip.y - nose.y };
+  }
   if (process.env.NODE_ENV !== "production") {
     // the plane's top edge (roughly) must clear the nav, the headline's bottom the screen
-    if (y - (size.h * LANDING_SCALE) / 2 < navBottom() || r.bottom - max > vh)
+    if (centre.y - (size.h * LANDING_SCALE) / 2 < navBottom() || corner.bottom - max > vh)
       console.warn("[plane] the closing headline is not fully on screen, with room above it, at the bottom of the scroll");
   }
-  return { x: (x / vw) * 100, y: (y / vh) * 100 };
+  return { x: (centre.x / vw) * 100, y: (centre.y / vh) * 100, tilt };
 }
 
 // The hero resting spot (leg 0), in screen % at scroll 0, measured from the "follow the
@@ -212,9 +238,6 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   const first = docRect(firstCard);
   const behind = { x: (((first.left + first.right) / 2) / vw) * 100, y: 60 };
 
-  // 9. on top of "touch" in the closing headline, at the bottom of the scroll
-  const landing = headlineLanding(touch, plane, size, max);
-
   // The whole path runs mirrored: the plane faces left for most of it.
   // Leg N runs from keyframe N-1 to keyframe N; keyframe 0 is the start. The numbers
   // match the debug overlay (?plane=debug in development).
@@ -270,7 +293,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
     },
     // 6. Second banner: one glide right, rising, behind the banner, into the upper-right
     // leg. Desktop: flatter (tilt at most 8°) and shorter, timed by paceStretch() below;
-    // phones keep the original legs 6-7 values, since their flight reuses legs 7-9.
+    // phones keep the original legs 6-7 values, since their flight reuses legs 7-8.
     // leg 6
     {
       name: "second banner glide right",
@@ -281,7 +304,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
       scale: 0.4,
     },
     // 7. closing block: toward the upper right (desktop: on screen; phones: out of view),
-    // back in from the upper right, glide down-left onto the headline
+    // then one straight glide down-left, nose first, onto the headline
     // leg 7
     desktop
       ? {
@@ -301,28 +324,21 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
           tilt: 20,
           facing: -1,
         },
-    // leg 8: in from the upper right, on the way to the landing spot
-    {
-      name: "closing entry from upper right",
-      s: at(touch, 0.5, 0.6),
-      x: 80,
-      y: Math.min(landing.y - 6, 48),
-      scale: 0.4,
-    },
-    // leg 9: completes exactly at the bottom of the scroll
-    {
-      name: "landing on headline",
-      s: max,
-      x: landing.x,
-      y: landing.y,
-      scale: LANDING_SCALE,
-      tilt: LANDING_TILT,
-      facing: -1,
-      slowTurn: true,
-      xEase: "sine.out",
-      yEase: "sine.inOut",
-    },
   ];
+  // leg 8: completes exactly at the bottom of the scroll, the nose tip on the "h" of
+  // "touch"; both axes share one ease, so the glide is a straight line the nose follows
+  const landing = headlineLanding(touch, plane, size, max, keys[keys.length - 1]);
+  keys.push({
+    name: "landing nose first on the h",
+    s: max,
+    x: landing.x,
+    y: landing.y,
+    scale: LANDING_SCALE,
+    tilt: landing.tilt,
+    facing: -1,
+    xEase: "sine.out",
+    yEase: "sine.out",
+  });
   if (desktop) paceStretch(keys, size, max);
   const s = inOrder(
     keys.map((k) => k.s),
@@ -338,7 +354,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
 // faster than leg 4. The stretch's scroll is then shared by path length, so its legs all
 // move at the same speed; the landing still ends at the bottom of the scroll.
 const LEG5_LIMIT = 1.2;
-const STRETCH_EASES = ["sine.in", "none", "none", "sine.out"]; // legs 6, 7, 8, 9
+const STRETCH_EASES = ["sine.in", "none", "sine.out"]; // legs 6, 7, 8
 
 // On-screen length of the leg ending at keyframe b, along its eased (and bowed) path.
 function pathLength(a: Key, b: Key, size: Size) {
@@ -360,7 +376,7 @@ function pathLength(a: Key, b: Key, size: Size) {
 
 function paceStretch(keys: Key[], size: Size, max: number) {
   const stretch = keys.slice(6);
-  if (keys.length !== 10 || stretch.length !== STRETCH_EASES.length) return;
+  if (keys.length !== 9 || stretch.length !== STRETCH_EASES.length) return;
   const report = (label: string) =>
     keys.slice(4).map((k, i) => {
       const scroll = k.s - keys[i + 3].s;
@@ -400,15 +416,15 @@ function paceStretch(keys: Key[], size: Size, max: number) {
       const r = rows.filter((row) => row.leg >= from && row.leg <= to);
       return r.reduce((sum, row) => sum + row.path, 0) / r.reduce((sum, row) => sum + row.scroll, 0);
     };
-    const ratio = pace(after, 6, 9) / pace(after, 4, 5);
-    const message = `[plane] desktop pace: legs 6-9 ${ratio.toFixed(2)}x the speed of legs 4-5 (was ${(pace(before, 6, 9) / pace(before, 4, 5)).toFixed(2)}x)`;
+    const ratio = pace(after, 6, 8) / pace(after, 4, 5);
+    const message = `[plane] desktop pace: legs 6-8 ${ratio.toFixed(2)}x the speed of legs 4-5 (was ${(pace(before, 6, 8) / pace(before, 4, 5)).toFixed(2)}x)`;
     if (ratio > 1.15) console.warn(`${message}; leg 5's limit leaves a gap`);
     else console.info(message);
   }
 }
 
-// Phones (under 1024px): "hide and seek". Legs 0-1 and the last three legs (off screen
-// upper right, closing entry, landing) are the same as choreography()'s; in between, the
+// Phones (under 1024px): "hide and seek". Legs 0-1 and the last two legs (off screen
+// upper right, then the nose-first landing) are the same as choreography()'s; in between, the
 // plane holds near 55% of the screen height and hides behind the cards, showing itself
 // only as the gaps between them scroll through its height.
 const PHONE_Y = 55;
@@ -605,7 +621,7 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
 
   // Any keyframe with a missing anchor reuses the previous keyframe.
   const start = shared.slice(0, 2);
-  const end = shared.slice(-3);
+  const end = shared.slice(-2);
   const keys = [...start];
   for (const key of middle) {
     const prev = keys[keys.length - 1];
