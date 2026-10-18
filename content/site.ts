@@ -234,10 +234,10 @@ export const site = {
     text: "Tell me about your business, the AI you've adopted so far, and your most manual process. I'm based in Nigeria and work remotely across time zones.",
     email: email as string | null,
     buttons: [
-      { label: "get in touch →", href: `mailto:${email}`, primary: true },
+      { label: "send me an email →", href: `mailto:${email}`, primary: true },
       { label: "view my work →", href: "https://github.com/Ezeh8", primary: true },
     ] satisfies Link[],
-    replies: "replies within 24 hours", // TODO: confirm before launch
+    replies: "replies within 72 hours",
   },
 
   footer: {
