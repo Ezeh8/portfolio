@@ -9,7 +9,6 @@ import Experience from "@/components/Experience";
 import Hero from "@/components/Hero";
 import Nav from "@/components/Nav";
 import PlaneLayer from "@/components/plane/PlaneLayer";
-import SquiggleScroll from "@/components/SquiggleScroll";
 import Toolkit from "@/components/Toolkit";
 import Work from "@/components/Work";
 
@@ -32,7 +31,6 @@ export default function Home() {
       <CardReveal />
       <CountUp />
       <BannerScroll />
-      <SquiggleScroll />
     </>
   );
 }

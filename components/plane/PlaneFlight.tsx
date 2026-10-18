@@ -193,7 +193,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   const work = $("#work");
   const toolkit = $("#toolkit");
   const secondBanner = $("#second-banner");
-  const touch = $("#contact .squiggle") as HTMLElement | null;
+  const touch = $("#contact .highlight") as HTMLElement | null;
   const firstCard = shownCards()[0];
   if (!hero || !banner || !work || !toolkit || !secondBanner || !touch || !firstCard) return null;
 

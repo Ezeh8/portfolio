@@ -16,7 +16,7 @@ export function SectionLabel({ children }: { children: ReactNode }) {
 }
 
 // h1 and section h2 headlines: heavy display type, lowercased in CSS only,
-// with the `highlight` phrase drawn in the accent color with a squiggle underline.
+// with the `highlight` phrase drawn in the accent color.
 export function Headline({
   as: Tag = "h2",
   copy,
@@ -37,7 +37,7 @@ export function Headline({
       ) : (
         <>
           {text.slice(0, at)}
-          <span className="squiggle">{highlight}</span>
+          <span className="highlight">{highlight}</span>
           {text.slice(at + highlight.length)}
         </>
       )}

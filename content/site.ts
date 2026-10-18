@@ -2,8 +2,8 @@
 // A link whose URL is still TODO is set to null and is not rendered on the page.
 // It appears automatically once a real URL is added.
 //
-// `highlight` marks the word or phrase in a headline drawn in the accent color with a
-// squiggle underline. It must appear exactly as written inside its headline.
+// `highlight` marks the word or phrase in a headline drawn in the accent color. It must
+// appear exactly as written inside its headline.
 // Lines marked FILLER are placeholder copy to review before launch.
 
 export type Link = {

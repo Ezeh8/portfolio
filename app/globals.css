@@ -150,7 +150,7 @@ body {
   }
 
   /* Chrome text: the --chrome gradient painted through the letters. Children inherit the
-     transparent fill, so a squiggle word inside turns chrome too and keeps its underline. */
+     transparent fill, so a highlighted word inside turns chrome too. */
   .chrome {
     background-image: var(--chrome);
     -webkit-background-clip: text;
@@ -166,34 +166,10 @@ body {
       var(--chrome-smooth);
   }
 
-  /* Headline highlight: a repeating squiggle background on an inline span, so the
-     underline follows the text across line breaks. CSS variables can't be used inside
-     a data URI, so the stroke repeats --accent-text (#FFFFFF) by hand. */
-  .squiggle {
+  /* Headline highlight: the `highlight` phrase of a headline, in the accent colour. The
+     plane lands on the closing headline's one ("touch"). */
+  .highlight {
     color: var(--accent-text);
-    padding-bottom: 0.06em;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 8' preserveAspectRatio='none'%3E%3Cpath d='M0 4.5 Q5 0.5 10 4.5 T20 4.5' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: repeat-x;
-    /* --squiggle-shift is set by SquiggleScroll, the same for every squiggle */
-    background-position: var(--squiggle-shift, 0em) 100%;
-    background-size: 0.5em 0.2em;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-  }
-
-  /* Preview: squiggles switched off. The highlighted words and the spans stay (the plane
-     lands on the "touch" one); only the wave underline is hidden. Delete this rule to
-     bring the squiggles back. */
-  .squiggle {
-    background-image: none;
-  }
-
-  /* The closing "touch" squiggle sits closer to its word. "touch" has no descenders, so
-     the line box's descender space leaves a gap even with no padding; the image is
-     lifted into it instead. */
-  #contact .squiggle {
-    padding-bottom: 0;
-    background-position: var(--squiggle-shift, 0em) calc(100% - 0.06em);
   }
 }
 
