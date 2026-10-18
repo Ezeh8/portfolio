@@ -6,14 +6,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-// Work and Experience cards hidden by their pagers are skipped; they fade in on their own
-// when shown.
-const PANELS =
-  "#work li:not([hidden]) > article.panel, #experience li:not([hidden]) > article.panel, #toolkit li.panel";
+// Only the Toolkit cards: the Work and Experience cards stay still, flat and in place.
+const PANELS = "#toolkit li.panel";
 
 // Cards fade in as they scroll into view while their contents rise into place. The panel
-// itself is only faded, never moved: its CSS transform carries the toolkit tilt and the
-// hover lift, and the plane measures the panels' positions. Under reduced motion every
+// itself is only faded, never moved: the plane measures the panels' positions. Under reduced motion every
 // card shows immediately.
 export default function CardReveal() {
   useGSAP(() => {

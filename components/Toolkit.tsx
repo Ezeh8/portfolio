@@ -1,7 +1,8 @@
 import { site } from "@/content/site";
 import { Container, Headline, SectionLabel } from "./ui";
 
-// A different small tilt per card from md up; flat on phones.
+// The skill cards keep the original solid card (.panel-classic), not the glass: a small
+// tilt per card from md up (flat on phones), the float and the hover lift.
 const tilts = ["md:[--tilt:-1.5deg]", "md:[--tilt:1deg]", "md:[--tilt:-0.75deg]", "md:[--tilt:1.75deg]"];
 
 export default function Toolkit() {
@@ -16,7 +17,7 @@ export default function Toolkit() {
           {groups.map((group, i) => (
             <li
               key={group.title}
-              className={`panel relative z-[2] p-5 ${tilts[i % tilts.length]}`}
+              className={`panel panel-classic relative z-[2] p-5 ${tilts[i % tilts.length]}`}
             >
               <h3
                 className={`flex items-center justify-between border-b-(length:--border-width) border-dashed border-line/40 pb-3 font-mono text-xs uppercase tracking-[0.12em]`}

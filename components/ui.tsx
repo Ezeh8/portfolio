@@ -15,8 +15,10 @@ export function SectionLabel({ children }: { children: ReactNode }) {
   );
 }
 
-// h1 and section h2 headlines: heavy display type, lowercased in CSS only,
-// with the `highlight` phrase drawn in the accent color.
+// h1 and section h2 headlines: heavy display type in chrome, lowercased in CSS only,
+// with the `highlight` phrase drawn in the accent color. A headline with \n line breaks
+// gets the chrome on an inline span, line by line (.chrome-lines), so every line has
+// the full metal sheen instead of sharing one gradient stretched over all of them.
 export function Headline({
   as: Tag = "h2",
   copy,
@@ -28,19 +30,22 @@ export function Headline({
 }) {
   const { text, highlight, keepCase } = copy;
   const at = text.indexOf(highlight);
+  const lines = text.includes("\n");
+  const content =
+    at === -1 ? (
+      text
+    ) : (
+      <>
+        {text.slice(0, at)}
+        <span className="highlight">{highlight}</span>
+        {text.slice(at + highlight.length)}
+      </>
+    );
   return (
     <Tag
-      className={`chrome font-display font-extrabold ${keepCase ? "" : "lowercase "}leading-[1.02] tracking-tight ${className}`}
+      className={`${lines ? "" : "chrome "}font-display font-extrabold ${keepCase ? "" : "lowercase "}leading-[1.02] tracking-tight ${className}`}
     >
-      {at === -1 ? (
-        text
-      ) : (
-        <>
-          {text.slice(0, at)}
-          <span className="highlight">{highlight}</span>
-          {text.slice(at + highlight.length)}
-        </>
-      )}
+      {lines ? <span className="chrome chrome-lines">{content}</span> : content}
     </Tag>
   );
 }

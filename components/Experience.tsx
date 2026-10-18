@@ -1,12 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/content/site";
-import { Pager, usePager } from "./Pager";
-import StoryCard from "./StoryCard";
 import { Container, Glyphs, Headline, SectionLabel } from "./ui";
-
-// Smaller tilts than Work, to keep the gaps between the cards even.
-const tilts = ["lg:[--tilt:-0.5deg]", "lg:[--tilt:0.4deg]", "lg:[--tilt:-0.3deg]"];
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -57,54 +54,112 @@ function Marked({ text }: { text: string }) {
   );
 }
 
-// Two role cards per page, side by side from 768px (stacked on phones), with the same
-// numbered pager, swipe and "see all" as Work (see Pager). Each card follows the Work
-// card pattern (StoryCard): a graph cover, the company, the role and the dates; clicking
-// it opens the role's full story with every bullet and its highlights.
+// How many bullets a role card shows until it is clicked open.
+const POINTS = 2;
+
+type Role = (typeof site.experience.roles)[number];
+
+// One role: a full-width two-column glass card. Left: the number, the company, the role,
+// then the dates. Right: the first POINTS bullets with their highlights, then the ops log.
+// Clicking anywhere on the card (its button's ::before stretches over it) shows every
+// bullet; clicking again folds it back.
+function RoleCard({ role, number }: { role: Role; number: number }) {
+  const [open, setOpen] = useState(false);
+  const more = role.bullets.length > POINTS;
+
+  // the card's height changes, so scroll-driven effects (the plane) re-measure
+  useEffect(() => {
+    ScrollTrigger.refresh();
+  }, [open]);
+
+  return (
+    <article
+      id={`role-${number}`}
+      className={`panel relative z-[2] grid gap-6 p-6 sm:p-8 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-12 ${more ? "cursor-pointer has-[button:focus-visible]:outline-2 has-[button:focus-visible]:outline-offset-2 has-[button:focus-visible]:outline-accent-text" : ""}`}
+    >
+      <div>
+        <p className="font-mono text-sm text-text-muted">{String(number).padStart(2, "0")} ~</p>
+        <h3 className="mt-2 font-display text-2xl leading-tight font-extrabold text-btn-ink sm:text-[1.75rem]">
+          {role.company}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed italic text-text-muted">{role.role}</p>
+        <p className="mt-3 font-mono text-[11px] tracking-[0.04em] text-card-alt-title">{role.dates}</p>
+      </div>
+
+      <div>
+        <ul
+          id={`role-${number}-points`}
+          className="list-disc space-y-3 pl-5 text-[15px] leading-relaxed text-btn-shadow marker:text-accent-text"
+        >
+          {role.bullets.map((bullet, i) => (
+            <li key={bullet} hidden={!open && i >= POINTS}>
+              <Marked text={bullet} />
+            </li>
+          ))}
+        </ul>
+        <div className="mt-5 flex items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted">
+          <p>
+            <Glyphs text={role.opsLog} />
+          </p>
+          {more && (
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls={`role-${number}-points`}
+              className="group shrink-0 cursor-pointer uppercase outline-none before:absolute before:inset-0 before:z-[1] before:content-[''] hover:text-accent-text"
+            >
+              {open ? "show less" : <Glyphs text={`+${role.bullets.length - POINTS} more ↓`} />}
+            </button>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+// How many role cards show before "See all".
+const SHOWN = 2;
+
+// Mirrors the Work section: full-width two-column glass cards (RoleCard), stacked, with
+// no cover or pop-up. The first SHOWN show; "See all" shows the rest in place (hidden
+// cards stay in the page with the `hidden` attribute).
 export default function Experience() {
   const { label, headline, roles } = site.experience;
-  const pager = usePager(roles.length);
+  const [all, setAll] = useState(false);
+
+  // the page length changes, so scroll-driven effects (the plane) re-measure
+  useEffect(() => {
+    ScrollTrigger.refresh();
+  }, [all]);
+
   return (
     <section id="experience" className="scroll-mt-16 py-20 sm:py-28">
       <Container>
         <SectionLabel>{label}</SectionLabel>
         <Headline copy={headline} className="mt-4 text-[clamp(2.25rem,5vw,3.5rem)]" />
 
-        <ol className="mt-10 grid gap-8 md:grid-cols-2" {...pager.swipe}>
+        <ol id="experience-roles" className="mt-10 grid gap-8">
           {roles.map((entry, i) => (
-            <li
-              key={entry.company}
-              hidden={!pager.shows(i)}
-              className="motion-safe:animate-[card-in_350ms_ease-out]"
-            >
-              <StoryCard
-                id={`role-${i + 1}`}
-                title={entry.company}
-                subtitle={entry.role}
-                topology={entry.topology}
-                pills={[entry.dates]}
-                pillsLabel="Dates"
-                plainPills
-                fitGroup="experience"
-                className={tilts[i % tilts.length]}
-              >
-                <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
-                  <Glyphs text={entry.opsLog} />
-                </p>
-                <hr className="my-8 border-line" />
-                <ul className="list-disc space-y-4 pl-5 text-lg leading-relaxed text-btn-ink marker:text-accent-text">
-                  {entry.bullets.map((bullet) => (
-                    <li key={bullet}>
-                      <Marked text={bullet} />
-                    </li>
-                  ))}
-                </ul>
-              </StoryCard>
+            <li key={entry.company} hidden={!all && i >= SHOWN}>
+              <RoleCard role={entry} number={i + 1} />
             </li>
           ))}
         </ol>
 
-        <Pager pager={pager} names={roles.map((r) => r.company)} noun="roles" />
+        {roles.length > SHOWN && (
+          <div className="mt-10 flex justify-end font-mono text-xs">
+            <button
+              type="button"
+              onClick={() => setAll((v) => !v)}
+              aria-expanded={all}
+              aria-controls="experience-roles"
+              className="group inline-flex h-9 cursor-pointer items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
+            >
+              {all ? "show less" : <Glyphs text={site.work.seeAll} />}
+            </button>
+          </div>
+        )}
       </Container>
     </section>
   );

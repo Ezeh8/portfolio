@@ -81,51 +81,76 @@ body {
 }
 
 @layer components {
-  /* Cards and panels: border, hard shadow, hover lift. `--tilt` lets a card keep
-     its rotation while lifting. */
+  /* Cards and panels: flat, still frosted glass. A see-through tint over a blur of what
+     passes behind (the plane flies underneath), a bright edge and a soft glow; hovered,
+     focused or pressed, the tint, edge and glow brighten. No offset shadow, tilt or
+     float. */
   .panel {
-    background: var(--card);
-    border: var(--border-width) solid var(--line);
+    background-color: rgb(255 255 255 / 0.045);
+    border: var(--border-width) solid rgb(255 255 255 / 0.22);
     border-radius: 6px;
-    /* a faint sheen down from the top edge, like brushed metal catching light */
-    background-image: linear-gradient(180deg, rgb(255 255 255 / 0.06), transparent 40%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.16),
+      0 0 32px rgb(255 255 255 / 0.07);
+    transition:
+      background-color 250ms ease,
+      border-color 250ms ease,
+      box-shadow 250ms ease;
+  }
+  .panel:hover,
+  .panel:focus-within,
+  .panel:active {
+    background-color: rgb(255 255 255 / 0.07);
+    border-color: rgb(255 255 255 / 0.32);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.2),
+      0 0 40px rgb(255 255 255 / 0.1);
+  }
+
+  /* The original card's movement, kept by the hero flight log and the Toolkit skill
+     cards, on the same glass (so the plane still shows behind): a hard offset shadow, a
+     hover lift, and a gentle float and sway. `--tilt` lets a card keep its rotation while
+     lifting. Neighbouring cards float at different speeds and start points so they
+     never bob in step. */
+  .panel.panel-classic {
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.14),
+      0 0 32px rgb(255 255 255 / 0.07),
       3px 3px 0 var(--shadow);
     transform: rotate(var(--tilt, 0deg));
     transition:
       transform 150ms ease,
-      box-shadow 150ms ease;
-  }
-
-  @media (min-width: 768px) {
-    .panel {
-      box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 0.14),
-        6px 6px 0 var(--shadow);
-    }
-  }
-
-  /* Every card floats gently up and down and sways a little, all the time. It moves with
-     `translate` and `rotate`, which stack with the tilt and hover lift in `transform`.
-     Neighbouring cards get different speeds and start points so they never bob in step. */
-  .panel {
+      box-shadow 150ms ease,
+      background-color 250ms ease,
+      border-color 250ms ease;
     animation: card-float 3.5s ease-in-out infinite alternate;
   }
-  .panel:nth-child(3n + 2) {
+  .panel-classic:nth-child(3n + 2) {
     animation-duration: 4.2s;
     animation-delay: -1.3s;
   }
-  .panel:nth-child(3n + 3) {
+  .panel-classic:nth-child(3n + 3) {
     animation-duration: 3.1s;
     animation-delay: -2.2s;
   }
-
-  /* a project card coming into view in the Work pager */
-  @keyframes card-in {
-    from {
-      opacity: 0;
-      translate: 0 12px;
+  @media (min-width: 768px) {
+    .panel.panel-classic {
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.14),
+        0 0 32px rgb(255 255 255 / 0.07),
+      6px 6px 0 var(--shadow);
+    }
+  }
+  /* on a pointer, the card lifts as well as brightening */
+  @media (hover: hover) {
+    .panel.panel-classic:hover {
+      transform: translate(-3px, -3px) rotate(var(--tilt, 0deg));
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.14),
+        0 0 40px rgb(255 255 255 / 0.1),
+      9px 9px 0 var(--shadow);
     }
   }
 
@@ -140,15 +165,6 @@ body {
     }
   }
 
-  @media (hover: hover) {
-    .panel:hover {
-      transform: translate(-3px, -3px) rotate(var(--tilt, 0deg));
-      box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 0.14),
-        9px 9px 0 var(--shadow);
-    }
-  }
-
   /* Chrome text: the --chrome gradient painted through the letters. Children inherit the
      transparent fill, so a highlighted word inside turns chrome too. */
   .chrome {
@@ -157,6 +173,12 @@ body {
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+  }
+
+  /* On an inline .chrome span: each line gets its own copy of the gradient. */
+  .chrome-lines {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   /* Polished metal band for the banners, with fine brushed lines across it. */
@@ -179,12 +201,13 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .panel {
+  .panel,
+  .panel.panel-classic {
     transition: none;
     animation: none;
   }
 
-  .panel:hover {
+  .panel.panel-classic:hover {
     transform: rotate(var(--tilt, 0deg));
   }
 }

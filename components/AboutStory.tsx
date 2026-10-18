@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { site } from "@/content/site";
-import { StoryDialog } from "./StoryCard";
+import { StoryDialog } from "./StoryDialog";
 import { buttonClass, Glyphs } from "./ui";
 
 // "the whole story": a button under the About paragraphs that opens the longer story in
@@ -17,17 +17,20 @@ export default function AboutStory() {
 
   return (
     <>
-      <button
-        ref={opener}
-        type="button"
-        aria-haspopup="dialog"
-        onClick={() => setOpen(true)}
-        className={buttonClass()}
-      >
-        <span>
-          <Glyphs text={`${storyButton} →`} />
-        </span>
-      </button>
+      {/* the button sits at the right, under the paragraphs */}
+      <div className="flex justify-end">
+        <button
+          ref={opener}
+          type="button"
+          aria-haspopup="dialog"
+          onClick={() => setOpen(true)}
+          className={buttonClass()}
+        >
+          <span>
+            <Glyphs text={`${storyButton} →`} />
+          </span>
+        </button>
+      </div>
 
       {open && (
         <StoryDialog
