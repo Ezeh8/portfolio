@@ -31,7 +31,7 @@
   --banner-text: #0b0c0e;
   --banner-star: #0b0c0e; /* black star between banner phrases, same as the banner text */
   --trail: #edeef0; /* drawn at 25% opacity */
-  --border-width: 1px;
+  --border-width: 0.75px;
   /* polished chrome: bright top, dark mid-band reflection, light lower edge */
   --chrome: linear-gradient(180deg, #ffffff 0%, #d7dade 36%, #7d828a 50%, #e4e6e9 64%, #a9adb4 100%);
   /* smooth chrome for wide strips behind text (banners, Experience highlights): no dark
