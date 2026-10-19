@@ -34,7 +34,7 @@ export default function Nav() {
               <ul className="flex gap-6 font-mono text-xs uppercase tracking-[0.12em]">
                 {links.map((link) => (
                   <li key={link.href}>
-                    <a href={link.href} className="hover:text-accent-text">
+                    <a href={link.href} className="text-text-muted hover:text-accent-text">
                       {link.label}
                     </a>
                   </li>
@@ -67,7 +67,7 @@ export default function Nav() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="block py-3 font-mono text-sm uppercase tracking-[0.12em] active:text-accent-text"
+                  className="block py-3 font-mono text-sm uppercase tracking-[0.12em] text-text-muted active:text-accent-text"
                   onClick={() => setOpen(false)}
                 >
                   {link.label}

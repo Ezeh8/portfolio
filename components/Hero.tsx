@@ -10,7 +10,8 @@ export default function Hero() {
   return (
     <section id="hero" className="scroll-mt-16 pt-12 pb-16 sm:pt-20 sm:pb-24">
       <Container>
-        <div className="grid items-center gap-12 lg:grid-cols-[3fr_2fr] lg:gap-14">
+        {/* the flight log's column takes the card's width, so each of its lines fits on one line */}
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
               {label}
@@ -63,7 +64,7 @@ export default function Hero() {
                   </span>
                 </span>
               </PanelBar>
-              <div className="p-4 font-mono text-[13px] leading-relaxed sm:p-5">
+              <div className="p-4 font-mono text-[13px] leading-relaxed sm:px-5 lg:whitespace-nowrap lg:text-[12px]">
                 <TypedLog lines={flightLog.lines} />
               </div>
             </div>
