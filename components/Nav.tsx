@@ -26,7 +26,7 @@ export default function Nav() {
             className="font-display text-2xl font-extrabold tracking-tight text-white"
           >
             {wordmark.text}
-            <span className="text-accent-text">{wordmark.dot}</span>
+            <span className="text-text-muted">{wordmark.dot}</span>
           </a>
 
           <div className="flex items-center gap-3">

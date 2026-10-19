@@ -17,7 +17,7 @@ export default function SubPage({ children }: { children: ReactNode }) {
           <nav aria-label="Main" className="flex h-16 items-center justify-between gap-4">
             <Link href="/" aria-label={site.name} className="font-display text-2xl font-extrabold tracking-tight text-white">
               {wordmark.text}
-              <span className="text-accent-text">{wordmark.dot}</span>
+              <span className="text-text-muted">{wordmark.dot}</span>
             </Link>
             <Link href="/" className={backLink}>
               ← back home

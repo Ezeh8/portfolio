@@ -63,7 +63,7 @@ export const site = {
     prefix: "i map the",
     words: ["gaps", "friction", "flow"] as const,
     headlineLabel: "I map the gaps, friction and flow.",
-    body: "I'm not that interested in Agents ~ I'm interested in the processes, the handoffs, the 5-minute decision that stalls for 48 hours. I re-imagine the process, then build the agent in - around it.",
+    body: "I am not that interested in Agents, I am interested in the structure underneath ~ the handoffs, the workflow gaps, the 5-minute decision that stalls for 48 hours. My approach is to re-imagine the process, then build agents into it.",
     primary: { label: "view my work →", href: "https://github.com/Ezeh8" } satisfies Link,
     // Downloads straight away. The file lives at public/ezeh_cv.pdf.
     secondary: { label: "download CV ↓", href: "/ezeh_cv.pdf" } satisfies Link,
