@@ -762,7 +762,10 @@ type Parts = {
 // only shapes the shadow's offset. (It isn't applied: GSAP's quickSetter
 // expands "scale" to an attribute named "scaleX,scaleY", which Safari rejects, so the
 // flight never built on iPhones.)
-function buildFlight(parts: Parts, keys: Key[], size: Size) {
+// `track` (phones): along the final glide, follow where the "h" really is at the bottom
+// of the scroll, in case the page or the screen changed since the flight was measured
+// (the mobile toolbar, cards opened), so the nose still stops right at its corner.
+function buildFlight(parts: Parts, keys: Key[], size: Size, track = false) {
   const { plane, body, shadow, trail } = parts;
   const { w, h, vw, vh } = size;
 
@@ -833,9 +836,22 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
   const setFacing = gsap.quickSetter(body, "scaleX");
   const setShadowX = gsap.quickSetter(shadow, "x", "px");
   const setShadowY = gsap.quickSetter(shadow, "y", "px");
+  // The "h" as measured for the flight: its box, and the bottom of the scroll then.
+  const word = track ? ($("#contact .highlight") as HTMLElement | null) : null;
+  const word0 = word ? docRect(word) : null;
+  const max0 = maxScroll();
+  const landEase = gsap.parseEase(tb.yEase ?? "sine.inOut");
+
   const draw = () => {
-    const px = (proxy.x / 100) * vw;
-    const py = ((proxy.y + proxy.bow) / 100) * vh;
+    let px = (proxy.x / 100) * vw;
+    let py = ((proxy.y + proxy.bow) / 100) * vh;
+    // on the final glide, shift toward where the "h" will really sit at the bottom
+    if (word && word0 && tl.time() > ta.s) {
+      const r = docRect(word);
+      const k = landEase(clamp((tl.time() - ta.s) / (tb.s - ta.s || 1), 0, 1));
+      px += (r.left - word0.left) * k;
+      py += (r.top - word0.top - (maxScroll() - max0)) * k;
+    }
     setX(px);
     setY(py);
     // facing runs through 0 during a bank turn; the tilt's sign follows the side the
@@ -1017,7 +1033,7 @@ export default function PlaneFlight() {
                 // phones get their own hide-and-seek flight, desktop the original one
                 const keys = phone ? phoneChoreography(size, p.plane) : choreography(desktop, size, p.plane);
                 if (!keys) return;
-                const flight = buildFlight(p, keys, size);
+                const flight = buildFlight(p, keys, size, phone);
                 // Dev-only debug overlay. The NODE_ENV check is replaced at build time,
                 // so production bundles drop this branch and the overlay module.
                 if (
@@ -1102,7 +1118,7 @@ export default function PlaneFlight() {
         <div ref={body}>
           {/* phones: a gentle drift forward and back along the nose, on top of the flight
               (inside the turned and mirrored body, so it follows the nose) */}
-          <div className="max-lg:motion-safe:animate-[plane-float_2.4s_ease-in-out_infinite_alternate]">
+          <div className="max-lg:motion-safe:animate-[plane-float_2s_ease-in-out_infinite_alternate]">
             <PaperPlane />
           </div>
         </div>

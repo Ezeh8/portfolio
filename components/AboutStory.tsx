@@ -25,7 +25,7 @@ export default function AboutStory() {
           aria-haspopup="dialog"
           onClick={() => setOpen(true)}
           // the same look as the "See all →" buttons under Work and Experience
-          className="group inline-flex h-9 cursor-pointer items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
+          className="group inline-flex h-9 cursor-pointer items-center rounded-full border-(length:--border-width) border-line px-4 font-mono text-xs uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome-smooth)] hover:text-btn-text motion-safe:active:scale-95"
         >
           <Glyphs text={`${storyButton} →`} />
         </button>

@@ -34,7 +34,7 @@ export default function Work({ all = false }: { all?: boolean }) {
           <div className="mt-10 flex justify-end font-mono text-xs">
             <SeeAllLink
               href="/projects"
-              className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
+              className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome-smooth)] hover:text-btn-text motion-safe:active:scale-95"
             >
               <Glyphs text={seeAll} />
             </SeeAllLink>

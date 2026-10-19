@@ -104,7 +104,7 @@ export default function SoundToggle() {
       aria-label="Mission control sound"
       title={on ? "Sound on" : "Sound off"}
       onClick={toggle}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full border-(length:--border-width) border-line transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95 aria-pressed:bg-btn-bg aria-pressed:bg-[image:var(--chrome)] aria-pressed:text-btn-text"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full border-(length:--border-width) border-line transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome-smooth)] hover:text-btn-text motion-safe:active:scale-95 aria-pressed:bg-btn-bg aria-pressed:bg-[image:var(--chrome-smooth)] aria-pressed:text-btn-text"
     >
       <svg
         aria-hidden="true"

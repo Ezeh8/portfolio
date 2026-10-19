@@ -56,7 +56,7 @@ export default function Toolkit() {
               onClick={() => setAll((v) => !v)}
               aria-expanded={all}
               aria-controls="toolkit-cards"
-              className="group inline-flex h-9 cursor-pointer items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
+              className="group inline-flex h-9 cursor-pointer items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome-smooth)] hover:text-btn-text motion-safe:active:scale-95"
             >
               {all ? "show less" : <Glyphs text={site.work.seeAll} />}
             </button>
