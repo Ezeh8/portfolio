@@ -1,11 +1,11 @@
 import { site } from "@/content/site";
 import { RotatingWord } from "./RotatingWord";
+import { TypedLog } from "./TypedLog";
 import { ButtonLink, Container, HandNote, PanelBar, StatusDot } from "./ui";
 
 export default function Hero() {
   const { label, name, tagline, status, prefix, words, headlineLabel, body, primary, secondary, flightLog, note } =
     site.hero;
-  const { projects } = site.work;
 
   return (
     <section id="hero" className="scroll-mt-16 pt-12 pb-16 sm:pt-20 sm:pb-24">
@@ -15,7 +15,7 @@ export default function Hero() {
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
               {label}
             </p>
-            <p className="chrome mt-6 font-display text-[33px] sm:text-[35px] font-medium lg:mt-3">{name}</p>
+            <p className="chrome mt-6 font-display text-[38px] sm:text-[40px] font-medium lg:mt-3">{name}</p>
             <p className="mt-1 text-text/70">{tagline}</p>
 
             <p className="mt-8 inline-flex items-center gap-2 rounded-full lg:mt-5 border-(length:--border-width) border-line bg-card px-3 py-1.5 font-mono text-xs">
@@ -45,26 +45,26 @@ export default function Hero() {
             <HandNote arrow="none" className="relative z-[2] mb-3 ml-4 -rotate-3">
               {note}
             </HandNote>
-            <div className="panel panel-classic relative z-[2] overflow-hidden lg:[--tilt:1deg]">
+            <div className="panel panel-classic relative z-[2] overflow-hidden lg:[--tilt:-1deg]">
               <PanelBar>
                 <span className="flex items-center gap-2">
-                  <StatusDot />
-                  {flightLog.header}
+                  {/* three dots, like a terminal window */}
+                  <span className="flex gap-1.5">
+                    <StatusDot className="bg-text-muted" />
+                    <StatusDot className="bg-text-muted" />
+                    <StatusDot className="bg-text-muted" />
+                  </span>
+                  {/* the name, then the rest of the title in grey */}
+                  <span>
+                    {flightLog.header.split(" - ")[0]}
+                    <span className="text-text-muted">
+                      {flightLog.header.slice(flightLog.header.indexOf(" - "))}
+                    </span>
+                  </span>
                 </span>
               </PanelBar>
-              <div className="space-y-2 p-4 font-mono text-[13px] leading-relaxed sm:p-5">
-                {/* the command and its answer on one line */}
-                <p>
-                  {flightLog.command}{" "}
-                  <span className="text-accent-text">{flightLog.status(projects.length)}</span>
-                </p>
-                <ul className="space-y-2 pt-1">
-                  {projects.map((p) => (
-                    <li key={p.id}>
-                      ✓ {p.title.toLowerCase()} · {p.deployedResult}
-                    </li>
-                  ))}
-                </ul>
+              <div className="p-4 font-mono text-[13px] leading-relaxed sm:p-5">
+                <TypedLog lines={flightLog.lines} />
               </div>
             </div>
           </div>

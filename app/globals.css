@@ -165,6 +165,13 @@ body {
     }
   }
 
+  /* The terminal cursor in the hero's flight log. */
+  @keyframes caret-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
   /* Chrome text: the --chrome gradient painted through the letters. Children inherit the
      transparent fill, so a highlighted word inside turns chrome too. */
   .chrome {

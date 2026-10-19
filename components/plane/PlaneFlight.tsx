@@ -138,31 +138,32 @@ function headlineLanding(word: HTMLElement, plane: HTMLElement, size: Size, max:
 }
 
 // The hero resting spot (leg 0), in screen % at scroll 0, measured from the "follow the
-// plane" note on every layout: just below the note, overlapping its lower edge by 8px,
-// centred under the tip of the note's arrow, or under the note itself when it has none.
-// The note draws on top (z-index 2).
-// If that would cover the headline, the hero buttons or the flight log, the plane moves
-// up under the note in 2px steps until it doesn't; failing that, to the nearest clear
-// spot. Falls back to x 26, y 55 if the note is missing. The final spot is then dropped
-// by REST_DROP px so the plane sits a little lower.
-const REST_DROP = 12;
+// plane" note on every layout: on the note's line, just after its last word, with the
+// plane's nose (it faces left) REST_GAP px from the text, so the note reads as pointing
+// at it.
+// Only if it doesn't fit across the screen there (and would cover the headline, the hero
+// buttons or the flight log) does the plane move up in 2px steps until it doesn't;
+// failing that, to the nearest clear spot. Falls back
+// to x 26, y 55 if the note is missing.
+const REST_GAP = 5;
 
-function heroRest(size: Size) {
+function heroRest(size: Size, plane: HTMLElement) {
   const { w, h, vw, vh } = size;
   const note = $("#hero .font-hand");
   if (!note) return { x: 26, y: 55 };
-
-  // Centred under the tip of the note's arrow (its lowest point, as it points down), or
-  // under the middle of the note when it has no arrow.
-  const tip = note.querySelector("svg path:last-of-type");
-  const head = docRect(tip ?? note);
-  const x = (head.left + head.right) / 2;
-  const y = docRect(note).bottom - 8 + h / 2;
 
   // The plane's box at its resting tilt (-6°), with a little breathing room.
   const rad = (6 * Math.PI) / 180;
   const bw = w * Math.cos(rad) + h * Math.sin(rad) + 8;
   const bh = w * Math.sin(rad) + h * Math.cos(rad) + 8;
+
+  // the nose (at the resting tilt and facing left) REST_GAP px after the last word, level
+  // with the middle of the text
+  const words = docRect(note);
+  const nose = noseOffset(plane, size, -1, -6, 1);
+  const x = words.right + REST_GAP - nose.x;
+  const y = words.top + words.height / 2 - nose.y;
+
   const avoid: { left: number; top: number; right: number; bottom: number }[] = [];
   const h1 = $("#hero h1");
   if (h1) {
@@ -177,7 +178,7 @@ function heroRest(size: Size) {
       });
   }
   document.querySelectorAll("#hero a, #hero .panel").forEach((el) => avoid.push(docRect(el)));
-  // At scroll 0: below the sticky nav. No bottom limit, so the plane stays under the note
+  // At scroll 0: below the sticky nav. No bottom limit, so the plane stays by the note
   // even when the note sits low on a tall phone hero.
   const area = {
     left: 0,
@@ -188,25 +189,28 @@ function heroRest(size: Size) {
 
   let spot = { x, y };
   let how = "";
-  if (!isClear(x, y, bw, bh, avoid, area)) {
-    // move up behind the note, at most until the plane's centre reaches the note's top
-    const limit = docRect(note).top;
+  // right after the words whenever it fits across the screen, even where its box dips
+  // behind the top of the flight log (the plane flies behind the cards)
+  const fits = x - bw / 2 >= area.left && x + bw / 2 <= area.right && y - bh / 2 >= area.top;
+  if (!fits && !isClear(x, y, bw, bh, avoid, area)) {
+    // move up, at most until the plane clears the top of the note
+    const limit = words.top - bh / 2;
     let up = y;
     while (up > limit && !isClear(x, up, bw, bh, avoid, area)) up -= 2;
     if (isClear(x, up, bw, bh, avoid, area)) {
       spot = { x, y: up };
-      how = `moved up ${Math.round(y - up)}px under the note`;
+      how = `moved up ${Math.round(y - up)}px`;
     } else {
       const found = nearestClear(x, y, bw, bh, avoid, area, Math.round(Math.min(vw, vh) * 0.4));
       spot = { x: found.x, y: found.y };
       how = `moved to the nearest clear spot (${Math.round(found.x - x)}, ${Math.round(found.y - y)})px`;
     }
   }
-  const result = { x: (spot.x / vw) * 100, y: ((spot.y + REST_DROP) / vh) * 100 };
+  const result = { x: (spot.x / vw) * 100, y: (spot.y / vh) * 100 };
   if (process.env.NODE_ENV !== "production") {
     console.info(
       `[plane] hero rest at (${result.x.toFixed(1)}, ${result.y.toFixed(1)})` +
-        (how ? `: ${how} to keep clear of the headline, buttons and flight log` : ", under the note"),
+        (how ? `: ${how} to keep clear of the headline, buttons and flight log` : ", after the note"),
     );
   }
   return result;
@@ -232,7 +236,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
     return r.top + frac * r.height - screen * vh;
   };
 
-  const rest = heroRest(size);
+  const rest = heroRest(size, plane);
   const restY = rest.y;
 
   // 3. behind the first project card, measured where that card is at that moment
@@ -816,7 +820,7 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
 // with the page like any other content.
 function placeStill(parts: Parts, desktop: boolean, size: Size) {
   const { layer, plane, shadow } = parts;
-  const rest = heroRest(size);
+  const rest = heroRest(size, plane);
   const x = (rest.x / 100) * size.vw;
   const y = (rest.y / 100) * size.vh;
   gsap.set(layer, { position: "absolute", height: 0, overflow: "visible" });

@@ -23,7 +23,6 @@ export type Project = {
   title: string;
   subtitle: string;
   description: string;
-  // shown in the hero's flight log
   deployedResult: string;
   stack: readonly string[];
   // the card's "Visit →" link; "" shows no link
@@ -68,11 +67,21 @@ export const site = {
     primary: { label: "view my work →", href: "https://github.com/Ezeh8" } satisfies Link,
     // Downloads straight away. The file lives at public/ezeh_cv.pdf.
     secondary: { label: "download CV ↓", href: "/ezeh_cv.pdf" } satisfies Link,
-    // Project lines are generated from work.projects below.
+    // Typed out line by line as the page opens; "$ " lines are commands, the rest their
+    // output, and "" leaves a gap between groups.
     flightLog: {
-      header: "flight log",
-      command: "$ status",
-      status: (count: number) => `> ACTIVE! · ${count} systems in range`,
+      header: "EZEH@PM - SCOOP - EVALUATE",
+      lines: [
+        "$ /whoami",
+        "applied AI pm · systems builder · global worker",
+        "",
+        "$ cat ./current-focus.txt",
+        "llm agents, systems building, ux that feels good",
+        "",
+        "$ ezeh: evaluate - log",
+        "✓ mapped. shipped. live.",
+        "✓ process rebuild.",
+      ],
     },
     note: "follow the plane",
   },
