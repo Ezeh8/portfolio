@@ -117,7 +117,15 @@ function lastLetterCorner(word: HTMLElement) {
 // it lands at: the plane flies in from `from` (the previous keyframe) facing left, nose
 // first along its straight final glide, until the tip of its nose touches the top-right
 // corner of the "h" of "touch". The tilt is the glide's own angle, so the nose leads.
-function headlineLanding(word: HTMLElement, plane: HTMLElement, size: Size, max: number, from: { x: number; y: number }) {
+// `scale`: the plane's size there, for where its nose is (phones fly at full size).
+function headlineLanding(
+  word: HTMLElement,
+  plane: HTMLElement,
+  size: Size,
+  max: number,
+  from: { x: number; y: number },
+  scale = LANDING_SCALE,
+) {
   const { vw, vh } = size;
   const corner = lastLetterCorner(word);
   const tip = { x: corner.x - NOSE_DEPTH, y: corner.y - max + NOSE_DEPTH };
@@ -126,12 +134,12 @@ function headlineLanding(word: HTMLElement, plane: HTMLElement, size: Size, max:
   let tilt = 0;
   for (let i = 0; i < 4; i++) {
     tilt = heading(centre.x - (from.x / 100) * vw, centre.y - (from.y / 100) * vh, -1).tilt;
-    const nose = noseOffset(plane, size, -1, tilt, LANDING_SCALE);
+    const nose = noseOffset(plane, size, -1, tilt, scale);
     centre = { x: tip.x - nose.x, y: tip.y - nose.y };
   }
   if (process.env.NODE_ENV !== "production") {
     // the plane's top edge (roughly) must clear the nav, the headline's bottom the screen
-    if (centre.y - (size.h * LANDING_SCALE) / 2 < navBottom() || corner.bottom - max > vh)
+    if (centre.y - (size.h * scale) / 2 < navBottom() || corner.bottom - max > vh)
       console.warn("[plane] the closing headline is not fully on screen, with room above it, at the bottom of the scroll");
   }
   return { x: (centre.x / vw) * 100, y: (centre.y / vh) * 100, tilt };
@@ -149,8 +157,10 @@ const REST_GAP = 5;
 
 function heroRest(size: Size, plane: HTMLElement) {
   const { w, h, vw, vh } = size;
+  const name = $("#hero [data-hero-name]") as HTMLElement | null;
+  if (name && window.matchMedia("(max-width: 1023px)").matches) return nameRest(name, plane, size);
   const note = $("#hero .font-hand");
-  if (!note) return { x: 26, y: 55 };
+  if (!note) return { x: 26, y: 55, tilt: -6 };
 
   // The plane's box at its resting tilt (-6°), with a little breathing room.
   const rad = (6 * Math.PI) / 180;
@@ -206,7 +216,7 @@ function heroRest(size: Size, plane: HTMLElement) {
       how = `moved to the nearest clear spot (${Math.round(found.x - x)}, ${Math.round(found.y - y)})px`;
     }
   }
-  const result = { x: (spot.x / vw) * 100, y: (spot.y / vh) * 100 };
+  const result = { x: (spot.x / vw) * 100, y: (spot.y / vh) * 100, tilt: -6 };
   if (process.env.NODE_ENV !== "production") {
     console.info(
       `[plane] hero rest at (${result.x.toFixed(1)}, ${result.y.toFixed(1)})` +
@@ -214,6 +224,29 @@ function heroRest(size: Size, plane: HTMLElement) {
     );
   }
   return result;
+}
+
+// Phones and tablets: the hero resting spot is right beside the final "a" of "Ezeh
+// Ikenna", the plane facing left and angled NAME_TILT° nose down, the tip of its nose
+// NAME_GAP px off the letter's right edge (negative: tucked in, so it looks almost
+// touching), a little below its top (NAME_DROP of the font
+// size), pointing at it. Kept that low so the plane stays clear of the line above the
+// name. Measured from the letter itself (the font's glyph metrics), so it holds at every
+// width.
+const NAME_TILT = 15;
+const NAME_GAP = -4;
+const NAME_DROP = 0.12;
+
+function nameRest(name: HTMLElement, plane: HTMLElement, size: Size) {
+  const { vw, vh } = size;
+  const corner = lastLetterCorner(name);
+  const fontSize = parseFloat(getComputedStyle(name).fontSize) || 38;
+  const nose = noseOffset(plane, size, -1, NAME_TILT, 1);
+  const x = corner.x + NAME_GAP - nose.x;
+  const y = corner.y + fontSize * NAME_DROP - nose.y;
+  if (process.env.NODE_ENV !== "production")
+    console.info(`[plane] hero rest at the name's "a" (${((x / vw) * 100).toFixed(1)}, ${((y / vh) * 100).toFixed(1)})`);
+  return { x: (x / vw) * 100, y: (y / vh) * 100, tilt: NAME_TILT };
 }
 
 // The whole flight, in screen units, timed against the sections' scroll positions.
@@ -250,7 +283,7 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   const keys: Key[] = [
     // 1. hero rest, then a slight drift up and left
     // keyframe 0: start
-    { name: "hero rest", s: 0, x: rest.x, y: restY, scale: 1, tilt: -6, facing: -1 },
+    { name: "hero rest", s: 0, x: rest.x, y: restY, scale: 1, tilt: rest.tilt, facing: -1 },
     // leg 1
     {
       name: "hero drift",
@@ -333,7 +366,8 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   ];
   // leg 8: completes exactly at the bottom of the scroll, the nose tip on the "h" of
   // "touch"; both axes share one ease, so the glide is a straight line the nose follows
-  const landing = headlineLanding(touch, plane, size, max, keys[keys.length - 1]);
+  // desktop keeps the landing it has always had; phones place the full-size plane's nose
+  const landing = headlineLanding(touch, plane, size, max, keys[keys.length - 1], desktop ? LANDING_SCALE : 1);
   keys.push({
     name: "landing nose first on the h",
     s: max,
@@ -429,11 +463,16 @@ function paceStretch(keys: Key[], size: Size, max: number) {
   }
 }
 
-// Phones (under 1024px): "hide and seek". Legs 0-1 and the last two legs (off screen
-// upper right, then the nose-first landing) are the same as choreography()'s; in between, the
+// Phones (under 1024px): "hide and seek". It starts pointing at the "a" of the name, then
+// dives straight down the right side of the hero, nose first, and ends with one straight
+// glide from the right side onto the "h" of "touch"; in between, the
 // plane holds near 55% of the screen height and hides behind the cards, showing itself
 // only as the gaps between them scroll through its height.
 const PHONE_Y = 55;
+// the least nose-down angle anywhere on the phone flight
+const PHONE_DOWN = 25;
+// x of the hero dive down the right side
+const DIVE_X = 86;
 const PHONE_TILT = 20;
 
 function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
@@ -612,22 +651,78 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
       scale: 0.5,
       ...tilt,
     },
-    // 8. Toolkit: one gentle move to the left edge, sinking slightly
-    { name: "phone: toolkit, to the left edge", s: when(toolkit?.bottom, 50), x: 12, y: 54, scale: 0.5, ...tilt },
-    // 9. second banner: left to right, rising, behind the banner, into the off-screen leg
+    // 8. Toolkit: over to the left side as the section passes, then across to the right
+    // side as it ends, ready for the glide down onto the "h"
     {
-      name: "phone: second banner, rising right",
-      s: when(secondBanner && (secondBanner.top + secondBanner.bottom) / 2, 50),
-      x: 85,
-      y: 28,
-      scale: 0.4,
+      name: "phone: toolkit, left side",
+      s: when(toolkit && (toolkit.top + toolkit.bottom) / 2, 50),
+      x: 12,
+      y: 52,
+      scale: 0.5,
+      ...tilt,
+    },
+    {
+      name: "phone: toolkit end, right side",
+      s: when(secondBanner && (secondBanner.top + secondBanner.bottom) / 2, 45),
+      x: 86,
+      y: 40,
+      scale: 0.5,
       ...tilt,
     },
   ];
 
+  // The hero: from the rest at the name's "a", over to the right side, then one straight
+  // dive down it, nose first, ending behind the first banner; the side-to-side legs
+  // follow.
+  const hero = box($("#hero"));
+  const rest = shared[0];
+  // it ends behind the first banner, as the banner's middle reaches it
+  const dive: Key = {
+    name: "phone: hero, straight down the right side, behind the banner",
+    s: when(banner && (banner.top + banner.bottom) / 2, 60),
+    x: DIVE_X,
+    y: 60,
+    scale: 0.85,
+    tilt: 80,
+    facing: -1,
+    xEase: "sine.out",
+    yEase: "sine.in",
+  };
+  // a short drop first, to the right edge, so the dive itself runs straight down
+  const toSide: Key = {
+    name: "phone: hero, over to the right side",
+    s: when(hero && hero.top + (hero.bottom - hero.top) * 0.25, 20),
+    x: DIVE_X,
+    y: rest.y + 6,
+    scale: 0.95,
+    tilt: 70,
+    facing: -1,
+  };
+
   // Any keyframe with a missing anchor reuses the previous keyframe.
-  const start = shared.slice(0, 2);
-  const end = shared.slice(-2);
+  // then the first ping: straight across to the left as the About heading passes the
+  // plane's height
+  const aboutHeading = box($("#about h2"));
+  const ping: Key = {
+    name: "phone: about, first ping left across the heading",
+    s: when(aboutHeading && (aboutHeading.top + aboutHeading.bottom) / 2, 50),
+    x: 12,
+    y: 50,
+    scale: 0.7,
+    ...tilt,
+  };
+  const diving = Number.isFinite(dive.s) && Number.isFinite(toSide.s);
+  const start = [rest, ...(diving ? [toSide, dive] : [shared[1]])];
+  // the dive replaces the first side leg (over to the right edge behind the banner)
+  if (diving) middle.shift();
+  if (Number.isFinite(ping.s)) middle.unshift(ping);
+  // 9. the landing: one straight glide from the right side, nose first, onto the "h"
+  // (no off-screen leg on phones)
+  const touch = $("#contact .highlight") as HTMLElement | null;
+  const last = shared[shared.length - 1];
+  const from = middle[middle.length - 1];
+  const landing = touch && Number.isFinite(from.s) ? headlineLanding(touch, plane, size, maxScroll(), from, 1) : null;
+  const end = landing ? [{ ...last, x: landing.x, y: landing.y, tilt: landing.tilt }] : shared.slice(-2);
   const keys = [...start];
   for (const key of middle) {
     const prev = keys[keys.length - 1];
@@ -638,6 +733,9 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
       keys.push({ ...key, s: prev.s, x: prev.x, y: prev.y, scale: prev.scale });
     }
   }
+  // Flying down the page, the nose points down the whole way (at least PHONE_DOWN°), also
+  // on legs that move up the screen; the rest at the name keeps its own angle.
+  for (const key of keys.slice(1)) key.tilt = Math.max(key.tilt ?? 0, PHONE_DOWN);
   keys.push(...end);
   const s = inOrder(
     keys.map((k) => k.s),
@@ -660,6 +758,10 @@ type Parts = {
 
 // One timeline scrubbed against the page scroll. Its time is the scroll position in
 // pixels; each leg tweens a proxy from one keyframe to the next.
+// The plane flies at full size the whole way, on every layout; the keyframes' `scale`
+// only shapes the shadow's offset. (It isn't applied: GSAP's quickSetter
+// expands "scale" to an attribute named "scaleX,scaleY", which Safari rejects, so the
+// flight never built on iPhones.)
 function buildFlight(parts: Parts, keys: Key[], size: Size) {
   const { plane, body, shadow, trail } = parts;
   const { w, h, vw, vh } = size;
@@ -727,19 +829,15 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
 
   const setX = gsap.quickSetter(plane, "x", "px");
   const setY = gsap.quickSetter(plane, "y", "px");
-  const setScale = gsap.quickSetter(plane, "scale");
   const setRotation = gsap.quickSetter(plane, "rotation", "deg");
   const setFacing = gsap.quickSetter(body, "scaleX");
   const setShadowX = gsap.quickSetter(shadow, "x", "px");
   const setShadowY = gsap.quickSetter(shadow, "y", "px");
-  const setShadowScale = gsap.quickSetter(shadow, "scale");
-
   const draw = () => {
     const px = (proxy.x / 100) * vw;
     const py = ((proxy.y + proxy.bow) / 100) * vh;
     setX(px);
     setY(py);
-    setScale(proxy.scale);
     // facing runs through 0 during a bank turn; the tilt's sign follows the side the
     // nose is on, flipping at the thinnest point of the turn
     setFacing(proxy.facing);
@@ -747,7 +845,6 @@ function buildFlight(parts: Parts, keys: Key[], size: Size) {
     // the shadow follows position and scale only
     setShadowX(px);
     setShadowY(py + h * 0.62 * proxy.scale);
-    setShadowScale(proxy.scale);
 
     const u = clamp((tl.time() - ta.s) / (tb.s - ta.s || 1), 0, 1);
     let n = 0;
@@ -824,8 +921,8 @@ function placeStill(parts: Parts, desktop: boolean, size: Size) {
   const x = (rest.x / 100) * size.vw;
   const y = (rest.y / 100) * size.vh;
   gsap.set(layer, { position: "absolute", height: 0, overflow: "visible" });
-  // facing left (mirrored), nose slightly up
-  gsap.set(plane, { x, y, rotation: 6, scale: 1 });
+  // facing left (mirrored), at the rest's tilt (desktop: nose slightly up)
+  gsap.set(plane, { x, y, rotation: -rest.tilt, scale: 1 });
   gsap.set(parts.body, { scaleX: -1 });
   gsap.set(shadow, { x, y: y + size.h * 0.62, scale: 1 });
 }
@@ -918,9 +1015,7 @@ export default function PlaneFlight() {
               if (reduce) placeStill(p, desktop, size);
               else {
                 // phones get their own hide-and-seek flight, desktop the original one
-                const keys = phone
-                  ? phoneChoreography(size, p.plane)
-                  : choreography(desktop, size, p.plane);
+                const keys = phone ? phoneChoreography(size, p.plane) : choreography(desktop, size, p.plane);
                 if (!keys) return;
                 const flight = buildFlight(p, keys, size);
                 // Dev-only debug overlay. The NODE_ENV check is replaced at build time,
@@ -1005,7 +1100,11 @@ export default function PlaneFlight() {
       />
       <div ref={plane} className="invisible absolute top-0 left-0 will-change-transform">
         <div ref={body}>
-          <PaperPlane />
+          {/* phones: a gentle drift forward and back along the nose, on top of the flight
+              (inside the turned and mirrored body, so it follows the nose) */}
+          <div className="max-lg:motion-safe:animate-[plane-float_2.4s_ease-in-out_infinite_alternate]">
+            <PaperPlane />
+          </div>
         </div>
       </div>
     </div>

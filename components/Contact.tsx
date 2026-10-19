@@ -22,7 +22,7 @@ export default function Contact() {
   const socialLinks = socials.filter(hasHref);
 
   return (
-    <footer id="contact" className="scroll-mt-16 pt-20 pb-6 sm:pt-28 sm:pb-8">
+    <footer id="contact" className="scroll-mt-16 pt-12 pb-6 sm:pt-16 sm:pb-8">
       <Container>
         <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:gap-12">
           <div className="min-w-0">

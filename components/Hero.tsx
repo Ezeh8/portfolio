@@ -8,7 +8,7 @@ export default function Hero() {
     site.hero;
 
   return (
-    <section id="hero" className="scroll-mt-16 pt-12 pb-16 sm:pt-20 sm:pb-24">
+    <section id="hero" className="scroll-mt-16 pt-10 pb-10 sm:pt-14 sm:pb-14">
       <Container>
         {/* the flight log's column takes the card's width, so each of its lines fits on one line */}
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
@@ -16,7 +16,7 @@ export default function Hero() {
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
               {label}
             </p>
-            <p className="chrome mt-6 font-display text-[38px] sm:text-[40px] font-medium lg:mt-3">{name}</p>
+            <p data-hero-name className="chrome mt-6 font-display text-[38px] sm:text-[40px] font-medium lg:mt-3">{name}</p>
             <p className="mt-1 text-text/70">{tagline}</p>
 
             <p className="mt-8 inline-flex items-center gap-2 rounded-full lg:mt-5 border-(length:--border-width) border-line bg-card px-3 py-1.5 font-mono text-xs">
@@ -43,7 +43,8 @@ export default function Hero() {
           </div>
 
           <div>
-            <HandNote arrow="none" className="relative z-[2] mb-3 ml-4 -rotate-3">
+            {/* desktop only: on phones the plane starts at the name instead */}
+            <HandNote arrow="none" className="relative z-[2] mb-3 ml-4 -rotate-3 max-lg:hidden">
               {note}
             </HandNote>
             <div className="panel panel-classic relative z-[2] overflow-hidden lg:[--tilt:-1deg]">
@@ -52,7 +53,7 @@ export default function Hero() {
                   {/* three dots, like a terminal window */}
                   <span className="flex gap-1.5">
                     <StatusDot className="bg-text-muted" />
-                    <StatusDot className="bg-text-muted" />
+                    <StatusDot className="bg-white" />
                     <StatusDot className="bg-text-muted" />
                   </span>
                   {/* the name, then the rest of the title in grey */}
@@ -64,7 +65,9 @@ export default function Hero() {
                   </span>
                 </span>
               </PanelBar>
-              <div className="p-4 font-mono text-[13px] leading-relaxed sm:px-5 lg:whitespace-nowrap lg:text-[12px]">
+              {/* one line per entry everywhere; below lg the text scales with the width so the
+                  longest line (56 characters) fits the card */}
+              <div className="whitespace-nowrap px-2 py-4 font-mono text-[min(13px,calc((100vw-48px)/35))] leading-relaxed sm:px-5 lg:text-[12px]">
                 <TypedLog lines={flightLog.lines} />
               </div>
             </div>

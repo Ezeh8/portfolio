@@ -5,16 +5,23 @@ import { Container, Headline, SectionLabel } from "./ui";
 export default function About() {
   const { label, headline, paragraphs } = site.about;
   return (
-    <section id="about" className="scroll-mt-16 py-20 sm:py-28">
+    <section id="about" className="scroll-mt-16 py-12 sm:py-16">
       <Container>
         <div className="grid gap-8 md:grid-cols-[1fr_1.6fr] md:gap-16">
           <div>
             <SectionLabel>{label}</SectionLabel>
-            <Headline copy={headline} className="mt-4 whitespace-pre-line text-[clamp(2.25rem,5vw,3.5rem)]" />
+            {/* below md, sized so "I own the maps & specs" fits the width: two lines in all */}
+            <Headline
+              copy={headline}
+              className="mt-4 whitespace-pre-line text-[min(2.25rem,calc((100vw-32px)/13.5))] sm:text-[min(2.25rem,calc((100vw-64px)/13.5))] md:text-[clamp(2.25rem,5vw,3.5rem)]"
+            />
           </div>
           <div className="space-y-8 text-[calc(clamp(1.25rem,2.2vw,1.625rem)-5px)] leading-[1.6] text-text/75 md:pt-9">
-            {paragraphs.map((p) => (
-              <p key={p.slice(0, 24)}>{p}</p>
+            {/* phones show only the first paragraph; "the whole story" has the rest */}
+            {paragraphs.map((p, i) => (
+              <p key={p.slice(0, 24)} className={i > 0 ? "max-md:hidden" : undefined}>
+                {p}
+              </p>
             ))}
             <AboutStory />
           </div>

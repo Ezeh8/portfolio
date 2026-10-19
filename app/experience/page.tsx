@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 // Every role card (the homepage shows the first two).
 export default function ExperiencePage() {
   return (
-    <SubPage>
+    <SubPage page="/experience" from="/#experience">
       <Experience all />
       {/* the highlighted numbers count up here too */}
       <CountUp />

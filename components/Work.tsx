@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { site } from "@/content/site";
+import { SeeAllLink } from "./BackLink";
 import ProjectCard from "./ProjectCard";
 import { Container, Glyphs, Headline, SectionLabel } from "./ui";
 
@@ -13,7 +13,7 @@ export default function Work({ all = false }: { all?: boolean }) {
   const shown = all ? projects : projects.slice(0, HOME_PROJECTS);
 
   return (
-    <section id="work" className="scroll-mt-16 py-20 sm:py-28">
+    <section id="work" className="scroll-mt-16 py-12 sm:py-16">
       <Container>
         <SectionLabel>{label}</SectionLabel>
         <Headline
@@ -32,12 +32,12 @@ export default function Work({ all = false }: { all?: boolean }) {
 
         {!all && projects.length > HOME_PROJECTS && (
           <div className="mt-10 flex justify-end font-mono text-xs">
-            <Link
+            <SeeAllLink
               href="/projects"
               className="group inline-flex h-9 items-center rounded-full border-(length:--border-width) border-line px-4 uppercase tracking-[0.12em] transition-[scale,background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome)] hover:text-btn-text motion-safe:active:scale-95"
             >
               <Glyphs text={seeAll} />
-            </Link>
+            </SeeAllLink>
           </div>
         )}
       </Container>

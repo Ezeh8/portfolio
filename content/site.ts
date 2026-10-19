@@ -25,7 +25,7 @@ export type Project = {
   description: string;
   deployedResult: string;
   stack: readonly string[];
-  // the card's "Visit →" link; "" shows no link
+  // the card's "View →" link; "" shows no link
   github: string;
 };
 
@@ -70,17 +70,17 @@ export const site = {
     // Typed out line by line as the page opens; "$ " lines are commands, the rest their
     // output, and "" leaves a gap between groups.
     flightLog: {
-      header: "EZEH@PM - SCOOP - EVALUATE",
+      header: "ezeh@pm - re-building processes",
       lines: [
         "$ /whoami",
-        "applied AI pm · systems builder · global worker",
+        "applied AI pm · operations engineer · across time-zones",
         "",
         "$ /current-focus",
-        "llm agents, systems building, ai security & governance",
+        "llm agents · systems building · ai security & governance",
         "",
-        "$ /sop: evaluate - log",
-        "✓ mapped. shipped. live.",
-        "✓ process rebuild.",
+        "$ /sop: spec - evaluate - log",
+        "✓ mapped · shipped · live",
+        "✓ process rebuild",
       ],
     },
     note: "follow the plane",
@@ -94,7 +94,7 @@ export const site = {
     label: "01 / ABOUT ME",
     headline: {
       // line breaks: the \n breaks are kept by the About headline (whitespace-pre-line)
-      text: "I own the maps & specs\nbefore the code.",
+      text: "i own the maps & specs\nbefore the code.",
       highlight: "maps & specs",
       keepCase: true,
     } satisfies Headline,
@@ -185,7 +185,7 @@ export const site = {
         role: "Founder",
         company: "Rithma Labs (Global AI & Systems Consulting)",
         dates: "Sept 2024 – Present",
-        opsLog: "deploy · agentic systems for logistics, construction, saas, energy",
+        opsLog: "DEPLOYING AGENTIC SYSTEMS GLOBALLY",
         bullets: [
           "Built an n8n pipeline for an enterprise logistics company, routing CRM and deal data to billing and project tools with a guardrail step for edge cases, cutting admin overhead 85%",
           "Deployed a self-hosted AI model for a global construction firm, evaluated against sandbox cases before going live, quadrupling invoice processing capacity during peak weeks",
@@ -197,7 +197,7 @@ export const site = {
         role: "Operations Systems Partner",
         company: "Standard Chartered Bank",
         dates: "Aug 2021 – Dec 2024",
-        opsLog: "operate · automation, kyc, credit scoring",
+        opsLog: "AUTOMATION, KYC, CREDIT SCORING",
         bullets: [
           "Monitored the bank's in-app automation for real-time customer engagement and support, flagging issues and coordinating fixes with cross-functional teams",
           "Collaborated with compliance and engineering teams to roll out a digital KYC verification platform aligned with Central Bank of Nigeria requirements",

@@ -14,7 +14,7 @@ export default function PaperPlane({ className = "" }: { className?: string }) {
       aria-hidden="true"
       focusable="false"
       viewBox="0 0 220 135"
-      className={`block h-auto w-[80px] lg:w-[128px] ${className}`}
+      className={`block h-auto w-[90px] lg:w-[128px] ${className}`}
     >
       <defs>
         <linearGradient id={near} x1="0" y1="0" x2="1" y2="1">

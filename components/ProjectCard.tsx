@@ -5,7 +5,7 @@ type Project = (typeof site.work.projects)[number];
 // A full-width project card in two columns (stacked on phones), everything on the card
 // itself, with no overlay or cover, in the site's frosted-glass panel (.panel). Left: the
 // number, the name, then the tagline. Right: what it does, then the stack as slim pills
-// with a chrome "Visit →" link to the repo at the right of the same line. The card keeps
+// with a chrome "View →" link to the repo at the right of the same line. The card keeps
 // the project's id, which the plane looks up.
 export default function ProjectCard({ project, number }: { project: Project; number: number }) {
   return (
@@ -24,13 +24,18 @@ export default function ProjectCard({ project, number }: { project: Project; num
       <div className="flex flex-col">
         <p className="text-[15px] leading-6 text-btn-shadow">{project.description}</p>
 
-        {/* the pills, with Visit on the same line at the right */}
+        {/* the pills, with "View" on the same line at the right */}
         <div className="mt-5 flex items-center gap-4">
-          <ul aria-label="Stack" className="flex flex-1 flex-wrap gap-2">
+          {/* phones: one line, the pills scrolling sideways (fading at the right edge) when
+              they don't all fit beside "View" */}
+          <ul
+            aria-label="Stack"
+            className="flex min-w-0 flex-1 gap-2 max-md:overflow-x-auto max-md:[scrollbar-width:none] max-md:[mask-image:linear-gradient(to_right,black_80%,transparent)] md:flex-wrap max-md:[&::-webkit-scrollbar]:hidden"
+          >
             {project.stack.map((item) => (
               <li
                 key={item}
-                className="rounded-full border-(length:--border-width) border-line px-3 py-1 font-mono text-[11px] tracking-[0.04em] text-card-alt-title"
+                className="shrink-0 whitespace-nowrap rounded-full border-(length:--border-width) border-line px-3 py-1 font-mono text-[11px] tracking-[0.04em] text-card-alt-title"
               >
                 {item}
               </li>
@@ -42,12 +47,12 @@ export default function ProjectCard({ project, number }: { project: Project; num
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`Visit ${project.title} on GitHub`}
-              className="group shrink-0 text-sm font-semibold"
+              aria-label={`View ${project.title} on GitHub`}
+              className="group shrink-0 whitespace-nowrap text-sm font-semibold"
             >
               {/* chrome on each part: the arrow is an inline-block (it nudges on hover), which
                   a parent's text-clipped background wouldn't reliably reach */}
-              <span className="chrome">Visit</span>
+              <span className="chrome">View</span>
               <span className="chrome ml-1 inline-block font-mono transition-transform duration-150 motion-safe:group-hover:translate-x-1">
                 →
               </span>

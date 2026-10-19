@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 // Every project card (the homepage shows the first two).
 export default function Projects() {
   return (
-    <SubPage>
+    <SubPage page="/projects" from="/#work">
       <Work all />
     </SubPage>
   );
