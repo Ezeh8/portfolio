@@ -13,9 +13,16 @@ export default function ProjectCard({ project, number }: { project: Project; num
       id={project.id}
       className="panel relative z-[2] grid gap-6 p-6 sm:p-8 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-12"
     >
-      <div>
+      {/* a container, so a one-line title can size itself to the column's width */}
+      <div className="@container">
         <p className="font-mono text-sm leading-6 text-text-muted">{String(number).padStart(2, "0")} ~</p>
-        <h3 className="mt-2 font-display text-2xl leading-tight font-extrabold text-btn-ink sm:text-[1.75rem]">
+        <h3
+          className={`mt-2 font-display leading-tight font-extrabold text-btn-ink ${
+            "oneLine" in project && project.oneLine
+              ? "whitespace-nowrap text-[min(1.5rem,calc(100cqw/12))] sm:text-[min(1.75rem,calc(100cqw/12))]"
+              : "text-2xl sm:text-[1.75rem]"
+          }`}
+        >
           {project.title}
         </h3>
         {project.subtitle && <p className="mt-2 text-sm leading-relaxed italic text-text-muted">{project.subtitle}</p>}

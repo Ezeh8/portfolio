@@ -27,6 +27,8 @@ export type Project = {
   stack: readonly string[];
   // the card's "View →" link; "" shows no link
   github: string;
+  // keeps the title on one line, shrinking it to fit the card where needed
+  oneLine?: boolean;
 };
 
 export type Role = {
@@ -72,7 +74,7 @@ export const site = {
     flightLog: {
       header: "ezeh@pm - re-building processes",
       lines: [
-        "$ /whoami",
+        "$ /who.am.i?",
         "applied AI pm · operations engineer · across time-zones",
         "",
         "$ /current-focus",
@@ -140,36 +142,73 @@ export const site = {
         id: "invoice-handler",
         title: "Invoice Exception Handler",
         subtitle: "Automated Accounts Payable Reconciliation & Audit",
-        description: "Plugs into financial and ERP workflows to automatically scan incoming vendor purchase orders against bills. Isolates line-item pricing discrepancies, tax mismatches, or missing delivery receipts, routing only non-standard exceptions to human managers while passing clean invoices straight to payment processing.",
+        description: "Plugs into financial and ERP workflows to automatically scan incoming vendor purchase orders against bills using containerized local LLMs. Isolates line-item pricing discrepancies, tax mismatches, or missing delivery receipts, routing only non-standard exceptions to human managers while passing clean invoices straight to payment processing—quadrupling invoice processing capacity during peak weeks.",
         deployedResult: "50 → 200+ invoices processed per week at peak",
-        stack: ["FastAPI", "PostgreSQL", "Ollama/Qwen"],
+        stack: ["FastAPI", "PostgreSQL", "Ollama / Qwen-2.5"],
         github: "https://github.com/Ezeh8/Invoice-exception-handler-eval",
       },
       {
         id: "llm-wiki",
-        title: "Large Language Model Wikipedia",
+        title: "LLM Wikipedia",
         subtitle: "Internal SOP & Compliance Knowledge Retrieval",
-        description: "Acts as a centralized, privacy-first knowledge engine for complex organization policies, standard operating procedures, and internal documentation. Operations and support teams query the system in natural language to retrieve verified, context-aware answers instantly, eliminating manual document searches and reducing employee onboarding time.",
+        description: "Acts as a centralized, privacy-first knowledge engine for complex organization policies, standard operating procedures, and internal documentation. Operations and support teams query the system in natural language to retrieve verified, context-aware answers instantly, integrating directly into Zendesk to reduce internal support ticket volume by 60% and slash onboarding turnaround.",
         deployedResult: "4 live SOPs · 29 regression tests · weekly drift check · CI/CD gate",
-        stack: ["LangGraph", "Vector DB (RAG)", "FastAPI"],
+        stack: ["LangGraph", "Qdrant (RAG)", "FastAPI"],
         github: "https://github.com/Ezeh8/llm_wiki",
       },
       {
         id: "ai-governance",
-        title: "AI Security & Governance layer",
+        title: "AI security & Governance",
         subtitle: "Enterprise Agent Governance & Role-Based Access Control (RBAC)",
-        description: "Serves as a security and authorization gateway for autonomous AI agents operating across enterprise IT stacks. Sets hard boundaries on agent tool execution—defining exact permission scopes (read-only vs. execute privileges), enforcing approval gates for sensitive API calls, and generating immutable audit logs for compliance audits.",
+        description: "Serves as a security and authorization gateway for autonomous AI agents operating across enterprise IT stacks. Sets hard boundaries on agent tool execution—defining exact permission scopes, enforcing approval gates for sensitive API calls, and generating immutable audit logs to ensure compliance across complex operational environments.",
         deployedResult: "7 security steps live-tested · RBAC + ABAC + server-derived audit trail",
-        stack: ["Model Context Protocol (MCP)", "FastAPI"],
+        stack: ["Model Context Protocol (MCP)", "FastAPI", "Agent Governance"],
         github: "https://github.com/Ezeh8/Tool-access-controller",
       },
       {
         id: "ops-sync",
-        title: "Operation Sync. system",
-        subtitle: "Cross-departmental Webhook Engine for Logistics",
-        description: "Synchronizes CRM, billing, and inventory pipelines to eliminate manual data entry. Orchestrates real-time data flow across departments, ensuring consistency and reducing operational friction.",
-        deployedResult: "Logistics, construction, SaaS, and energy engagements",
+        title: "Operation sync. System",
+        subtitle: "Cross-Departmental Webhook Engine for Logistics",
+        description: "Synchronizes CRM, billing, and inventory pipelines across HubSpot, Stripe, and Asana to eliminate manual double-handling. Orchestrates real-time data flows across departments with built-in human-in-the-loop guardrails for edge cases, cutting administrative overhead by 85% and saving 15 hours of manual labor per week.",
+        deployedResult: "85% less admin overhead · 15 hours saved per week",
         stack: ["n8n", "Webhooks", "Logistics Ops"],
+        github: "",
+      },
+      {
+        id: "retention-ai",
+        title: "Retention AI Engine",
+        subtitle: "Automated Churn Prediction & Customer Winback",
+        description: "Engineers automated churn-prediction and personalized re-engagement pipelines triggered by purchase dormancy and contact decay. Leverages prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 90-day churn by 21% and recovering over ₦17M in dormant customer lifetime value within two months.",
+        deployedResult: "90-day churn down 21% · ₦17M+ recovered in two months",
+        stack: ["GoHighLevel", "GPT-4o", "WhatsApp API"],
+        github: "",
+      },
+      {
+        id: "zen-onboarding",
+        title: "Zen. Onboarding Engine",
+        subtitle: "Automated Client Provisioning & Support Triage",
+        description: "Automates end-to-end client onboarding upon payment verification by dynamically auto-generating PandaDoc contracts, setting up Google Drive workspaces, and routing onboarding tickets into Zendesk. Eliminates administrative bottlenecks to slash client onboarding turnaround time from 48 hours to under 15 minutes.",
+        deployedResult: "Onboarding 48 hours → under 15 minutes",
+        stack: ["n8n", "Zendesk", "Stripe API"],
+        github: "",
+      },
+      {
+        id: "energy-blueprint",
+        title: "Integration Blueprint",
+        oneLine: true,
+        subtitle: "Enterprise Data Architecture & Field OT Mapping",
+        description: "Delivered a technical integration blueprint for an energy-sector multinational, mapping data pipelines across enterprise systems (SAP ERP, SLB Lumi, Avocet) and field OT systems (AVEVA PI, SCADA). Established Model Context Protocol (MCP) data architecture and security boundaries to lay the technical foundation for a later enterprise-wide AI rollout.",
+        deployedResult: "Enterprise + field OT systems mapped for an AI rollout",
+        stack: ["SAP / AVEVA PI", "MCP", "Enterprise Architecture"],
+        github: "",
+      },
+      {
+        id: "claude-intelligence",
+        title: "Claude Intelligence Engine",
+        subtitle: "Autonomous Scheduled Research & Persistent Dashboard Pipeline",
+        description: "Engineers an unattended, daily-scheduled AI agent that pulls from live web sources and persistent memory stores to republish a single, always-current dashboard without manual intervention. Features automated state reconciliation, stale-data suppression, and quiet-failure detection mechanisms to maintain data freshness and prevent accumulating log clutter over long-term execution runs.",
+        deployedResult: "Daily unattended runs · one always-current dashboard",
+        stack: ["Python", "LangGraph", "Automated Workflows"],
         github: "https://github.com/Ezeh8",
       },
     ] as const satisfies readonly Project[],

@@ -1116,9 +1116,9 @@ export default function PlaneFlight() {
       />
       <div ref={plane} className="invisible absolute top-0 left-0 will-change-transform">
         <div ref={body}>
-          {/* phones: a gentle drift forward and back along the nose, on top of the flight
+          {/* a gentle drift forward and back along the nose, on top of the flight
               (inside the turned and mirrored body, so it follows the nose) */}
-          <div className="max-lg:motion-safe:animate-[plane-float_2s_ease-in-out_infinite_alternate]">
+          <div className="motion-safe:animate-[plane-float_2s_ease-in-out_infinite_alternate]">
             <PaperPlane />
           </div>
         </div>

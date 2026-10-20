@@ -80,6 +80,135 @@ body {
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Three grey rings, after pabliqe.framer.website: each orb is hollow (the page's black
+   shows through its middle), with a bright rim part way out that fades outward. Their
+   centres sit on the window's edges (top right, lower left, bottom right), so each shows as
+   a soft arc and the middle of the page stays black. Fixed to the window; each drifts in
+   and along its edge and back. */
+.orb-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* each ring's size (its box's width): top right, lower left, bottom right */
+  --orb-top-right: 1000px;
+  --orb-left: 1300px;
+  --orb-bottom-right: 800px;
+  /* how visible the rings are, 0 to 1 */
+  opacity: 1;
+  /* how long one sway, out and back, takes */
+  --sway-time: 9s;
+  /* the rim's inner edge, its peak, halfway out and where it's gone, as a share of the
+     radius: a ring 40% of its box across, gone by 50% */
+  --rim-in: 40%;
+  --rim: 40%;
+  --rim-mid: 40%;
+  --rim-out: 50%;
+}
+
+@media (max-width: 767px) {
+  .orb-layer {
+    --orb-top-right: 500px;
+    --orb-left: 1000px;
+    --orb-bottom-right: 450px;
+    /* a ~200px ring fading out by ~230px across */
+    --rim-in: 28.5%;
+    --rim: 35.7%;
+    --rim-mid: 38.1%;
+    --rim-out: 41.4%;
+  }
+}
+
+.orb {
+  position: absolute;
+  width: var(--orb);
+  height: var(--orb);
+  will-change: transform;
+}
+
+/* top right: the brightest */
+.orb-right-top {
+  --orb: var(--orb-top-right);
+  background: radial-gradient(50% 50% at 50% 50%, rgb(0 0 0 / 0) 0%, rgb(0 0 0 / 0) var(--rim-in), #6a6a6e var(--rim), rgb(70 70 74 / 0.35) var(--rim-mid), rgb(60 60 64 / 0) var(--rim-out));
+  left: calc(100% - var(--orb) * 0.5);
+  top: calc(12% - var(--orb) * 0.5);
+  animation: drift-right-top var(--sway-time) ease-in-out infinite;
+}
+
+/* lower left */
+.orb-left {
+  --orb: var(--orb-left);
+  background: radial-gradient(50% 50% at 50% 50%, rgb(0 0 0 / 0) 0%, rgb(0 0 0 / 0) var(--rim-in), #5c5c60 var(--rim), rgb(64 64 68 / 0.35) var(--rim-mid), rgb(56 56 60 / 0) var(--rim-out));
+  left: calc(var(--orb) * -0.5);
+  top: calc(80% - var(--orb) * 0.5);
+  animation: drift-left var(--sway-time) ease-in-out infinite calc(var(--sway-time) / -3);
+}
+
+/* bottom right: the dimmest */
+.orb-right {
+  --orb: var(--orb-bottom-right);
+  background: radial-gradient(50% 50% at 50% 50%, rgb(0 0 0 / 0) 0%, rgb(0 0 0 / 0) var(--rim-in), #505054 var(--rim), rgb(58 58 62 / 0.35) var(--rim-mid), rgb(50 50 54 / 0) var(--rim-out));
+  left: calc(100% - var(--orb) * 0.5);
+  top: calc(100% - var(--orb) * 0.5);
+  animation: drift-right var(--sway-time) ease-in-out infinite calc(var(--sway-time) / -1.5);
+}
+
+/* desktop and tablet: the bottom right ring's hollow middle is smaller, its grey softening
+   inward from the rim */
+@media (min-width: 768px) {
+  .orb-right {
+    --rim-in: 20%;
+  }
+}
+
+/* phones: the top right and bottom right rings' hollow middles are smaller, their grey
+   softening inward from the rim */
+@media (max-width: 767px) {
+  .orb-right-top {
+    --rim-in: 15%;
+  }
+  .orb-right {
+    --rim-in: 25%;
+  }
+}
+
+@keyframes drift-right-top {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-8%, 10%);
+  }
+}
+
+@keyframes drift-left {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(6%, -14%);
+  }
+}
+
+@keyframes drift-right {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-10%, -10%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb {
+    animation: none;
+  }
+}
+
 @layer components {
   /* Cards and panels: flat, still frosted glass. A see-through tint over a blur of what
      passes behind (the plane flies underneath), a bright edge and a soft glow; hovered,
@@ -154,6 +283,14 @@ body {
     }
   }
 
+  /* the hero flight log: no hard offset shadow, hovered or not */
+  .panel.panel-classic.panel-no-offset,
+  .panel.panel-classic.panel-no-offset:hover {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      0 0 32px rgb(255 255 255 / 0.07);
+  }
+
   @keyframes card-float {
     from {
       translate: 0 -6px;
@@ -165,7 +302,7 @@ body {
     }
   }
 
-  /* The plane on phones: a little forward-and-back drift along its nose. */
+  /* The plane: a little forward-and-back drift along its nose. */
   @keyframes plane-float {
     from {
       translate: -5px 0;

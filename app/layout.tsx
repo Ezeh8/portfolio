@@ -54,7 +54,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           route; it still rebuilds when the window is resized. The sticky header's
           containing block is the wrapper, so it sticks for the whole page. */}
       <body className="h-full">
-        <div className="flex min-h-full flex-col">{children}</div>
+        <div aria-hidden="true" className="orb-layer">
+          <div className="orb orb-right-top" />
+          <div className="orb orb-left" />
+          <div className="orb orb-right" />
+        </div>
+        {/* the page sits above the orbs; anything wider than the window (the plane passing
+            an edge, a long line) is clipped, so the page never scrolls sideways and the
+            header always spans the screen */}
+        <div className="relative z-[1] flex min-h-full flex-col overflow-x-clip">{children}</div>
       </body>
     </html>
   );

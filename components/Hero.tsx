@@ -47,7 +47,7 @@ export default function Hero() {
             <HandNote arrow="none" className="relative z-[2] mb-3 ml-4 -rotate-3 max-lg:hidden">
               {note}
             </HandNote>
-            <div className="panel panel-classic relative z-[2] overflow-hidden lg:[--tilt:-1deg]">
+            <div className="panel panel-classic panel-no-offset relative z-[2] overflow-hidden animate-none lg:[--tilt:-1deg]">
               <PanelBar>
                 <span className="flex items-center gap-2">
                   {/* three dots, like a terminal window */}

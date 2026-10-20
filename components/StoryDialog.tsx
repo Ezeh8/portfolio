@@ -70,12 +70,14 @@ export function StoryDialog({
       data-lenis-prevent
       className="fixed inset-0 z-50 overflow-y-auto bg-bg/97"
     >
+      {/* z-10: above the content, which GSAP's lift turns into a layer of its own that would
+          otherwise cover the button on phones (where the content runs edge to edge) */}
       <button
         ref={closeBtn}
         type="button"
         aria-label="Close"
         onClick={close}
-        className="fixed top-4 right-4 inline-flex h-10 w-10 items-center justify-center rounded-full border-(length:--border-width) border-line text-lg transition-[background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome-smooth)] hover:text-btn-text sm:top-6 sm:right-6"
+        className="fixed top-4 right-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border-(length:--border-width) border-line text-lg transition-[background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome-smooth)] hover:text-btn-text sm:top-6 sm:right-6"
       >
         ✕
       </button>
@@ -85,9 +87,11 @@ export function StoryDialog({
         onClick={(e) => (e.target as Element).closest("[data-story-close]") && close()}
         className="mx-auto max-w-[640px] px-4 py-20 sm:px-8 sm:py-24"
       >
+        {/* sized so the About headline's longer line ("i own the maps & specs") fits the
+            column: two lines, never three */}
         <h2
           id={titleId}
-          className={`font-display text-4xl font-extrabold text-btn-ink sm:text-5xl ${keepCase ? "whitespace-pre-line" : "lowercase"}`}
+          className={`font-display text-[min(2.25rem,calc((100vw-32px)/13.5))] font-extrabold text-btn-ink sm:text-[min(3rem,calc((min(100vw,640px)-64px)/13.5))] ${keepCase ? "whitespace-pre-line" : "lowercase"}`}
         >
           {/* chrome line by line, like a multi-line section headline (see Headline) */}
           {chrome ? <span className="chrome chrome-lines">{title}</span> : title}
