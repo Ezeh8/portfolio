@@ -72,6 +72,15 @@
 }
 
 /* A faint dot grid over the whole page, for a slightly raw, printed feel. */
+/* Phones: no scroll anchoring. Folding a card ("show less") would otherwise make the
+   browser shift the scroll to keep something in view, and the scroll-driven plane would
+   lurch along with it; now the scroll stays put and the plane with it. */
+@media (max-width: 1023px) {
+  html {
+    overflow-anchor: none;
+  }
+}
+
 body {
   background-color: var(--bg);
   background-image: radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px);
