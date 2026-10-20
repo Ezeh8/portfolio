@@ -57,7 +57,7 @@ export default function ProjectCard({ project, number }: { project: Project; num
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`View ${project.title} on GitHub`}
+              aria-label={`View ${project.title}${project.github.includes("github.com") ? " on GitHub" : ""}`}
               className="group shrink-0 whitespace-nowrap text-sm font-semibold"
             >
               {/* chrome on each part: the arrow is an inline-block (it nudges on hover), which
