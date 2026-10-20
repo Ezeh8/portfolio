@@ -136,8 +136,6 @@ export const site = {
       highlight: "building",
       keepCase: true,
     } satisfies Headline,
-    panelStatus: "public repo",
-    linkLabel: "View on GitHub",
     seeAll: "See all →",
     projects: [
       {
