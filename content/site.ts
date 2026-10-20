@@ -37,6 +37,8 @@ export type Role = {
   dates: string;
   opsLog: string;
   bullets: string[];
+  // how many bullets the card shows from md up until opened (default 2)
+  pointsMd?: number;
 };
 
 const email = "ezehkena@gmail.com";
@@ -59,7 +61,7 @@ export const site = {
     label: "AI Product Manager | AI Systems Builder",
     name: "Ezeh Ikenna",
     tagline: "Founder, Rithma Labs",
-    status: "building agentic systems from Nigeria",
+    status: "building agentic systems globally",
     // The headline: the prefix over one word that rotates through `words`. Screen readers
     // get `headlineLabel` instead.
     prefix: "i map the",
@@ -67,8 +69,8 @@ export const site = {
     headlineLabel: "I map the gaps, friction and flow.",
     body: "I am not that interested in Agents, I am interested in the structure underneath ~ the handoffs, the workflow gaps, the 5-minute decision that stalls for 48 hours. My approach is to re-imagine the process, then build agents into it.",
     primary: { label: "view my work →", href: "https://github.com/Ezeh8" } satisfies Link,
-    // Downloads straight away. The file lives at public/ezeh_cv.pdf.
-    secondary: { label: "download CV ↓", href: "/ezeh_cv.pdf" } satisfies Link,
+    // Opens in a new tab. The file lives at public/ezeh_cv.pdf.
+    secondary: { label: "view my CV →", href: "/ezeh_cv.pdf" } satisfies Link,
     // Typed out line by line as the page opens; "$ " lines are commands, the rest their
     // output, and "" leaves a gap between groups.
     flightLog: {
@@ -151,7 +153,7 @@ export const site = {
         id: "llm-wiki",
         title: "LLM Wikipedia",
         subtitle: "Internal SOP & Compliance Knowledge Retrieval",
-        description: "Acts as a centralized, privacy-first knowledge engine for complex organization policies, standard operating procedures, and internal documentation. Operations and support teams query the system in natural language to retrieve verified, context-aware answers instantly, integrating directly into Zendesk to reduce internal support ticket volume by 60% and slash onboarding turnaround.",
+        description: "Acts as a centralized, privacy-first knowledge engine for complex organization policies, standard operating procedures, and internal documentation. Operations and support teams query the system in natural language to retrieve verified, context-aware answers instantly, integrating directly into Zendesk to reduce internal support ticket volume by 65%.",
         deployedResult: "4 live SOPs · 29 regression tests · weekly drift check · CI/CD gate",
         stack: ["LangGraph", "Qdrant (RAG)", "FastAPI"],
         github: "https://github.com/Ezeh8/llm_wiki",
@@ -178,8 +180,8 @@ export const site = {
         id: "retention-ai",
         title: "Retention AI Engine",
         subtitle: "Automated Churn Prediction & Customer Winback",
-        description: "Engineers automated churn-prediction and personalized re-engagement pipelines triggered by purchase dormancy and contact decay. Leverages prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 90-day churn by 21% and recovering over ₦17M in dormant customer lifetime value within two months.",
-        deployedResult: "90-day churn down 21% · ₦17M+ recovered in two months",
+        description: "Built an automated churn-prediction and personalized re-engagement pipeline. Triggered by purchase dormancy and contact decay, leveraging prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
+        deployedResult: "60-day churn down 33% · ₦17M+ recovered in two months",
         stack: ["GoHighLevel", "GPT-4o", "WhatsApp API"],
         github: "",
       },
@@ -203,12 +205,12 @@ export const site = {
         github: "",
       },
       {
-        id: "claude-intelligence",
-        title: "Claude Intelligence Engine",
-        subtitle: "Autonomous Scheduled Research & Persistent Dashboard Pipeline",
-        description: "Engineers an unattended, daily-scheduled AI agent that pulls from live web sources and persistent memory stores to republish a single, always-current dashboard without manual intervention. Features automated state reconciliation, stale-data suppression, and quiet-failure detection mechanisms to maintain data freshness and prevent accumulating log clutter over long-term execution runs.",
+        id: "command-centre",
+        title: "Command Centre",
+        subtitle: "Autonomous Daily Briefing & Research Engine",
+        description: "Sets up an unattended, daily-scheduled agent that rebuilds and republishes an always-current HTML/CSS/JS dashboard in place, using live web research and a persistent memory store. Built for long-term production use, it combines full-replace state management, primary-source verification, quiet-failure detection, and daily pipeline reconciliation, so it runs without human oversight and without piling up log clutter.",
         deployedResult: "Daily unattended runs · one always-current dashboard",
-        stack: ["Python", "LangGraph", "Automated Workflows"],
+        stack: ["Python", "LangGraph", "Scheduled Workflows", "Persistent Memory"],
         github: "https://github.com/Ezeh8",
       },
     ] as const satisfies readonly Project[],
@@ -218,7 +220,7 @@ export const site = {
     label: "03 / EXPERIENCE SO FAR",
     headline: { text: "a decade of work.", highlight: "decade" } satisfies Headline,
     // Numbers in the bullets drawn with a marker highlight (matched as whole numbers).
-    markers: ["cutting admin overhead 85%", "₦17 million in revenue", "in-app automation", "AI-driven credit-scoring model", "1,000", "7,000", "cycle times", "operational friction"],
+    markers: ["quadrupling", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "7,000 customer", "99% accuracy", "consistently reliable"],
     roles: [
       {
         role: "Founder",
@@ -226,34 +228,36 @@ export const site = {
         dates: "Sept 2024 – Present",
         opsLog: "DEPLOYING AGENTIC SYSTEMS GLOBALLY",
         bullets: [
-          "Built an n8n pipeline for an enterprise logistics company, routing CRM and deal data to billing and project tools with a guardrail step for edge cases, cutting admin overhead 85%",
-          "Deployed a self-hosted AI model for a global construction firm, evaluated against sandbox cases before going live, quadrupling invoice processing capacity during peak weeks",
-          "Built a churn-reduction system for a Nigerian SaaS company using a prompt-engineered LLM to personalize outreach, winning back over ₦17 million in revenue within two months",
-          "Delivered a technical integration blueprint for an energy-sector multinational, mapping data pipelines across enterprise systems (SAP ERP, SLB Lumi, Avocet) and field OT systems (AVEVA PI, SCADA) to lay the foundation for a later AI rollout",
+          "Invoice Exception Handler ~ Plugs into financial and ERP workflows to automatically scan incoming vendor purchase orders against bills using containerized local LLMs. Isolates line-item pricing discrepancies, tax mismatches, or missing delivery receipts, routing only non-standard exceptions to human managers while passing clean invoices straight to payment processing—quadrupling invoice processing capacity during peak weeks.",
+          "LLM Wikipedia ~ Acts as a centralized, privacy-first knowledge engine for complex organization policies, standard operating procedures, and internal documentation. Operations and support teams query the system in natural language to retrieve verified, context-aware answers instantly, integrating directly into Zendesk to reduce internal support ticket volume by 65%.",
+          "Retention AI Engine ~ Built an automated churn-prediction and personalized re-engagement pipeline. Triggered by purchase dormancy and contact decay, leveraging prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
+          "Command Centre ~ Sets up an unattended, daily-scheduled agent that rebuilds and republishes an always-current HTML/CSS/JS dashboard in place, using live web research and a persistent memory store. Built for long-term production use, it combines full-replace state management, primary-source verification, quiet-failure detection, and daily pipeline reconciliation, so it runs without human oversight and without piling up log clutter.",
+          "Integration Blueprint ~ Delivered a technical integration blueprint for an energy-sector multinational, mapping data pipelines across enterprise systems (SAP ERP, SLB Lumi, Avocet) and field OT systems (AVEVA PI, SCADA). Established Model Context Protocol (MCP) data architecture and security boundaries to lay the technical foundation for a later enterprise-wide AI rollout.",
         ],
+        pointsMd: 1,
       },
       {
         role: "Operations Systems Partner",
         company: "Standard Chartered Bank",
         dates: "Aug 2021 – Dec 2024",
-        opsLog: "AUTOMATION, KYC, CREDIT SCORING",
+        opsLog: "Python, SQL, SAP ERP, Jira, QuickBooks",
         bullets: [
-          "Monitored the bank's in-app automation for real-time customer engagement and support, flagging issues and coordinating fixes with cross-functional teams",
-          "Collaborated with compliance and engineering teams to roll out a digital KYC verification platform aligned with Central Bank of Nigeria requirements",
-          "Partnered with the data science team to operationalize an AI-driven credit-scoring model, monitoring borrower default-risk outputs to support acceptance decisions and reduce credit losses",
-          "Built and managed operational workflows and tracking systems for cross-functional project management, optimizing resource allocation across initiatives",
+          "Monitored the bank's real-time customer engagement pipelines via SAP ERP and Jira Service Management, flagging operational exceptions and coordinating escalation workflows with cross-functional teams under strict SLAs.",
+          "Partnered with data science teams to deploy an AI credit-scoring model, utilizing Power BI dashboards to monitor Python model default-risk outputs and support credit risk acceptance decisions.",
+          "Collaborated with compliance and engineering teams to roll out a digital KYC verification platform using REST APIs and SQL query pipelines aligned with Central Bank of Nigeria requirements.",
+          "Built and managed cross-functional workflow tracking systems in Jira and QuickBooks, optimizing resource allocation and project throughput across core financial operations.",
         ],
       },
       {
         role: "Co-Founder & Chief Operating Officer (COO)",
         company: "Ropa Brand",
         dates: "Feb 2014 – Mar 2021",
-        opsLog: "scale · 4 → 35 people",
+        opsLog: "Zendesk, QuickBooks, Excel, Sheets, Logistics APIs",
         bullets: [
-          "Founded and scaled an independent fashion retail brand from 4 to 35 team members, overseeing daily operations, hiring, and revenue growth",
-          "Managed international vendor relationships across fabric sourcing, garment manufacturing, and custom packaging, supporting over 1,000 bespoke and 7,000 retail customer transactions",
-          "Structured end-to-end inventory tracking and fulfillment workflows with domestic and international courier partners to maintain order accuracy and delivery timelines",
-          "Implemented standardized operating procedures across customer service, order dispatch, and returns handling, cutting cycle times and operational friction as order volumes grew",
+          "Founded and scaled an independent fashion retail brand from 4 to 35 team members, utilizing QuickBooks and Excel for daily financial monitoring, vendor management, and operating performance.",
+          "Managed international supply chain logistics across fabric sourcing and garment manufacturing using Slack and AirTable databases, supporting over 7,000 customer transactions across bespoke and retail service.",
+          "Designed an automated Google Sheets fulfillment system integrated with GIG & FedEx API webhooks to track inventory and manage local courier deliveries across extensive SKUs with 99% accuracy.",
+          "Rolled out standardized operating procedures (SOPs) across customer service, delivery and return handling in Zendesk ~ deploying custom ticket routing, automated macro triggers, and SLA escalation paths that cut order dispatch cycle times and delivered a consistently reliable customer experience.",
         ],
       },
     ] satisfies Role[],
@@ -278,33 +282,26 @@ export const site = {
 
   contact: {
     headline: { text: "get in touch.", highlight: "touch" } satisfies Headline,
-    paragraphs: [
-      "Tell me about your business, the AI you’ve adopted so far, and your most manual task. Let’s rebuild your workflows together.",
-      "I’m based in Nigeria and work remotely across time zones.",
-    ],
     email: email as string | null,
     buttons: [
       { label: "send me an email →", href: `mailto:${email}`, primary: true },
       { label: "view my work →", href: "https://github.com/Ezeh8", primary: true },
+      { label: "view my CV →", href: "/ezeh_cv.pdf", primary: true },
     ] satisfies Link[],
-    replies: "replies within 72 hours",
+    replies: "building systems globally",
   },
 
   footer: {
     credentials: {
-      label: "Education and certifications",
-      items: [
-        "B.Sc. Business Administration",
-        "Introduction to Agent Skills (Anthropic)",
-        "Introduction to Model Context Protocol (Anthropic)",
-        "Deploy Multi-Agent Systems with Gemini Enterprise Agent Platform (Google)",
-      ],
+      label: "TELL ME EVERYTHING",
+      text: "I work remotely, across time zones, so wherever your business is, let’s talk ~ I want to hear about the AI tool(s) you’ve adopted so far and your most manual task. Together, we’ll rebuild your workflows and processes.",
     },
-    // Round icon buttons under the education list. The label names the icon.
+    // Round icon buttons under the "Tell Me Everything" note. The label names the icon.
     socials: [
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/ezeh-ikenna-a3350b307" },
       { label: "X", href: "https://x.com/ezeh8_8" },
       { label: "TikTok", href: "https://www.tiktok.com/@ezeh8_8" },
-      { label: "LinkedIn", href: "https://www.linkedin.com/in/ezeh-ikenna-a3350b307" },
+      { label: "GitHub", href: "https://github.com/Ezeh8" },
     ] satisfies Link[],
     copyright: "© 2026 Ezeh Ikenna",
   },

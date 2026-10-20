@@ -65,6 +65,15 @@ export type Size = { w: number; h: number; vw: number; vh: number };
 // top-right corner of the "h" of the closing headline's "touch".
 const LANDING_SCALE = 0.45;
 const NOSE_DEPTH = 1;
+// Desktop: the nose comes in this much closer, along the same angle.
+const DESKTOP_NOSE_DEPTH = 12;
+// Phones: the same, as a share of the headline's font size (desktop's 12px on its 96px
+// headline), so the landed plane sits on the smaller h just as it does on desktop.
+const PHONE_NOSE_DEPTH_EM = DESKTOP_NOSE_DEPTH / 96;
+// Phones: the final glide onto the h starts this far across (screen %) and comes down at
+// this angle, nearly level, like desktop's.
+const PHONE_GLIDE_X = 90;
+const PHONE_GLIDE_ANGLE = 10;
 // The nose tip in the plane's SVG viewBox (see PaperPlane).
 const NOSE = { x: 208, y: 70 };
 
@@ -125,10 +134,11 @@ function headlineLanding(
   max: number,
   from: { x: number; y: number },
   scale = LANDING_SCALE,
+  depth = NOSE_DEPTH,
 ) {
   const { vw, vh } = size;
   const corner = lastLetterCorner(word);
-  const tip = { x: corner.x - NOSE_DEPTH, y: corner.y - max + NOSE_DEPTH };
+  const tip = { x: corner.x - depth, y: corner.y - max + depth };
   // the tilt and the centre depend on each other; a few rounds settle them
   let centre = { x: tip.x, y: tip.y };
   let tilt = 0;
@@ -228,13 +238,12 @@ function heroRest(size: Size, plane: HTMLElement) {
 
 // Phones and tablets: the hero resting spot is right beside the final "a" of "Ezeh
 // Ikenna", the plane facing left and angled NAME_TILT° nose down, the tip of its nose
-// NAME_GAP px off the letter's right edge (negative: tucked in, so it looks almost
-// touching), a little below its top (NAME_DROP of the font
+// NAME_GAP px clear of the letter's right edge, a little below its top (NAME_DROP of the font
 // size), pointing at it. Kept that low so the plane stays clear of the line above the
 // name. Measured from the letter itself (the font's glyph metrics), so it holds at every
 // width.
-const NAME_TILT = 15;
-const NAME_GAP = -4;
+const NAME_TILT = 12;
+const NAME_GAP = 11;
 const NAME_DROP = 0.12;
 
 function nameRest(name: HTMLElement, plane: HTMLElement, size: Size) {
@@ -366,8 +375,17 @@ function choreography(desktop: boolean, size: Size, plane: HTMLElement): Key[] |
   ];
   // leg 8: completes exactly at the bottom of the scroll, the nose tip on the "h" of
   // "touch"; both axes share one ease, so the glide is a straight line the nose follows
-  // desktop keeps the landing it has always had; phones place the full-size plane's nose
-  const landing = headlineLanding(touch, plane, size, max, keys[keys.length - 1], desktop ? LANDING_SCALE : 1);
+  // the plane is full size there on every layout, so its nose is placed at full size,
+  // the same spot over the h as on phones
+  const landing = headlineLanding(
+    touch,
+    plane,
+    size,
+    max,
+    keys[keys.length - 1],
+    1,
+    desktop ? DESKTOP_NOSE_DEPTH : NOSE_DEPTH,
+  );
   keys.push({
     name: "landing nose first on the h",
     s: max,
@@ -478,7 +496,7 @@ const PHONE_TILT = 20;
 function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
   const shared = choreography(false, size, plane);
   if (!shared) return null;
-  const { h, vh } = size;
+  const { h, vw, vh } = size;
   const pct = (px: number) => (px / vh) * 100;
   const warn = (msg: string) => {
     if (process.env.NODE_ENV !== "production") console.warn(`[plane] phone: ${msg}`);
@@ -721,8 +739,30 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
   const touch = $("#contact .highlight") as HTMLElement | null;
   const last = shared[shared.length - 1];
   const from = middle[middle.length - 1];
-  const landing = touch && Number.isFinite(from.s) ? headlineLanding(touch, plane, size, maxScroll(), from, 1) : null;
+  const depth = touch ? (parseFloat(getComputedStyle(touch).fontSize) || 44) * PHONE_NOSE_DEPTH_EM : NOSE_DEPTH;
+  const max = maxScroll();
+  // as on desktop: one shallow glide in from the right, a little above the h, coming down
+  // PHONE_GLIDE_ANGLE° onto it, its tilt the glide's own angle, so the nose leads all the
+  // way in (the start is set from the landing, which depends on it; a few rounds settle it)
+  from.x = PHONE_GLIDE_X;
+  let landing: ReturnType<typeof headlineLanding> | null = null;
+  if (touch && Number.isFinite(from.s))
+    for (let i = 0; i < 3; i++) {
+      landing = headlineLanding(touch, plane, size, max, from, 1, depth);
+      const run = ((from.x - landing.x) / 100) * vw;
+      from.y = Math.max(8, landing.y - ((run * Math.tan((PHONE_GLIDE_ANGLE * Math.PI) / 180)) / vh) * 100);
+    }
   const end = landing ? [{ ...last, x: landing.x, y: landing.y, tilt: landing.tilt }] : shared.slice(-2);
+  // and paced as on desktop: the last two legs share their scroll by path length, so
+  // they move at one speed, speeding up into the turn and slowing onto the h
+  const before = middle[middle.length - 2];
+  if (landing && before && Number.isFinite(before.s)) {
+    from.xEase = from.yEase = "sine.in";
+    end[0].xEase = end[0].yEase = "sine.out";
+    const l1 = pathLength(before, from, size);
+    const l2 = pathLength(from, end[0], size);
+    if (l1 + l2 > 0 && max > before.s) from.s = before.s + (l1 / (l1 + l2)) * (max - before.s);
+  }
   const keys = [...start];
   for (const key of middle) {
     const prev = keys[keys.length - 1];
@@ -1059,13 +1099,16 @@ export default function PlaneFlight() {
             build();
           });
 
-          // Rebuild when the width changes (or, on desktop, the height) and when the page
-          // length changes. Phones ignore height-only resizes from the address bar.
+          // Rebuild when the width changes (or, on desktop, the height) and, off phones,
+          // when the page length changes. Phones ignore height-only resizes from the
+          // address bar, and the page length too: the bar fires a resize as it slides,
+          // which after a card opened or folded ("show less") would re-route the plane
+          // mid-scroll; their final glide follows the h instead (buildFlight's `track`).
           const size = () =>
             [
               window.innerWidth,
               desktop ? window.innerHeight : 0,
-              document.documentElement.scrollHeight,
+              phone ? 0 : document.documentElement.scrollHeight,
             ].join("x");
           let last = size();
           let timer: number | undefined;

@@ -30,15 +30,15 @@ export default function Toolkit({ all = false }: { all?: boolean }) {
               className={`panel panel-classic relative z-[2] p-5 ${tilts[i % tilts.length]} ${i >= SHOWN && !all ? "max-sm:hidden" : ""}`}
             >
               <h3
-                className={`flex items-center justify-between border-b-(length:--border-width) border-dashed border-line/40 pb-3 font-mono text-xs uppercase tracking-[0.12em]`}
+                className={`flex items-center justify-between border-b-2 border-dashed border-line/75 pb-3 font-mono text-[14px] uppercase tracking-[0.12em] text-white`}
               >
                 {group.title}
                 <span
                   aria-hidden="true"
-                  className="h-3 w-3 rounded-full border-(length:--border-width) border-line bg-bg"
+                  className="h-3 w-3 rounded-full border-(length:--border-width) border-white bg-white animate-[dot-fade_1.6s_ease-in-out_infinite_alternate]"
                 />
               </h3>
-              <ul className="mt-4 space-y-2 text-[1.0625rem]">
+              <ul className="mt-4 space-y-2 text-[1.0625rem] text-text-muted">
                 {group.items.map((item) => (
                   <li key={item}>{item}</li>
                 ))}

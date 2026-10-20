@@ -71,6 +71,8 @@ type Role = (typeof site.experience.roles)[number];
 function RoleCard({ role, number }: { role: Role; number: number }) {
   const [open, setOpen] = useState(false);
   const more = role.bullets.length > POINTS;
+  // from md: POINTS_MD, unless the role sets its own
+  const pointsMd = "pointsMd" in role && role.pointsMd ? role.pointsMd : POINTS_MD;
 
   return (
     <article
@@ -102,12 +104,12 @@ function RoleCard({ role, number }: { role: Role; number: number }) {
         <ul
           id={`role-${number}-points`}
           // from md the bullet dots hang in the gap, so the text lines up with the Work cards' text
-          className="list-disc space-y-3 pl-5 text-[15px] leading-6 text-btn-shadow marker:text-accent-text md:-ml-5"
+          className="list-disc space-y-3 pl-5 text-[15px] leading-6 text-btn-shadow marker:text-text-muted md:-ml-5"
         >
           {role.bullets.map((bullet, i) => (
             <li
               key={bullet}
-              className={open || i < POINTS ? undefined : i < POINTS_MD ? "max-md:hidden" : "hidden"}
+              className={open || i < POINTS ? undefined : i < pointsMd ? "max-md:hidden" : "hidden"}
             >
               <Marked text={bullet} />
             </li>
@@ -115,9 +117,10 @@ function RoleCard({ role, number }: { role: Role; number: number }) {
         </ul>
         {/* the ops log and "+N more" on one line, from md pinned to the card's base (level
             with the dates); on phones the text tightens and scales
-            with the width (the longest pair is 43 characters) so they always fit */}
-        <div className="mt-5 flex items-center justify-between gap-4 whitespace-nowrap font-mono md:mt-auto md:pt-5 text-[11px] uppercase tracking-[0.12em] text-text-muted max-sm:gap-3 max-sm:text-[min(11px,calc((100vw-92px)/28.5))] max-sm:tracking-[0.04em]">
-          <p>
+            with the width (the longest pair is 59 characters, plus the pill's 18px) so they always fit */}
+        <div className="mt-5 flex items-center justify-between gap-4 whitespace-nowrap font-mono md:mt-auto md:pt-5 text-[11px] uppercase tracking-[0.12em] text-text-muted max-sm:gap-3 max-sm:text-[min(11px,calc((100vw-110px)/39.2))] max-sm:tracking-[0.04em]">
+          {/* in a slim pill, like the project cards' stack */}
+          <p className="rounded-full border-(length:--border-width) border-line px-3 py-1 text-card-alt-title max-sm:px-2">
             <Glyphs text={role.opsLog} />
           </p>
           {more && (
@@ -126,8 +129,8 @@ function RoleCard({ role, number }: { role: Role; number: number }) {
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls={`role-${number}-points`}
-              // from md, no button when the first POINTS_MD bullets are all of them
-              className={`group shrink-0 cursor-pointer uppercase outline-none before:absolute before:inset-0 before:z-[1] before:content-[''] hover:text-accent-text ${role.bullets.length <= POINTS_MD ? "md:hidden" : ""}`}
+              // from md, no button when the first pointsMd bullets are all of them
+              className={`group shrink-0 cursor-pointer uppercase outline-none before:absolute before:inset-0 before:z-[1] before:content-[''] hover:text-accent-text ${role.bullets.length <= pointsMd ? "md:hidden" : ""}`}
             >
               {open ? (
                 "show less"
@@ -137,7 +140,7 @@ function RoleCard({ role, number }: { role: Role; number: number }) {
                     <Glyphs text={`+${role.bullets.length - POINTS} more ↓`} />
                   </span>
                   <span className="max-md:hidden">
-                    <Glyphs text={`+${role.bullets.length - POINTS_MD} more ↓`} />
+                    <Glyphs text={`+${role.bullets.length - pointsMd} more ↓`} />
                   </span>
                 </>
               )}

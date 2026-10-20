@@ -7,7 +7,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 // of the longest word and nothing beside it shifts. Hidden from screen readers; the
 // caller gives the full sentence as visually hidden text. Under reduced motion the first
 // word stays put.
-const HOLD_MS = 2200;
+const HOLD_MS = 1500;
 
 export function RotatingWord({
   words,

@@ -19,6 +19,13 @@ export function SectionLabel({ children }: { children: ReactNode }) {
 // with the `highlight` phrase drawn in the accent color. A headline with \n line breaks
 // gets the chrome on an inline span, line by line (.chrome-lines), so every line has
 // the full metal sheen instead of sharing one gradient stretched over all of them.
+// Headline copy with every "." in grey (.headline-dot), over the chrome text.
+export function GreyDots({ text }: { text: string }) {
+  return text
+    .split(/(\.)/)
+    .map((part, i) => (part === "." ? <span key={i} className="headline-dot">.</span> : part));
+}
+
 export function Headline({
   as: Tag = "h2",
   copy,
@@ -33,12 +40,12 @@ export function Headline({
   const lines = text.includes("\n");
   const content =
     at === -1 ? (
-      text
+      <GreyDots text={text} />
     ) : (
       <>
-        {text.slice(0, at)}
+        <GreyDots text={text.slice(0, at)} />
         <span className="highlight">{highlight}</span>
-        {text.slice(at + highlight.length)}
+        <GreyDots text={text.slice(at + highlight.length)} />
       </>
     );
   return (
@@ -95,7 +102,7 @@ export function StatusDot({ className = "" }: { className?: string }) {
   return (
     <span
       aria-hidden="true"
-      className={`inline-block h-2 w-2 shrink-0 rounded-full ${className || "bg-accent-text"}`}
+      className={`inline-block h-2 w-2 shrink-0 rounded-full animate-[dot-fade_1.6s_ease-in-out_infinite_alternate] ${className || "bg-white"}`}
     />
   );
 }
@@ -161,19 +168,25 @@ export function ButtonLink({
   children,
   variant = "primary",
   download = false,
+  newTab = false,
+  className = "",
 }: {
   href: string;
   children: ReactNode;
   variant?: "primary" | "secondary";
   // Save the file instead of opening it.
   download?: boolean;
+  // open in a new tab (external links always do)
+  newTab?: boolean;
+  // extra classes, e.g. a tighter size somewhere
+  className?: string;
 }) {
   return (
     <a
       href={href}
-      {...(isExternal(href) && { target: "_blank", rel: "noopener noreferrer" })}
+      {...((newTab || isExternal(href)) && { target: "_blank", rel: "noopener noreferrer" })}
       {...(download && { download: "" })}
-      className={buttonClass(variant)}
+      className={`${buttonClass(variant)} ${className}`}
     >
       {/* wrapped so the flex container keeps the space before a trailing → */}
       <span>{typeof children === "string" ? <Glyphs text={children} /> : children}</span>

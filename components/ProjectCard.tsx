@@ -9,9 +9,11 @@ type Project = (typeof site.work.projects)[number];
 // the project's id, which the plane looks up.
 export default function ProjectCard({ project, number }: { project: Project; number: number }) {
   return (
+    // phones: one column held to the card's width (minmax(0, 1fr)), so a long row of pills
+    // scrolls inside it rather than stretching the card past the screen
     <article
       id={project.id}
-      className="panel relative z-[2] grid gap-6 p-6 sm:p-8 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-12"
+      className="panel relative z-[2] grid grid-cols-[minmax(0,1fr)] gap-6 p-6 sm:p-8 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-12"
     >
       {/* a container, so a one-line title can size itself to the column's width */}
       <div className="@container">
@@ -33,16 +35,17 @@ export default function ProjectCard({ project, number }: { project: Project; num
 
         {/* the pills, with "View" on the same line at the right */}
         <div className="mt-5 flex items-center gap-4">
-          {/* phones: one line, the pills scrolling sideways (fading at the right edge) when
-              they don't all fit beside "View" */}
+          {/* one line at every size, the pills scrolling sideways (fading at the right edge)
+              when they don't all fit beside "View"; slimmer pills from lg, so a full row of
+              four usually fits there */}
           <ul
             aria-label="Stack"
-            className="flex min-w-0 flex-1 gap-2 max-md:overflow-x-auto max-md:[scrollbar-width:none] max-md:[mask-image:linear-gradient(to_right,black_80%,transparent)] md:flex-wrap max-md:[&::-webkit-scrollbar]:hidden"
+            className="flex min-w-0 flex-1 gap-2 overflow-x-auto [scrollbar-width:none] [mask-image:linear-gradient(to_right,black_80%,transparent)] lg:gap-1.5 lg:[mask-image:linear-gradient(to_right,black_92%,transparent)] [&::-webkit-scrollbar]:hidden"
           >
             {project.stack.map((item) => (
               <li
                 key={item}
-                className="shrink-0 whitespace-nowrap rounded-full border-(length:--border-width) border-line px-3 py-1 font-mono text-[11px] tracking-[0.04em] text-card-alt-title"
+                className="shrink-0 whitespace-nowrap rounded-full border-(length:--border-width) border-line px-3 py-1 font-mono text-[11px] tracking-[0.04em] text-card-alt-title lg:px-2.5"
               >
                 {item}
               </li>

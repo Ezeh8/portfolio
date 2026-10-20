@@ -93,7 +93,7 @@ body {
   pointer-events: none;
   /* each ring's size (its box's width): top right, lower left, bottom right */
   --orb-top-right: 1000px;
-  --orb-left: 1300px;
+  --orb-left: 1400px;
   --orb-bottom-right: 800px;
   /* how visible the rings are, 0 to 1 */
   opacity: 1;
@@ -102,7 +102,7 @@ body {
   /* the rim's inner edge, its peak, halfway out and where it's gone, as a share of the
      radius: a ring 40% of its box across, gone by 50% */
   --rim-in: 40%;
-  --rim: 40%;
+  --rim: 45%;
   --rim-mid: 40%;
   --rim-out: 50%;
 }
@@ -110,11 +110,11 @@ body {
 @media (max-width: 767px) {
   .orb-layer {
     --orb-top-right: 500px;
-    --orb-left: 1000px;
+    --orb-left: 1100px;
     --orb-bottom-right: 450px;
     /* a ~200px ring fading out by ~230px across */
     --rim-in: 28.5%;
-    --rim: 35.7%;
+    --rim: 35%;
     --rim-mid: 38.1%;
     --rim-out: 41.4%;
   }
@@ -327,6 +327,17 @@ body {
   }
 
   /* The terminal cursor in the hero's flight log. */
+  /* Every dot on the site (status dots, the toolkit cards' rings): a slow, soft fade in
+     and out. */
+  @keyframes dot-fade {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0.2;
+    }
+  }
+
   @keyframes caret-blink {
     50% {
       opacity: 0;
@@ -341,6 +352,12 @@ body {
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+  }
+
+  /* A headline's full stops, grey over the chrome. */
+  .headline-dot {
+    color: var(--text-muted);
+    -webkit-text-fill-color: var(--text-muted);
   }
 
   /* On an inline .chrome span: each line gets its own copy of the gradient. */

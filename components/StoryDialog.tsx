@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { GreyDots } from "./ui";
 
 gsap.registerPlugin(useGSAP);
 
@@ -94,7 +95,13 @@ export function StoryDialog({
           className={`font-display text-[min(2.25rem,calc((100vw-32px)/13.5))] font-extrabold text-btn-ink sm:text-[min(3rem,calc((min(100vw,640px)-64px)/13.5))] ${keepCase ? "whitespace-pre-line" : "lowercase"}`}
         >
           {/* chrome line by line, like a multi-line section headline (see Headline) */}
-          {chrome ? <span className="chrome chrome-lines">{title}</span> : title}
+          {chrome ? (
+            <span className="chrome chrome-lines">
+              <GreyDots text={title} />
+            </span>
+          ) : (
+            title
+          )}
         </h2>
         {subtitle && <p className="mt-2 font-display text-sm font-normal text-text-muted">{subtitle}</p>}
         {children}

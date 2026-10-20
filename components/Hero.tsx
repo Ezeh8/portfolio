@@ -36,7 +36,7 @@ export default function Hero() {
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <ButtonLink href={primary.href}>{primary.label}</ButtonLink>
-              <ButtonLink href={secondary.href} download>
+              <ButtonLink href={secondary.href} newTab>
                 {secondary.label}
               </ButtonLink>
             </div>
@@ -52,9 +52,9 @@ export default function Hero() {
                 <span className="flex items-center gap-2">
                   {/* three dots, like a terminal window */}
                   <span className="flex gap-1.5">
-                    <StatusDot className="bg-text-muted" />
-                    <StatusDot className="bg-white" />
-                    <StatusDot className="bg-text-muted" />
+                    <StatusDot />
+                    <StatusDot />
+                    <StatusDot />
                   </span>
                   {/* the name, then the rest of the title in grey */}
                   <span>
