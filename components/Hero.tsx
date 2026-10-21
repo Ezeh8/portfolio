@@ -11,7 +11,7 @@ export default function Hero() {
     <section id="hero" className="scroll-mt-16 pt-10 pb-10 sm:pt-14 sm:pb-14">
       <Container>
         {/* the flight log's column takes the card's width, so each of its lines fits on one line */}
-        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 xl:gap-24">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
               {label}

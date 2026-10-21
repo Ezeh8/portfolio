@@ -31,7 +31,7 @@ export default function Contact() {
             buttons, so the two sides line up side by side. The left column is as wide as the
             headline, so the note gets the rest: room for its four lines at 15px. In the first
             row the buttons and the note's last line both sit on the row's bottom edge. */}
-        <div className="lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:grid-rows-[auto_auto] lg:gap-x-8 lg:gap-y-6">
+        <div className="lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:grid-rows-[auto_auto] lg:gap-x-8 lg:gap-y-6 xl:gap-x-12">
           <div className="min-w-0 lg:row-span-2 lg:grid lg:grid-rows-subgrid">
             <div className="lg:flex lg:flex-col">
               {email ? (
@@ -64,7 +64,7 @@ export default function Contact() {
             <p className="hidden font-mono text-xs text-text-muted lg:block lg:self-center">{copyright}</p>
           </div>
 
-          <div className="text-[1.0625rem] lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:border-l lg:border-line lg:pl-8">
+          <div className="text-[1.0625rem] lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:border-l lg:border-line lg:pl-8 xl:pl-12">
             {/* nudged down so the heading's capitals start level with the tops of the big
                 "get in touch." letters, which sit about 0.08em below the top of their line
                 (Bricolage's ascent, less the 1.02 line height's leading and its ascender),
