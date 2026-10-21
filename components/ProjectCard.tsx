@@ -1,11 +1,13 @@
 import type { site } from "@/content/site";
+import { PageViewer } from "./PageViewer";
 
 type Project = (typeof site.work.projects)[number];
 
 // A full-width project card in two columns (stacked on phones), everything on the card
 // itself, with no overlay or cover, in the site's frosted-glass panel (.panel). Left: the
 // number, the name, then the tagline. Right: what it does, then the stack as slim pills
-// with a chrome "View →" link to the repo at the right of the same line. The card keeps
+// with a chrome "View →" at the right of the same line: a link, or the project's
+// view-only pages (PageViewer). The card keeps
 // the project's id, which the plane looks up.
 export default function ProjectCard({ project, number }: { project: Project; number: number }) {
   return (
@@ -18,10 +20,13 @@ export default function ProjectCard({ project, number }: { project: Project; num
       {/* a container, so a one-line title can size itself to the column's width */}
       <div className="@container">
         <p className="font-mono text-sm leading-6 text-text-muted">{String(number).padStart(2, "0")} ~</p>
+        {/* --fit: the column width per font size that fits the title's letters
+            (about 0.57em each; "Integration Blueprint" gives 12) */}
         <h3
+          style={{ "--fit": (project.title.length * 0.572).toFixed(2) } as React.CSSProperties}
           className={`mt-2 font-display leading-tight font-extrabold text-btn-ink ${
             "oneLine" in project && project.oneLine
-              ? "whitespace-nowrap text-[min(1.5rem,calc(100cqw/12))] sm:text-[min(1.75rem,calc(100cqw/12))]"
+              ? "whitespace-nowrap text-[min(1.5rem,calc(100cqw/var(--fit)))] sm:text-[min(1.75rem,calc(100cqw/var(--fit)))]"
               : "text-2xl sm:text-[1.75rem]"
           }`}
         >
@@ -52,7 +57,7 @@ export default function ProjectCard({ project, number }: { project: Project; num
             ))}
           </ul>
 
-          {project.github && (
+          {project.github ? (
             <a
               href={project.github}
               target="_blank"
@@ -67,6 +72,9 @@ export default function ProjectCard({ project, number }: { project: Project; num
                 →
               </span>
             </a>
+          ) : (
+            "pages" in project &&
+            project.pages && <PageViewer title={project.title} subtitle={project.subtitle} pages={project.pages} />
           )}
         </div>
       </div>

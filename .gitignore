@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# originals kept off GitHub (the view-only blueprint pages are built from these)
+/private/

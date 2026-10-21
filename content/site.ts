@@ -29,6 +29,9 @@ export type Project = {
   github: string;
   // keeps the title on one line, shrinking it to fit the card where needed
   oneLine?: boolean;
+  // view-only pages (images in public/) that "View →" opens in an overlay, when there
+  // is no link
+  pages?: readonly { src: string; alt: string }[];
 };
 
 export type Role = {
@@ -70,7 +73,7 @@ export const site = {
     body: "I am not that interested in Agents, I am interested in the structure underneath ~ the handoffs, the workflow gaps, the 5-minute decision that stalls for 48 hours. My approach is to re-imagine the process, then build agents into it.",
     primary: { label: "view my work →", href: "https://github.com/Ezeh8" } satisfies Link,
     // Opens in a new tab. The file lives at public/ezeh_cv.pdf.
-    secondary: { label: "view my CV →", href: "/ezeh_cv.pdf" } satisfies Link,
+    secondary: { label: "view my résumé →", href: "/ezeh_cv.pdf" } satisfies Link,
     // Typed out line by line as the page opens; "$ " lines are commands, the rest their
     // output, and "" leaves a gap between groups.
     flightLog: {
@@ -139,57 +142,58 @@ export const site = {
     seeAll: "See all →",
     projects: [
       {
+        id: "support-pipeline",
+        title: "Multi-Tier Support Pipeline",
+        oneLine: true,
+        subtitle: "AI Support & Escalation System",
+        description: "Worked directly with the CTO of a high-growth neobank to build automated customer service infrastructure from scratch. Connects the mobile app chat frontend to n8n, Zendesk, and Slack, forming a multi-tier support pipeline. An AI triage layer resolves queries with zero human touch, turns complex issues into context-rich Zendesk tickets, and sends real-time Slack alerts for high-priority operational and security escalations.",
+        deployedResult: "",
+        stack: ["Zendesk", "Slack", "n8n", "Webhooks"],
+        github: "https://doux.finance/",
+      },
+      {
         id: "invoice-handler",
         title: "Invoice Exception Handler",
         subtitle: "Automated Accounts Payable Reconciliation & Audit",
-        description: "Plugs into financial and ERP workflows to automatically scan incoming vendor purchase orders against bills using containerized local LLMs. Isolates line-item pricing discrepancies, tax mismatches, or missing delivery receipts, routing only non-standard exceptions to human managers while passing clean invoices straight to payment processing—quadrupling invoice processing capacity during peak weeks.",
+        description: "Built for a construction company ~ Plugs into financial and ERP workflows and scans incoming vendor purchase orders against bills using containerized local LLMs. Isolates line-item pricing discrepancies, tax mismatches, and missing delivery receipts. Routes only non-standard exceptions to human managers via a dedicated Slack channel and sends clean invoices straight to payment processing.",
         deployedResult: "50 → 200+ invoices processed per week at peak",
-        stack: ["FastAPI", "PostgreSQL", "Ollama / Qwen-2.5"],
+        stack: ["Slack Webhooks", "FastAPI", "PostgreSQL", "Ollama"],
         github: "https://github.com/Ezeh8/Invoice-exception-handler-eval",
       },
       {
         id: "llm-wiki",
         title: "LLM Wikipedia",
-        subtitle: "Internal SOP & Compliance Knowledge Retrieval",
-        description: "Acts as a centralized, privacy-first knowledge engine for complex organization policies, standard operating procedures, and internal documentation. Operations and support teams query the system in natural language to retrieve verified, context-aware answers instantly, integrating directly into Zendesk to reduce internal support ticket volume by 65%.",
+        subtitle: "Internal SOP & Knowledge Retrieval System",
+        description: "Built for various orgs. ~ Acts as an enterprise knowledge engine for organizational policies, standard operating procedures, and internal documentation across your business. Employs GraphRAG and hybrid vector retrieval to resolve complex multi-hop queries in natural language, surfacing verified, context-aware answers with strict source attribution. Features Role-Based Access Control (RBAC) and integrates directly into internal Zendesk workspaces to streamline employee self-service and reduce repetitive internal support tickets.",
         deployedResult: "4 live SOPs · 29 regression tests · weekly drift check · CI/CD gate",
-        stack: ["LangGraph", "Qdrant (RAG)", "FastAPI"],
+        stack: ["LangGraph", "FastAPI", "Vector Database", "Zendesk"],
         github: "https://github.com/Ezeh8/llm_wiki",
       },
       {
         id: "ai-governance",
         title: "AI security & Governance",
         subtitle: "Enterprise Agent Governance & Role-Based Access Control (RBAC)",
-        description: "Serves as a security and authorization gateway for autonomous AI agents operating across enterprise IT stacks. Sets hard boundaries on agent tool execution—defining exact permission scopes, enforcing approval gates for sensitive API calls, and generating immutable audit logs to ensure compliance across complex operational environments.",
+        description: "Serves as a security and authorization gateway for autonomous AI agents operating across enterprise IT stacks. Sets hard boundaries on agent tool execution ~ defining exact permission scopes, enforcing approval gates for sensitive API calls, and generating immutable audit logs to ensure compliance across complex operational environments.",
         deployedResult: "7 security steps live-tested · RBAC + ABAC + server-derived audit trail",
-        stack: ["Model Context Protocol (MCP)", "FastAPI", "Agent Governance"],
+        stack: ["Model Context Protocol (MCP)", "Agent Governance", "FastAPI"],
         github: "https://github.com/Ezeh8/Tool-access-controller",
-      },
-      {
-        id: "support-pipeline",
-        title: "Multi-Tier Support Pipeline",
-        subtitle: "AI Support Orchestration & Escalation System",
-        description: "Works directly with the CTO of a high-growth neobank to build automated customer service infrastructure from scratch. Connects the mobile app chat frontend to n8n, Zendesk, and Slack, forming a multi-tier support pipeline. An AI triage layer resolves queries with zero human touch, turns complex issues into context-rich Zendesk tickets, and sends real-time Slack alerts for high-priority operational and security escalations.",
-        deployedResult: "",
-        stack: ["n8n", "Zendesk", "Slack"],
-        github: "https://doux.finance/",
       },
       {
         id: "retention-ai",
         title: "Retention AI Engine",
         subtitle: "Automated Churn Prediction & Customer Winback",
-        description: "Built an automated churn-prediction and personalized re-engagement pipeline. Triggered by purchase dormancy and contact decay, leveraging prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
+        description: "Built for an e-commerce brand ~ Built an automated churn-prediction and personalized re-engagement pipeline. Triggered by purchase dormancy and contact decay, leveraging prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
         deployedResult: "60-day churn down 33% · ₦17M+ recovered in two months",
-        stack: ["GoHighLevel", "GPT-4o", "WhatsApp API"],
+        stack: ["n8n", "GoHighLevel", "WhatsApp API", "Paystack Webhooks", "GPT-4o"],
         github: "",
       },
       {
         id: "ops-sync",
-        title: "Operation sync. System",
-        subtitle: "Cross-Departmental Webhook Engine for Logistics",
-        description: "Synchronizes CRM, billing, and inventory pipelines across HubSpot, Stripe, and Asana to eliminate manual double-handling. Orchestrates real-time data flows across departments with built-in human-in-the-loop guardrails for edge cases, cutting administrative overhead by 85% and saving 15 hours of manual labor per week.",
+        title: "Operation Sync. System",
+        subtitle: "Cross-Departmental Webhook & ERP Orchestration",
+        description: "Built for an enterprise logistics provider to synchronize CRM, billing, and inventory pipelines across HubSpot, Stripe, and Asana. Orchestrates real-time data flows between freight sales, operations, and dispatch teams, with human-in-the-loop guardrails for edge cases. Eliminates manual data entry across systems, cuts administrative overhead by 85%, and saves 15 hours of manual operational labor weekly.",
         deployedResult: "85% less admin overhead · 15 hours saved per week",
-        stack: ["n8n", "Webhooks", "Logistics Ops"],
+        stack: ["n8n", "HubSpot API", "Stripe Webhooks", "Asana API"],
         github: "",
       },
       {
@@ -197,10 +201,17 @@ export const site = {
         title: "Integration Blueprint",
         oneLine: true,
         subtitle: "Enterprise Data Architecture & Field OT Mapping",
-        description: "Delivered a technical integration blueprint for an energy-sector multinational, mapping data pipelines across enterprise systems (SAP ERP, SLB Lumi, Avocet) and field OT systems (AVEVA PI, SCADA). Established Model Context Protocol (MCP) data architecture and security boundaries to lay the technical foundation for a later enterprise-wide AI rollout.",
+        description: "Multinational energy company ~ Delivered a technical integration blueprint for an energy-sector multinational, mapping data pipelines across enterprise systems (SAP ERP, SLB Lumi, Avocet) and field OT systems (AVEVA PI, SCADA). Established Model Context Protocol (MCP) data architecture and security boundaries to lay the technical foundation for a later enterprise-wide AI rollout.",
         deployedResult: "Enterprise + field OT systems mapped for an AI rollout",
-        stack: ["SAP / AVEVA PI", "MCP", "Enterprise Architecture"],
+        stack: ["Enterprise Architecture", "SAP / AVEVA PI", "MCP"],
         github: "",
+        pages: [
+          { src: "/blueprint-1-architecture.jpg", alt: "Conceptual architecture: a supervisor agent over asset-health, production and finance agents, reading AVEVA PI, SLB Lumi and SAP" },
+          { src: "/blueprint-2-objectives.jpg", alt: "Business objectives: eleven objectives from equipment uptime to decision support" },
+          { src: "/blueprint-3-ai-agents.jpg", alt: "Workstream 9, AI agents: ten agents from production intelligence to portfolio intelligence" },
+          { src: "/blueprint-4-governance.jpg", alt: "AI governance and supervisory control, with four levels of risk-based autonomy" },
+          { src: "/blueprint-5-kpis.jpg", alt: "Key business KPIs across production, reliability, maintenance, abnormality, deferment, gas lift, financial and portfolio" },
+        ],
       },
       {
         id: "command-centre",
@@ -218,7 +229,7 @@ export const site = {
     label: "03 / EXPERIENCE SO FAR",
     headline: { text: "a decade of work.", highlight: "decade" } satisfies Headline,
     // Numbers in the bullets drawn with a marker highlight (matched as whole numbers).
-    markers: ["quadrupling", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "7,000 customer", "99% accuracy", "consistently reliable"],
+    markers: ["quadrupling", "neobank", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "8,000 customer", "99% accuracy", "consistently reliable"],
     roles: [
       {
         role: "Founder",
@@ -226,11 +237,11 @@ export const site = {
         dates: "Sept 2024 – Present",
         opsLog: "DEPLOYING AGENTIC SYSTEMS GLOBALLY",
         bullets: [
-          "Invoice Exception Handler ~ Plugs into financial and ERP workflows to automatically scan incoming vendor purchase orders against bills using containerized local LLMs. Isolates line-item pricing discrepancies, tax mismatches, or missing delivery receipts, routing only non-standard exceptions to human managers while passing clean invoices straight to payment processing—quadrupling invoice processing capacity during peak weeks.",
-          "LLM Wikipedia ~ Acts as a centralized, privacy-first knowledge engine for complex organization policies, standard operating procedures, and internal documentation. Operations and support teams query the system in natural language to retrieve verified, context-aware answers instantly, integrating directly into Zendesk to reduce internal support ticket volume by 65%.",
-          "Retention AI Engine ~ Built an automated churn-prediction and personalized re-engagement pipeline. Triggered by purchase dormancy and contact decay, leveraging prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
-          "Command Centre ~ Sets up an unattended, daily-scheduled agent that rebuilds and republishes an always-current HTML/CSS/JS dashboard in place, using live web research and a persistent memory store. Built for long-term production use, it combines full-replace state management, primary-source verification, quiet-failure detection, and daily pipeline reconciliation, so it runs without human oversight and without piling up log clutter.",
-          "Integration Blueprint ~ Delivered a technical integration blueprint for an energy-sector multinational, mapping data pipelines across enterprise systems (SAP ERP, SLB Lumi, Avocet) and field OT systems (AVEVA PI, SCADA). Established Model Context Protocol (MCP) data architecture and security boundaries to lay the technical foundation for a later enterprise-wide AI rollout.",
+          "Invoice Exception Handler ~ Built for a construction company ~ Plugs into financial and ERP workflows and scans incoming vendor purchase orders against bills using containerized local LLMs. Isolates line-item pricing discrepancies, tax mismatches, and missing delivery receipts. Routes only non-standard exceptions to human managers via a dedicated Slack channel and sends clean invoices straight to payment processing ~ quadrupling invoice processing capacity during peak weeks.",
+          "Multi-Tier Support Pipeline ~ Worked directly with the CTO of a high-growth neobank to build automated customer service infrastructure from scratch. Connects the mobile app chat frontend to n8n, Zendesk, and Slack, forming a multi-tier support pipeline. An AI triage layer resolves queries with zero human touch, turns complex issues into context-rich Zendesk tickets, and sends real-time Slack alerts for high-priority operational and security escalations.",
+          "LLM Wikipedia ~ Acts as an enterprise knowledge engine for company policies, SOPs, and internal documentation. Employs GraphRAG and hybrid vector retrieval to resolve complex multi-hop queries in natural language, surfacing verified, context-aware answers with strict source attribution. Features Role-Based Access Control (RBAC) and integrates directly into Zendesk workspaces, consistently cutting repetitive support tickets and freeing teams from re-answering the same questions.",
+          "Retention AI Engine ~ Built an automated churn-prediction and personalized re-engagement pipeline for an e-commerce brand ~ Triggered by purchase dormancy and contact decay, leveraging prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
+          "Integration Blueprint ~ Multinational energy company ~ Delivered a technical integration blueprint for an energy-sector multinational, mapping data pipelines across enterprise systems (SAP ERP, SLB Lumi, Avocet) and field OT systems (AVEVA PI, SCADA). Established Model Context Protocol (MCP) data architecture and security boundaries to lay the technical foundation for a later enterprise-wide AI rollout.",
         ],
         pointsMd: 1,
       },
@@ -253,9 +264,9 @@ export const site = {
         opsLog: "Zendesk, QuickBooks, Excel, Sheets, Logistics APIs",
         bullets: [
           "Founded and scaled an independent fashion retail brand from 4 to 35 team members, utilizing QuickBooks and Excel for daily financial monitoring, vendor management, and operating performance.",
-          "Managed international supply chain logistics across fabric sourcing and garment manufacturing using Slack and AirTable databases, supporting over 7,000 customer transactions across bespoke and retail service.",
+          "Managed international supply chain logistics across fabric sourcing and garment manufacturing using Slack and Airtable databases, supporting over 8,000 customer transactions across bespoke and retail services.",
           "Designed an automated Google Sheets fulfillment system integrated with GIG & FedEx API webhooks to track inventory and manage local courier deliveries across extensive SKUs with 99% accuracy.",
-          "Rolled out standardized operating procedures (SOPs) across customer service, delivery and return handling in Zendesk ~ deploying custom ticket routing, automated macro triggers, and SLA escalation paths that cut order dispatch cycle times and delivered a consistently reliable customer experience.",
+          "Rolled out standardized operating procedures (SOPs) across customer service and returns ~ deploying a website AI chatbot for routine FAQ deflection, integrated with WhatsApp for human escalation paths and Zendesk for end-to-end ticket logging and resolution tracking to deliver a seamless, customer-obsessed experience.",
         ],
       },
     ] satisfies Role[],
@@ -283,10 +294,8 @@ export const site = {
     email: email as string | null,
     buttons: [
       { label: "send me an email →", href: `mailto:${email}`, primary: true },
-      { label: "view my work →", href: "https://github.com/Ezeh8", primary: true },
-      { label: "view my CV →", href: "/ezeh_cv.pdf", primary: true },
+      { label: "view my résumé →", href: "/ezeh_cv.pdf", primary: true },
     ] satisfies Link[],
-    replies: "building systems globally",
   },
 
   footer: {

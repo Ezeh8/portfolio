@@ -1,5 +1,5 @@
 import { site } from "@/content/site";
-import { ButtonLink, Container, Headline, StatusDot, hasHref } from "./ui";
+import { ButtonLink, Container, Headline, hasHref } from "./ui";
 
 // Brand marks for the round social buttons, keyed by the link label (24×24 paths).
 const socialIcons: Record<string, string> = {
@@ -18,7 +18,7 @@ const socialIcons: Record<string, string> = {
 // under it. Below 1024px the "Tell Me Everything" note is hidden and the social buttons sit under
 // the get-in-touch block.
 export default function Contact() {
-  const { headline, email, buttons, replies } = site.contact;
+  const { headline, email, buttons } = site.contact;
   const title = <Headline copy={headline} className="text-[clamp(2.75rem,8vw,6rem)]" />;
   const { credentials, socials, copyright } = site.footer;
   const socialLinks = socials.filter(hasHref);
@@ -26,12 +26,14 @@ export default function Contact() {
   return (
     <footer id="contact" className="scroll-mt-16 pt-12 pb-6 sm:pt-16 sm:pb-8">
       <Container>
-        {/* from 1024px two rows shared by both columns (subgrid): the headline, buttons and
-            status pill beside the "Tell Me Everything" note, then the copyright level with
-            the social buttons, so the two sides line up side by side */}
-        <div className="lg:grid lg:grid-cols-[3fr_2fr] lg:grid-rows-[auto_auto] lg:gap-x-12 lg:gap-y-6">
+        {/* from 1024px two rows shared by both columns (subgrid): the headline and buttons
+            beside the "Tell Me Everything" note, then the copyright level with the social
+            buttons, so the two sides line up side by side. The left column is as wide as the
+            headline, so the note gets the rest: room for its four lines at 15px. In the first
+            row the buttons and the note's last line both sit on the row's bottom edge. */}
+        <div className="lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:grid-rows-[auto_auto] lg:gap-x-8 lg:gap-y-6">
           <div className="min-w-0 lg:row-span-2 lg:grid lg:grid-rows-subgrid">
-            <div>
+            <div className="lg:flex lg:flex-col">
               {email ? (
                 <a href={`mailto:${email}`} className="block">
                   {title}
@@ -39,44 +41,40 @@ export default function Contact() {
               ) : (
                 title
               )}
-              {/* phones: all three on one line, slimmer, the text scaling with the width
-                  (about 44 characters in all) so they always fit */}
-              <div className="mt-6 flex gap-2 sm:flex-wrap sm:gap-4">
+              {/* phones: both on one line, slimmer, the text scaling with the width so they
+                  always fit */}
+              <div className="mt-6 flex gap-2 sm:flex-wrap sm:gap-4 lg:mt-auto lg:pt-6">
                 {buttons.filter(hasHref).map((button) => (
                   <ButtonLink
                     key={button.label}
                     href={button.href}
                     variant="primary"
-                    // the CV opens in a new tab
+                    // the résumé opens in a new tab
                     newTab={button.href.endsWith(".pdf")}
-                    className="max-sm:h-10 max-sm:px-3 max-sm:text-[min(14px,calc((100vw-126px)/23.5))]"
+                    className="max-sm:h-10 max-sm:px-3 max-sm:text-[min(14px,calc((100vw-88px)/20.5))]"
                   >
                     {button.label}
                   </ButtonLink>
                 ))}
               </div>
 
-              <p className="mt-7 inline-flex items-center gap-2 rounded-full border-(length:--border-width) border-line bg-card px-3 py-1.5 font-mono text-xs">
-                <StatusDot />
-                {replies}
-              </p>
             </div>
 
             {/* desktop: the copyright here, level with the social buttons */}
             <p className="hidden font-mono text-xs text-text-muted lg:block lg:self-center">{copyright}</p>
           </div>
 
-          <div className="text-[1.0625rem] lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:border-l lg:border-line lg:pl-12">
+          <div className="text-[1.0625rem] lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:border-l lg:border-line lg:pl-8">
             {/* nudged down so the heading's capitals start level with the tops of the big
                 "get in touch." letters, which sit about 0.08em below the top of their line
                 (Bricolage's ascent, less the 1.02 line height's leading and its ascender),
                 less the ~3px above the heading's own capitals, plus 27px judged by eye */}
-            <div className="hidden lg:block lg:mt-[calc(clamp(2.75rem,8vw,6rem)*0.08+24px)]">
+            <div className="hidden lg:flex lg:flex-col lg:pt-[calc(clamp(2.75rem,8vw,6rem)*0.08+24px)]">
               <h3 className="font-mono text-sm uppercase tracking-[0.12em] text-white">
                 {credentials.label}
               </h3>
-              {/* 17px, with open line spacing */}
-              <p className="mt-4 text-[17px] leading-[1.9] text-text-muted">{credentials.text}</p>
+              {/* 15px, four lines at most, its last line on the row's bottom edge */}
+              <p className="mt-4 text-[15px] leading-[1.8] text-text-muted lg:mt-auto lg:pt-4">{credentials.text}</p>
             </div>
 
             {socialLinks.length > 0 && (

@@ -18,6 +18,7 @@ export function StoryDialog({
   subtitle,
   keepCase = false,
   chrome = false,
+  wide = false,
   onClosed,
   children,
 }: {
@@ -28,6 +29,8 @@ export function StoryDialog({
   keepCase?: boolean;
   // a chrome (metallic) title, like the section headlines
   chrome?: boolean;
+  // a wider column, for pages and images rather than reading text
+  wide?: boolean;
   onClosed: () => void;
   children: ReactNode;
 }) {
@@ -86,7 +89,7 @@ export function StoryDialog({
       <div
         ref={content}
         onClick={(e) => (e.target as Element).closest("[data-story-close]") && close()}
-        className="mx-auto max-w-[640px] px-4 py-20 sm:px-8 sm:py-24"
+        className={`mx-auto px-4 py-20 sm:px-8 sm:py-24 ${wide ? "max-w-[1120px]" : "max-w-[640px]"}`}
       >
         {/* sized so the About headline's longer line ("i own the maps & specs") fits the
             column: two lines, never three */}
