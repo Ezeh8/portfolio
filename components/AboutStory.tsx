@@ -47,18 +47,21 @@ export default function AboutStory() {
             }
           }}
         >
-          <p className="mt-6 text-[17px] italic leading-relaxed text-text-muted sm:text-[19px]">{story[0]}</p>
+          <p className="mt-6 text-[15px] italic leading-relaxed text-text-muted sm:text-[17px]">{story[0]}</p>
 
           <hr className="my-8 border-line" />
 
-          <div className="flex flex-col gap-4 leading-relaxed text-btn-shadow">
-            {story.slice(1, stepsAfter).map((p) => (
-              <p key={p.slice(0, 24)}>{p}</p>
+          <div className="flex flex-col gap-4 text-[17px] leading-relaxed text-btn-shadow">
+            {/* the last paragraph before the steps leads into them, in bold */}
+            {story.slice(1, stepsAfter).map((p, i, all) => (
+              <p key={p.slice(0, 24)} className={i === all.length - 1 ? "font-bold" : undefined}>
+                {p}
+              </p>
             ))}
             <ul className="flex flex-col gap-2 text-btn-ink">
               {steps.map((s) => (
                 <li key={s} className="flex gap-3">
-                  <span aria-hidden="true" className="font-mono text-accent-text">
+                  <span aria-hidden="true" className="font-mono text-text-muted">
                     →
                   </span>
                   <span>{s}</span>
@@ -72,7 +75,7 @@ export default function AboutStory() {
 
           <hr className="my-8 border-line" />
 
-          <p className="text-btn-ink">
+          <p className="text-[17px] italic text-text-muted">
             {hello.before}
             <a
               href={hello.href}
