@@ -8,7 +8,7 @@ export default function Hero() {
     site.hero;
 
   return (
-    <section id="hero" className="scroll-mt-16 pt-10 pb-10 sm:pt-14 sm:pb-14">
+    <section id="hero" className="scroll-mt-16 pt-10 pb-10 sm:pt-14 sm:pb-14 lg:pt-[120px] lg:pb-[96px]">
       <Container>
         {/* the flight log's column takes the card's width, so each of its lines fits on one line */}
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 xl:gap-24">
@@ -32,7 +32,7 @@ export default function Hero() {
               <RotatingWord words={[...words]} wordClassName="chrome" />
             </h1>
             {/* four lines at every width: the text shrinks with the column when it is too narrow */}
-            <p className="mt-2 max-w-[34rem] text-[calc(min(clamp(1.0625rem,1.6vw,1.25rem),calc(min(100cqw,34rem)/30))+2px)] max-sm:text-[16px] leading-relaxed text-text/75">
+            <p className="mt-2 max-w-[34rem] text-[min(clamp(1.0625rem,1.6vw,1.25rem),calc(min(100cqw,34rem)/30))] max-sm:text-[16px] leading-relaxed text-text/75">
               {body}
             </p>
 

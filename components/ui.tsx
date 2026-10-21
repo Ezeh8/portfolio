@@ -3,7 +3,7 @@ import type { Headline as HeadlineCopy } from "@/content/site";
 
 export function Container({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-8 xl:max-w-[1180px]">{children}</div>
+    <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-8 xl:max-w-[1230px]">{children}</div>
   );
 }
 
