@@ -52,9 +52,9 @@ export default function AboutStory() {
           <hr className="my-8 border-line" />
 
           <div className="flex flex-col gap-4 text-[17px] leading-relaxed text-btn-shadow">
-            {/* the last paragraph before the steps leads into them, in bold */}
+            {/* the last paragraph before the steps leads into them, in bold italics */}
             {story.slice(1, stepsAfter).map((p, i, all) => (
-              <p key={p.slice(0, 24)} className={i === all.length - 1 ? "font-bold" : undefined}>
+              <p key={p.slice(0, 24)} className={i === all.length - 1 ? "font-bold italic" : undefined}>
                 {p}
               </p>
             ))}
