@@ -74,6 +74,8 @@ const PHONE_NOSE_DEPTH_EM = DESKTOP_NOSE_DEPTH / 96;
 // this angle, nearly level, like desktop's.
 const PHONE_GLIDE_X = 90;
 const PHONE_GLIDE_ANGLE = 10;
+// Phones: the landed nose this many px further back from the h than that share puts it.
+const PHONE_NOSE_BACK = 3;
 // The nose tip in the plane's SVG viewBox (see PaperPlane).
 const NOSE = { x: 208, y: 70 };
 
@@ -243,7 +245,7 @@ function heroRest(size: Size, plane: HTMLElement) {
 // name. Measured from the letter itself (the font's glyph metrics), so it holds at every
 // width.
 const NAME_TILT = 12;
-const NAME_GAP = 11;
+const NAME_GAP = 9;
 const NAME_DROP = 0.12;
 
 function nameRest(name: HTMLElement, plane: HTMLElement, size: Size) {
@@ -739,7 +741,7 @@ function phoneChoreography(size: Size, plane: HTMLElement): Key[] | null {
   const touch = $("#contact .highlight") as HTMLElement | null;
   const last = shared[shared.length - 1];
   const from = middle[middle.length - 1];
-  const depth = touch ? (parseFloat(getComputedStyle(touch).fontSize) || 44) * PHONE_NOSE_DEPTH_EM : NOSE_DEPTH;
+  const depth = touch ? (parseFloat(getComputedStyle(touch).fontSize) || 44) * PHONE_NOSE_DEPTH_EM - PHONE_NOSE_BACK : NOSE_DEPTH;
   const max = maxScroll();
   // as on desktop: one shallow glide in from the right, a little above the h, coming down
   // PHONE_GLIDE_ANGLE° onto it, its tilt the glide's own angle, so the nose leads all the
