@@ -163,10 +163,10 @@ export const site = {
       {
         id: "llm-wiki",
         title: "LLM Wikipedia",
-        subtitle: "Internal SOP & Knowledge Retrieval System",
-        description: "Built for various orgs. ~ Acts as an enterprise knowledge engine for organizational policies, standard operating procedures, and internal documentation across your business. Employs GraphRAG and hybrid vector retrieval to resolve complex multi-hop queries in natural language, surfacing verified, context-aware answers with strict source attribution. Features Role-Based Access Control (RBAC) and integrates directly into internal Zendesk workspaces to streamline employee self-service and reduce repetitive internal support tickets.",
+        subtitle: "Internal SOP & Knowledge Retrieval Engine",
+        description: "Acts as an enterprise knowledge engine for organizational policies, SOPs, and compliance documentation across growing businesses ~ most recently deployed for a full-service law firm to query legal precedents and case files down to clause-level citations. Employs GraphRAG and hybrid vector retrieval to resolve complex multi-hop queries in natural language with strict source attribution, cutting associate legal research time by up to 55%. Features Role-Based Access Control (RBAC) to enforce ethical walls and safeguard attorney-client privilege.",
         deployedResult: "4 live SOPs · 29 regression tests · weekly drift check · CI/CD gate",
-        stack: ["LangGraph", "FastAPI", "Vector Database", "Zendesk"],
+        stack: ["LangGraph", "GraphRAG", "FastAPI", "Vector Database", "Zendesk API"],
         github: "https://github.com/Ezeh8/llm_wiki",
       },
       {
@@ -182,7 +182,7 @@ export const site = {
         id: "retention-ai",
         title: "Retention AI Engine",
         subtitle: "Automated Churn Prediction & Customer Winback",
-        description: "Built for an e-commerce brand ~ Built an automated churn-prediction and personalized re-engagement pipeline. Triggered by purchase dormancy and contact decay, leveraging prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
+        description: "Built for an e-commerce brand ~ this automated churn-prediction and re-engagement pipeline is triggered by purchase dormancy and contact decay. It uses LLM-written sequences to send targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
         deployedResult: "60-day churn down 33% · ₦17M+ recovered in two months",
         stack: ["n8n", "GoHighLevel", "WhatsApp API", "Paystack Webhooks", "GPT-4o"],
         github: "",
@@ -229,7 +229,7 @@ export const site = {
     label: "03 / EXPERIENCE SO FAR",
     headline: { text: "a decade of work.", highlight: "decade" } satisfies Headline,
     // Numbers in the bullets drawn with a marker highlight (matched as whole numbers).
-    markers: ["quadrupling", "neobank", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "8,000 customer", "99% accuracy", "consistently reliable"],
+    markers: ["quadrupling", "neobank", "up to 55%", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "8,000 customer", "99% accuracy", "consistently reliable"],
     roles: [
       {
         role: "Founder",
@@ -239,7 +239,7 @@ export const site = {
         bullets: [
           "Invoice Exception Handler ~ Built for a construction company ~ Plugs into financial and ERP workflows and scans incoming vendor purchase orders against bills using containerized local LLMs. Isolates line-item pricing discrepancies, tax mismatches, and missing delivery receipts. Routes only non-standard exceptions to human managers via a dedicated Slack channel and sends clean invoices straight to payment processing ~ quadrupling invoice processing capacity during peak weeks.",
           "Multi-Tier Support Pipeline ~ Worked directly with the CTO of a high-growth neobank to build automated customer service infrastructure from scratch. Connects the mobile app chat frontend to n8n, Zendesk, and Slack, forming a multi-tier support pipeline. An AI triage layer resolves queries with zero human touch, turns complex issues into context-rich Zendesk tickets, and sends real-time Slack alerts for high-priority operational and security escalations.",
-          "LLM Wikipedia ~ Acts as an enterprise knowledge engine for company policies, SOPs, and internal documentation. Employs GraphRAG and hybrid vector retrieval to resolve complex multi-hop queries in natural language, surfacing verified, context-aware answers with strict source attribution. Features Role-Based Access Control (RBAC) and integrates directly into Zendesk workspaces, consistently cutting repetitive support tickets and freeing teams from re-answering the same questions.",
+          "LLM Wikipedia ~ Acts as an enterprise knowledge engine for organizational policies, SOPs, and compliance documentation across growing businesses ~ most recently deployed for a full-service law firm to query legal precedents and case files down to clause-level citations. Employs GraphRAG and hybrid vector retrieval to resolve complex multi-hop queries in natural language with strict source attribution, cutting associate legal research time by up to 55%. Features Role-Based Access Control (RBAC) to enforce ethical walls and safeguard attorney-client privilege.",
           "Retention AI Engine ~ Built an automated churn-prediction and personalized re-engagement pipeline for an e-commerce brand ~ Triggered by purchase dormancy and contact decay, leveraging prompt-engineered LLM sequences to deliver targeted WhatsApp and email outreach, cutting 60-day churn by 33% and recovering over ₦17M in dormant customer lifetime value within two months.",
           "Integration Blueprint ~ Multinational energy company ~ Delivered a technical integration blueprint for an energy-sector multinational, mapping data pipelines across enterprise systems (SAP ERP, SLB Lumi, Avocet) and field OT systems (AVEVA PI, SCADA). Established Model Context Protocol (MCP) data architecture and security boundaries to lay the technical foundation for a later enterprise-wide AI rollout.",
         ],

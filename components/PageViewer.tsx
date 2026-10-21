@@ -44,30 +44,40 @@ export function PageViewer({ title, subtitle, pages }: { title: string; subtitle
             opener.current?.focus();
           }}
         >
-          <p className="mt-4 font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
-            Excerpt · {pages.length} pages · view only
-          </p>
-          <div
-            onContextMenu={(e) => e.preventDefault()}
-            onDragStart={(e) => e.preventDefault()}
-            className="mt-8 flex flex-col gap-6 select-none [-webkit-touch-callout:none]"
-          >
-            {pages.map((page, i) => (
-              <Image
-                key={page.src}
-                src={page.src}
-                alt={page.alt}
-                width={2160}
-                height={1215}
-                draggable={false}
-                priority={i === 0}
-                sizes="(min-width: 1120px) 1056px, calc(100vw - 32px)"
-                className="h-auto w-full rounded-lg border-(length:--border-width) border-line"
-              />
-            ))}
-          </div>
+          <ProtectedPages pages={pages} />
         </StoryDialog>
       )}
+    </>
+  );
+}
+
+// The pages themselves, also used by the /integration_blueprint page: the "excerpt" label,
+// then each page as an image, with saving discouraged.
+export function ProtectedPages({ pages }: { pages: readonly Page[] }) {
+  return (
+    <>
+      <p className="mt-4 font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+        Excerpt · {pages.length} pages · view only
+      </p>
+      <div
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
+        className="mt-8 flex flex-col gap-6 select-none [-webkit-touch-callout:none]"
+      >
+        {pages.map((page, i) => (
+          <Image
+            key={page.src}
+            src={page.src}
+            alt={page.alt}
+            width={2160}
+            height={1215}
+            draggable={false}
+            priority={i === 0}
+            sizes="(min-width: 1120px) 1056px, calc(100vw - 32px)"
+            className="h-auto w-full rounded-lg border-(length:--border-width) border-line"
+          />
+        ))}
+      </div>
     </>
   );
 }
