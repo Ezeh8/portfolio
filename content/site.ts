@@ -61,7 +61,7 @@ export const site = {
   },
 
   hero: {
-    label: "AI Product Manager | AI Systems Builder",
+    label: "AI Native PM | Systems Builder | Operations Specialist",
     name: "Ezeh Ikenna",
     tagline: "Founder, Rithma Labs",
     status: "building agentic systems globally",

@@ -81,7 +81,7 @@ export function StoryDialog({
         type="button"
         aria-label="Close"
         onClick={close}
-        className="fixed top-4 right-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border-(length:--border-width) border-line text-lg text-text-muted transition-[background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome-smooth)] hover:text-btn-text sm:top-6 sm:right-6"
+        className="fixed top-4 right-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border-(length:--border-width) border-line text-lg transition-[background-color,color] duration-150 hover:bg-btn-bg hover:bg-[image:var(--chrome-smooth)] hover:text-btn-text sm:top-6 sm:right-6"
       >
         ✕
       </button>
