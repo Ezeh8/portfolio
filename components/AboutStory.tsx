@@ -47,7 +47,7 @@ export default function AboutStory() {
             }
           }}
         >
-          <p className="mt-6 text-lg leading-relaxed text-btn-ink sm:text-xl">{story[0]}</p>
+          <p className="mt-6 text-[17px] italic leading-relaxed text-text-muted sm:text-[19px]">{story[0]}</p>
 
           <hr className="my-8 border-line" />
 

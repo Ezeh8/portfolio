@@ -62,7 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* the page sits above the orbs; anything wider than the window (the plane passing
             an edge, a long line) is clipped, so the page never scrolls sideways and the
             header always spans the screen */}
-        <div className="relative z-[1] flex min-h-full flex-col overflow-x-clip">{children}</div>
+        <div className="page relative z-[1] flex min-h-full flex-col overflow-x-clip">{children}</div>
       </body>
     </html>
   );

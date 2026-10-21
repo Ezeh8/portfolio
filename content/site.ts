@@ -105,6 +105,13 @@ export const site = {
       highlight: "maps & specs",
       keepCase: true,
     } satisfies Headline,
+    // from 768px, where the headline sits in a narrow column: three lines, "before" up with
+    // "& specs" and "the code." on a line of its own
+    headlineWide: {
+      text: "i own the maps\n& specs before\nthe code.",
+      highlight: "maps\n& specs",
+      keepCase: true,
+    } satisfies Headline,
     paragraphs: [
       "I’ve spent the last few years in banking infrastructure, high-end retail operations, an AI agency, and now in AI infrastructure. The industries kept changing, the work didn’t.",
       "Every time, the actual job was the same: find the part of the system that’s quietly costing everyone time, and rebuild it so nobody has to think about it again.",
@@ -114,7 +121,7 @@ export const site = {
     // goes to #contact.
     storyButton: "the whole story",
     story: [
-      "Every team I've worked with had the same problem: plenty of people ready to build, and nobody holding a clear picture of what to build next. Enter Ezeh, I became that person ~ the one who brings clarity.",
+      "I’m an AI native PM and an operation specialist. For over a decade I’ve set up processes from the ground up and redesigned the ones holding teams back; today I add AI where it makes them faster.",
       "Seven years running The Ropa Brand, a fashion retail company that grew from 4 people to 35, taught me that teams move fastest when the hard thinking happens first ~ when the process is mapped end to end, documented, and the success metrics are locked in before the build begins.",
       "Standard Chartered reinforced the same lesson ~ I ran operations systems across in-app automation, digital KYC rollout, and AI-driven credit scoring. The deployments that stuck were the ones where we coordinated around the SOPs, locked the KPIs, and set the SLAs before the tech went live. The ones that failed were coordination disasters ~ someone just said \"build XYZ system\" without asking why, for whom, what success looks like, or what we're not doing.",
       "Now, through Rithma Labs ~ an AI transformation company, I'm still doing the exact same thing.",

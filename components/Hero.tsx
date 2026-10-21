@@ -12,7 +12,8 @@ export default function Hero() {
       <Container>
         {/* the flight log's column takes the card's width, so each of its lines fits on one line */}
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 xl:gap-24">
-          <div>
+          {/* a size container, so the body below can scale its text with the column's width */}
+          <div className="@container">
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
               {label}
             </p>
@@ -30,7 +31,8 @@ export default function Hero() {
               <span aria-hidden="true" className="chrome">{prefix} </span>
               <RotatingWord words={[...words]} wordClassName="chrome" />
             </h1>
-            <p className="mt-2 max-w-[34rem] text-[clamp(1.0625rem,1.6vw,1.25rem)] leading-relaxed text-text/75">
+            {/* four lines at every width: the text shrinks with the column when it is too narrow */}
+            <p className="mt-2 max-w-[34rem] text-[calc(min(clamp(1.0625rem,1.6vw,1.25rem),calc(min(100cqw,34rem)/30))+2px)] max-sm:text-[16px] leading-relaxed text-text/75">
               {body}
             </p>
 

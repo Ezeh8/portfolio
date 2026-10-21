@@ -186,6 +186,17 @@ body {
   }
 }
 
+/* phones, menu open (Nav sets data-menu-open): everything but the header and the menu is
+   hidden and the page can't scroll, so only the menu shows, on its glass over the orbs */
+@media (max-width: 767px) {
+  html[data-menu-open] {
+    overflow: hidden;
+  }
+  html[data-menu-open] .page > :not(header, #mobile-menu) {
+    visibility: hidden;
+  }
+}
+
 @keyframes drift-left-phone {
   0%,
   100% {
