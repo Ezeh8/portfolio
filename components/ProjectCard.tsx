@@ -40,12 +40,13 @@ export default function ProjectCard({ project, number }: { project: Project; num
 
         {/* the pills, with "View" on the same line at the right */}
         <div className="mt-5 flex items-center gap-4">
-          {/* below 1024px the pills wrap onto more lines, every border whole; from lg one
-              line, the pills scrolling sideways (fading at the right edge) when they
-              don't all fit beside "View", slimmer, so a full row of four usually fits */}
+          {/* one line at every size, the pills scrolling sideways (fading at the right edge)
+              when they don't all fit beside "View"; below lg a pixel above and below, so the
+              scrolling row doesn't cut the pills' borders; slimmer pills from lg, so a full
+              row of four usually fits there */}
           <ul
             aria-label="Stack"
-            className="flex min-w-0 flex-1 gap-2 max-lg:flex-wrap lg:gap-1.5 lg:overflow-x-auto lg:[scrollbar-width:none] lg:[mask-image:linear-gradient(to_right,black_92%,transparent)] lg:[&::-webkit-scrollbar]:hidden"
+            className="flex min-w-0 flex-1 gap-2 overflow-x-auto [scrollbar-width:none] [mask-image:linear-gradient(to_right,black_80%,transparent)] max-lg:py-px lg:gap-1.5 lg:[mask-image:linear-gradient(to_right,black_92%,transparent)] [&::-webkit-scrollbar]:hidden"
           >
             {project.stack.map((item) => (
               <li
@@ -63,7 +64,7 @@ export default function ProjectCard({ project, number }: { project: Project; num
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`View ${project.title}${project.github.includes("github.com") ? " on GitHub" : ""}`}
-              className="group shrink-0 whitespace-nowrap text-sm font-semibold max-lg:self-end max-lg:py-1"
+              className="group shrink-0 whitespace-nowrap text-sm font-semibold"
             >
               {/* chrome on each part: the arrow is an inline-block (it nudges on hover), which
                   a parent's text-clipped background wouldn't reliably reach */}

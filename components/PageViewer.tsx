@@ -22,7 +22,7 @@ export function PageViewer({ title, subtitle, pages }: { title: string; subtitle
         aria-haspopup="dialog"
         aria-label={`View ${title}`}
         onClick={() => setOpen(true)}
-        className="group shrink-0 cursor-pointer whitespace-nowrap text-sm font-semibold max-lg:self-end max-lg:py-1"
+        className="group shrink-0 cursor-pointer whitespace-nowrap text-sm font-semibold"
       >
         {/* the same look as the cards' "View →" links */}
         <span className="chrome">View</span>

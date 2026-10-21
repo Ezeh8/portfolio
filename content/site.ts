@@ -137,7 +137,7 @@ export const site = {
       "I demo the results to the team.",
       "I push to production once it’s proven.",
     ],
-    hello: { before: "If you want to adopt agents the right way ~ ", label: "say hello", href: "#contact" },
+    hello: { before: "Got a process in mind and wondering where AI fits? ~ ", label: "say hello", href: "#contact" },
   },
 
   work: {
