@@ -237,7 +237,7 @@ export const site = {
     label: "03 / EXPERIENCE SO FAR",
     headline: { text: "a decade of work.", highlight: "decade" } satisfies Headline,
     // Numbers in the bullets drawn with a marker highlight (matched as whole numbers).
-    markers: ["quadrupling", "neobank", "up to 55%", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "8,000 customer", "99% accuracy", "consistently reliable"],
+    markers: ["quadrupling", "neobank", "up to 55%", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "8,000 customer", "95% accuracy", "consistently reliable"],
     roles: [
       {
         role: "Founder",
@@ -273,7 +273,7 @@ export const site = {
         bullets: [
           "Founded and scaled an independent fashion retail brand from 4 to 35 team members, utilizing QuickBooks and Excel for daily financial monitoring, vendor management, and operating performance.",
           "Managed international supply chain logistics across fabric sourcing and garment manufacturing using Slack and Airtable databases, supporting over 8,000 customer transactions across bespoke and retail services.",
-          "Designed an automated Google Sheets fulfillment system integrated with GIG & FedEx API webhooks to track inventory and manage local courier deliveries across extensive SKUs with 99% accuracy.",
+          "Designed an automated Google Sheets fulfillment system integrated with GIG & FedEx API webhooks to track inventory and manage local courier deliveries across extensive SKUs with 95% accuracy.",
           "Rolled out standardized operating procedures (SOPs) across customer service and returns ~ deploying a website AI chatbot for routine FAQ deflection, integrated with WhatsApp for human escalation paths and Zendesk for end-to-end ticket logging and resolution tracking to deliver a seamless, customer-obsessed experience.",
         ],
       },
