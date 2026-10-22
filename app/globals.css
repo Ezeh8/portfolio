@@ -364,6 +364,28 @@ body {
     }
   }
 
+  /* The story's "~ say hello": fading down and back up, a soft blink. */
+  @keyframes hello-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  /* The story's process arrows: a small nudge to the right and back. */
+  @keyframes arrow-nudge {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(4px);
+    }
+  }
+
   /* Chrome text: the --chrome gradient painted through the letters. Children inherit the
      transparent fill, so a highlighted word inside turns chrome too. */
   .chrome {

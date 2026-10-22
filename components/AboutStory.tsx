@@ -61,7 +61,11 @@ export default function AboutStory() {
             <ul className="flex flex-col gap-2 text-btn-ink">
               {steps.map((s) => (
                 <li key={s} className="flex gap-3">
-                  <span aria-hidden="true" className="font-mono text-text-muted">
+                  {/* nudging right and back, unless reduced motion is asked for */}
+                  <span
+                    aria-hidden="true"
+                    className="inline-block font-mono text-text-muted motion-safe:animate-[arrow-nudge_1.6s_ease-in-out_infinite]"
+                  >
                     →
                   </span>
                   <span>{s}</span>
@@ -75,21 +79,31 @@ export default function AboutStory() {
 
           <hr className="my-8 border-line" />
 
-          <p className="text-[17px] italic text-text-muted">
-            {hello.before}
-            <a
-              href={hello.href}
-              // the overlay closes on the click (data-story-close), then goes to contact
-              data-story-close
-              onClick={(e) => {
-                e.preventDefault();
-                goContact.current = true;
-              }}
-              className="font-medium underline decoration-2 underline-offset-4 transition-[color,text-underline-offset] duration-150 hover:text-accent-text hover:underline-offset-[7px]"
-            >
-              {hello.label}
-            </a>
-          </p>
+          {/* one line at every width: the text shrinks with the overlay's column when it
+              would not fit at 17px */}
+          <div className="@container">
+            <p className="whitespace-nowrap text-[min(17px,calc(100cqw/28.6))] italic text-text-muted">
+              {hello.before}
+              {/* "~ say hello" in chrome, blinking softly unless reduced motion is asked for */}
+              <span className="inline-block motion-safe:animate-[hello-blink_3s_ease-in-out_infinite]">
+                {/* the smooth chrome: the ~ sits mid-line, right on the plain chrome's dark band,
+                    where it read as grey */}
+                <span className="chrome font-medium [background-image:var(--chrome-smooth)]">~ </span>
+                <a
+                  href={hello.href}
+                  // the overlay closes on the click (data-story-close), then goes to contact
+                  data-story-close
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goContact.current = true;
+                  }}
+                  className="chrome pr-[0.1em] font-medium underline decoration-text-muted decoration-2 underline-offset-4 transition-[text-decoration-color,text-underline-offset] duration-150 hover:decoration-btn-ink hover:underline-offset-[7px]"
+                >
+                  {hello.label}
+                </a>
+              </span>
+            </p>
+          </div>
         </StoryDialog>
       )}
     </>

@@ -14,7 +14,8 @@ export default function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 xl:gap-24">
           {/* a size container, so the body below can scale its text with the column's width */}
           <div className="@container">
-            <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted">
+            {/* one line at every width: on narrow screens the text shrinks with the column */}
+            <p className="whitespace-nowrap font-mono text-[min(11px,calc(100cqw/35.6))] uppercase tracking-[0.12em] text-text-muted">
               {label}
             </p>
             <p data-hero-name className="chrome mt-6 font-display text-[38px] sm:text-[40px] font-medium lg:mt-3">{name}</p>

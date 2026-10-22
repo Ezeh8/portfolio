@@ -61,7 +61,7 @@ export const site = {
   },
 
   hero: {
-    label: "AI Native PM | Systems Builder | Operations Specialist",
+    label: "AI Native PM | Systems Builder | Ops. Specialist",
     name: "Ezeh Ikenna",
     tagline: "Founder, Rithma Labs",
     status: "building agentic systems globally",
@@ -124,7 +124,7 @@ export const site = {
       "I’m an AI-native PM and operations specialist with 10+ years of hands-on experience across retail, banking, and B2B services. Across all of it, one lesson has held: teams move fastest when the hard thinking happens first, with the process mapped end to end, documented, and the success metrics locked in before the build begins.",
       "I learned how much this matters over seven years running The Ropa Brand, a fashion retail company that grew from a team of 4 to 35 and over 8,000 customers. We were able to scale because the systems came first: SOPs for customer service and returns, and an automated fulfillment system that tracked inventory and deliveries at 95% accuracy.",
       "Standard Chartered confirmed it. There, I ran operations systems across in-app automation, digital KYC rollout, and AI-driven credit scoring. The deployments that stuck had their SOPs agreed, KPIs set, and SLAs signed off before the tech went live; the ones that failed began with someone saying “build XYZ system” and nobody asking why, for whom, what success looks like, or what was out of scope.",
-      "Today, through Rithma Labs, my AI transformation company, I carry that same discipline into every engagement. Recent work includes a Multi-Tier Support Pipeline for a neobank (n8n, Zendesk, Slack), an Invoice Exception Handler for a construction company (FastAPI, PostgreSQL, Ollama), LLM Wikipedia, a legal knowledge engine for a law firm (LangGraph, GraphRAG), a Retention AI Engine for an e-commerce brand (GoHighLevel, WhatsApp, GPT-4o), and Operation Sync, which connects HubSpot, Stripe, and Asana for a logistics provider.",
+      "Today, through Rithma Labs, my AI transformation company, I carry that same discipline into every engagement. Recent work includes a Multi-Tier Support Pipeline for a neobank (n8n, Zendesk, Slack), an Invoice Exception Handler for a construction company (FastAPI, PostgreSQL, Ollama), LLM Wikipedia ~ a legal knowledge engine for a law firm (LangGraph, GraphRAG), a Retention AI Engine for an e-commerce brand (GoHighLevel, WhatsApp, GPT-4o), and Operation Sync, which connects HubSpot, Stripe, and Asana for a logistics provider.",
       "Each one follows the same path:",
       "For over a decade I’ve set up processes from the ground up and redesigned the ones holding teams back; today I add AI where it makes them faster.",
     ],
@@ -137,7 +137,7 @@ export const site = {
       "I demo the results to the team.",
       "I push to production once it’s proven.",
     ],
-    hello: { before: "Got a process in mind and wondering where AI fits? ~ ", label: "say hello", href: "#contact" },
+    hello: { before: "Got a process in mind and wondering where AI fits? ", label: "say hello", href: "#contact" },
   },
 
   work: {
