@@ -62,6 +62,8 @@ export const site = {
 
   hero: {
     label: "AI Native PM | Systems Builder | Ops. Specialist",
+    // desktop (from 1024px): the label in full
+    labelWide: "AI Native PM | Systems Builder | Operations Specialist",
     name: "Ezeh Ikenna",
     tagline: "Founder, Rithma Labs",
     status: "building agentic systems globally",

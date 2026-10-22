@@ -4,7 +4,7 @@ import { TypedLog } from "./TypedLog";
 import { ButtonLink, Container, HandNote, PanelBar, StatusDot } from "./ui";
 
 export default function Hero() {
-  const { label, name, tagline, status, prefix, words, headlineLabel, body, primary, secondary, flightLog, note } =
+  const { label, labelWide, name, tagline, status, prefix, words, headlineLabel, body, primary, secondary, flightLog, note } =
     site.hero;
 
   return (
@@ -14,9 +14,11 @@ export default function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 xl:gap-24">
           {/* a size container, so the body below can scale its text with the column's width */}
           <div className="@container">
-            {/* one line at every width: on narrow screens the text shrinks with the column */}
-            <p className="whitespace-nowrap font-mono text-[min(11px,calc(100cqw/35.6))] uppercase tracking-[0.12em] text-text-muted">
-              {label}
+            {/* one line at every width: on narrow screens the text shrinks with the column;
+                from lg the longer label */}
+            <p className="whitespace-nowrap font-mono text-[min(11px,calc(100cqw/35.6))] uppercase tracking-[0.12em] text-text-muted lg:text-[min(11px,calc(100cqw/40.3))]">
+              <span className="lg:hidden">{label}</span>
+              <span className="max-lg:hidden">{labelWide}</span>
             </p>
             <p data-hero-name className="chrome mt-6 font-display text-[38px] sm:text-[40px] font-medium lg:mt-3">{name}</p>
             <p className="mt-1 text-text/70">{tagline}</p>
