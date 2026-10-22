@@ -65,7 +65,7 @@ export const site = {
     // desktop (from 1024px): the label in full
     labelWide: "AI Native PM | Systems Builder | Operations Specialist",
     name: "Ezeh Ikenna",
-    tagline: "Founder, Rithma Labs",
+    tagline: "Co-Founder, Rithma Labs",
     status: "building agentic systems globally",
     // The headline: the prefix over one word that rotates through `words`. Screen readers
     // get `headlineLabel` instead.
@@ -79,17 +79,17 @@ export const site = {
     // Typed out line by line as the page opens; "$ " lines are commands, the rest their
     // output, and "" leaves a gap between groups.
     flightLog: {
-      header: "ezeh@pm - re-building processes",
+      header: "ezeh@pm ~ building processes",
       lines: [
         "$ /who.am.i?",
-        "applied AI pm · operations engineer · across time-zones",
+        "AI pm · orchestration engineer · global remote",
         "",
         "$ /current-focus",
         "llm agents · systems building · ai security & governance",
         "",
         "$ /sop: spec - evaluate - log",
         "✓ mapped · shipped · live",
-        "✓ process rebuild",
+        "✓ workflow · architect",
       ],
     },
     note: "follow the plane",
@@ -242,7 +242,7 @@ export const site = {
     markers: ["quadrupling", "neobank", "up to 55%", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "8,000 customer", "95% accuracy", "consistently reliable"],
     roles: [
       {
-        role: "Founder",
+        role: "Co-Founder",
         company: "Rithma Labs (Global AI & Systems Consulting)",
         dates: "Sept 2024 – Present",
         opsLog: "DEPLOYING AGENTIC SYSTEMS GLOBALLY",
@@ -294,7 +294,7 @@ export const site = {
       },
       {
         title: "Automate",
-        items: ["n8n", "Zapier", "Google Workspace", "GoHighLevel / HubSpot"],
+        items: ["N8N / Zapier", "Google Workspace", "Agile Methodologies", "GoHighLevel / HubSpot"],
       },
     ],
   },

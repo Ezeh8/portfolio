@@ -68,13 +68,13 @@ export default function Contact() {
             {/* nudged down so the heading's capitals start level with the tops of the big
                 "get in touch." letters, which sit about 0.08em below the top of their line
                 (Bricolage's ascent, less the 1.02 line height's leading and its ascender),
-                less the ~3px above the heading's own capitals, plus 27px judged by eye */}
-            <div className="hidden lg:flex lg:flex-col lg:pt-[calc(clamp(2.75rem,8vw,6rem)*0.08+24px)]">
+                less the ~3px above the heading's own capitals, plus 30px judged by eye */}
+            <div className="hidden lg:flex lg:flex-col lg:pt-[calc(clamp(2.75rem,8vw,6rem)*0.08+27px)]">
               <h3 className="font-mono text-sm uppercase tracking-[0.12em] text-white">
                 {credentials.label}
               </h3>
               {/* 15px, four lines at most, its last line on the row's bottom edge */}
-              <p className="mt-4 text-[15px] leading-[1.8] text-text-muted lg:mt-auto lg:pt-4">{credentials.text}</p>
+              <p className="mt-4 text-[15px] leading-[1.8] text-text-muted lg:mt-auto lg:mb-[3.5px] lg:pt-4">{credentials.text}</p>
             </div>
 
             {socialLinks.length > 0 && (

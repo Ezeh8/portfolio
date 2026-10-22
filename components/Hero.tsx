@@ -63,9 +63,9 @@ export default function Hero() {
                   </span>
                   {/* the name, then the rest of the title in grey */}
                   <span>
-                    {flightLog.header.split(" - ")[0]}
+                    {flightLog.header.split(" ~ ")[0]}
                     <span className="text-text-muted">
-                      {flightLog.header.slice(flightLog.header.indexOf(" - "))}
+                      {flightLog.header.slice(flightLog.header.indexOf(" ~ "))}
                     </span>
                   </span>
                 </span>

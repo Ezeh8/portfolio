@@ -22,7 +22,7 @@ export default function About() {
               className="mt-4 hidden whitespace-pre-line md:block md:text-[min(clamp(2.25rem,5vw,3.5rem),calc(100cqw/7.4))]"
             />
           </div>
-          <div className="space-y-8 text-[calc(clamp(1.25rem,2.2vw,1.625rem)-5px)] md:text-[calc(clamp(1.25rem,2.2vw,1.625rem)-7px)] leading-[1.6] text-text/75 md:pt-9">
+          <div className="space-y-8 text-[calc(clamp(1.25rem,2.2vw,1.625rem)-5.5px)] md:text-[calc(clamp(1.25rem,2.2vw,1.625rem)-7.5px)] leading-[1.6] text-text/75 md:pt-9">
             {/* phones show only the first paragraph; "the whole story" has the rest */}
             {paragraphs.map((p, i) => (
               <p key={p.slice(0, 24)} className={i > 0 ? "max-md:hidden" : undefined}>
