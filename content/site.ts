@@ -113,8 +113,8 @@ export const site = {
       keepCase: true,
     } satisfies Headline,
     paragraphs: [
-      "I’ve spent the last few years in banking infrastructure, high-end retail operations, an AI agency, and now in AI infrastructure. The industries kept changing, the work didn’t.",
-      "Every time, the actual job was the same: find the part of the system that’s quietly costing everyone time, and rebuild it so nobody has to think about it again.",
+      "I’ve spent the last few years across banking, high-end retail, an AI agency, and now AI infrastructure. Every time, the job was the same: design the systems a team needs from the ground up, and rebuild the ones quietly costing everyone time and money.",
+      "That’s why I care most about the operating layer a business runs on daily, the systems every team depends on and the processes that move the organization forward.",
     ],
     // "the whole story": the button under the paragraphs opens it in the card-style
     // overlay. `steps` sit between the paragraphs at `stepsAfter`; `hello` closes it and
@@ -122,7 +122,7 @@ export const site = {
     storyButton: "the whole story",
     story: [
       "I’m an AI-native PM and operations specialist with 10+ years of hands-on experience across retail, banking, and B2B services. Across all of it, one lesson has held: teams move fastest when the hard thinking happens first, with the process mapped end to end, documented, and the success metrics locked in before the build begins.",
-      "I first learned this over seven years running The Ropa Brand, a fashion retail company that grew from 4 people to 35.",
+      "I learned how much this matters over seven years running The Ropa Brand, a fashion retail company that grew from a team of 4 to 35 and over 8,000 customers. We were able to scale because the systems came first: SOPs for customer service and returns, and an automated fulfillment system that tracked inventory and deliveries at 95% accuracy.",
       "Standard Chartered confirmed it. There, I ran operations systems across in-app automation, digital KYC rollout, and AI-driven credit scoring. The deployments that stuck had their SOPs agreed, KPIs set, and SLAs signed off before the tech went live; the ones that failed began with someone saying “build XYZ system” and nobody asking why, for whom, what success looks like, or what was out of scope.",
       "Today, through Rithma Labs, my AI transformation company, I carry that same discipline into every engagement. Recent work includes a Multi-Tier Support Pipeline for a neobank (n8n, Zendesk, Slack), an Invoice Exception Handler for a construction company (FastAPI, PostgreSQL, Ollama), LLM Wikipedia, a legal knowledge engine for a law firm (LangGraph, GraphRAG), a Retention AI Engine for an e-commerce brand (GoHighLevel, WhatsApp, GPT-4o), and Operation Sync, which connects HubSpot, Stripe, and Asana for a logistics provider.",
       "Each one follows the same path:",
