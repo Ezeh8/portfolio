@@ -61,11 +61,11 @@ export const site = {
   },
 
   hero: {
-    label: "AI Native PM | Systems Builder | Ops. Specialist",
+    label: "AI Native PM | Systems Builder | Operations Lead",
     // desktop (from 1024px): the label in full
-    labelWide: "AI Native PM | Systems Builder | Operations Specialist",
+    labelWide: "AI Native PM | Systems Builder | Operations Lead",
     name: "Ezeh Ikenna",
-    tagline: "Co-Founder, Rithma Labs",
+    tagline: "Co-Founder · Rithma Labs",
     status: "building agentic systems globally",
     // The headline: the prefix over one word that rotates through `words`. Screen readers
     // get `headlineLabel` instead.
