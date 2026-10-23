@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import type { Key, Size } from "./PlaneFlight";
+import type { Key, Size } from "./types";
 
 // Development-only overlay (?plane=debug): a live readout of the plane's state and the
 // whole flight path drawn on screen. Plain DOM, outside React; it only reads the flight.
