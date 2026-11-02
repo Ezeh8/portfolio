@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     siteName: "Ezeh Ikenna",
     images: [
       {
-        url: "https://ezehkena.com/favicon.ico",
+        url: "https://ezehkena.com/og-image.png",
         width: 256,
         height: 256,
         alt: "EK Favicon",
