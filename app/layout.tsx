@@ -30,9 +30,25 @@ const generalSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Ezeh Ikenna",
+  title: "Ezeh Ikenna ~ AI Product Manager",
   description:
-    "I turn messy business operations into agentic systems that run on their own and report back clearly.",
+    "I map the gaps, friction and flow. Building AI infrastructure for real-world businesses.",
+  openGraph: {
+    title: "Ezeh Ikenna ~ AI Product Manager",
+    description:
+      "I map the gaps, friction and flow. Building AI infrastructure for real-world businesses.",
+    url: "https://ezehkena.com",
+    siteName: "Ezeh Ikenna",
+    images: [
+      {
+        url: "https://ezehkena.com/favicon.ico",
+        width: 256,
+        height: 256,
+        alt: "EK Favicon",
+      },
+    ],
+    type: "website",
+  },
 };
 
 // The site is dark only: dark browser UI and scrollbars, and the --bg color for the
