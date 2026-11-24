@@ -124,7 +124,7 @@ export const site = {
     storyButton: "the whole story",
     story: [
       "I’m an AI-native PM and operations specialist with 10+ years of hands-on experience across retail, banking, and B2B services. Across all of it, one lesson has held: teams move fastest when the hard thinking happens first, with the process mapped end to end, documented, and the success metrics locked in before the build begins.",
-      "I learned how much this matters over seven years running The Ropa Brand, a fashion retail company that grew from a team of 4 to 35 and over 8,000 customers. We were able to scale because the systems came first: SOPs for customer service and returns, and an automated fulfillment system that tracked inventory and deliveries at 95% accuracy.",
+      "I learned how much this matters over seven years running The Ropa Brand, a fashion retail company that grew from a team of 4 to 53 and over 8,000 customers. We were able to scale because the systems came first: SOPs for customer service and returns, and an automated fulfillment system that tracked inventory and deliveries at 95% accuracy.",
       "Standard Chartered confirmed it. There, I ran operations systems across in-app automation, digital KYC rollout, and AI-driven credit scoring. The deployments that stuck had their SOPs agreed, KPIs set, and SLAs signed off before the tech went live; the ones that failed began with someone saying “build XYZ system” and nobody asking why, for whom, what success looks like, or what was out of scope.",
       "Today, through Rithma Labs, my AI transformation company, I carry that same discipline into every engagement. Recent work includes a Multi-Tier Support Pipeline for a neobank (n8n, Zendesk, Slack), an Invoice Exception Handler for a construction company (FastAPI, PostgreSQL, Ollama), LLM Wikipedia ~ a legal knowledge engine for a law firm (LangGraph, GraphRAG), a Retention AI Engine for an e-commerce brand (GoHighLevel, WhatsApp, GPT-4o), and Operation Sync, which connects HubSpot, Stripe, and Asana for a logistics provider.",
       "Each one follows the same path:",
@@ -239,7 +239,7 @@ export const site = {
     label: "03 / EXPERIENCE SO FAR",
     headline: { text: "a decade of work.", highlight: "decade" } satisfies Headline,
     // Numbers in the bullets drawn with a marker highlight (matched as whole numbers).
-    markers: ["quadrupling", "neobank", "up to 55%", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 35", "8,000 customer", "95% accuracy", "consistently reliable"],
+    markers: ["quadrupling", "neobank", "up to 55%", "security boundaries", "ticket volume by 65%", "60-day churn by 33%", "strict SLAs", "SQL query pipelines", "4 to 53", "8,000 customer", "95% accuracy", "consistently reliable"],
     roles: [
       {
         role: "Co-Founder",
@@ -273,7 +273,7 @@ export const site = {
         dates: "Feb 2014 – Mar 2021",
         opsLog: "Zendesk, QuickBooks, Excel, Sheets, Logistics APIs",
         bullets: [
-          "Founded and scaled an independent fashion retail brand from 4 to 35 team members, utilizing QuickBooks and Excel for daily financial monitoring, vendor management, and operating performance.",
+          "Founded and scaled an independent fashion retail brand from 4 to 53 team members, utilizing QuickBooks and Excel for daily financial monitoring, vendor management, and operating performance.",
           "Managed international supply chain logistics across fabric sourcing and garment manufacturing using Slack and Airtable databases, supporting over 8,000 customer transactions across bespoke and retail services.",
           "Designed an automated Google Sheets fulfillment system integrated with GIG & FedEx API webhooks to track inventory and manage local courier deliveries across extensive SKUs with 95% accuracy.",
           "Rolled out standardized operating procedures (SOPs) across customer service and returns ~ deploying a website AI chatbot for routine FAQ deflection, integrated with WhatsApp for human escalation paths and Zendesk for end-to-end ticket logging and resolution tracking to deliver a seamless, customer-obsessed experience.",
